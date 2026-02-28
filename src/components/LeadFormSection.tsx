@@ -4,6 +4,7 @@ import { Send, MessageCircle } from "lucide-react";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { getUTMParams } from "@/lib/utm";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const LeadFormSection = () => {
   const ref = useRef(null);
@@ -32,20 +33,29 @@ const LeadFormSection = () => {
     }
     setLoading(true);
 
-    // For now, store locally (will use Supabase when Cloud is enabled)
     const utm = getUTMParams();
-    const lead = {
-      ...formData,
-      ...utm,
+    const { error } = await supabase.from("leads").insert({
+      full_name: formData.full_name.trim(),
+      phone: formData.phone.trim(),
+      email: formData.email.trim() || null,
+      interest: formData.interest,
+      level: formData.level,
+      goal: formData.goal.trim() || null,
+      utm_source: utm.utm_source || null,
+      utm_medium: utm.utm_medium || null,
+      utm_campaign: utm.utm_campaign || null,
+      utm_content: utm.utm_content || null,
+      utm_term: utm.utm_term || null,
       page_path: window.location.pathname,
-      referrer: document.referrer,
-      created_at: new Date().toISOString(),
-    };
-    console.log("Lead submitted:", lead);
+      referrer: document.referrer || null,
+    });
 
-    // Simulate save
-    await new Promise((r) => setTimeout(r, 800));
     setLoading(false);
+    if (error) {
+      console.error("Lead insert error:", error);
+      toast({ title: "Xəta", description: "Göndərilə bilmədi. Yenidən cəhd edin.", variant: "destructive" });
+      return;
+    }
     setSubmitted(true);
     toast({ title: "Təşəkkürlər!", description: "Qeydiyyatınız qəbul edildi." });
   };
