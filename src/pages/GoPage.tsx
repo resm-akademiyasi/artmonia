@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { supabase } from "@/integrations/supabase/client";
 
 const GoPage = () => {
   const [params] = useSearchParams();
@@ -10,21 +11,24 @@ const GoPage = () => {
     const cta = params.get("cta") || "unknown";
     const name = params.get("name") || undefined;
 
-    // Log event (console for now, Supabase later)
-    const event = {
+    // Log event to database
+    supabase.from("events").insert({
       event_type: "whatsapp_redirect",
       src,
       cta,
-      page_path: window.location.pathname,
-      utm_source: params.get("utm_source") || undefined,
-      utm_campaign: params.get("utm_campaign") || undefined,
+      page_path: "/go",
+      utm_source: params.get("utm_source") || null,
+      utm_campaign: params.get("utm_campaign") || null,
       user_agent: navigator.userAgent,
-      created_at: new Date().toISOString(),
-    };
-    console.log("Event logged:", event);
+    }).then(({ error }) => {
+      if (error) console.error("Event log error:", error);
+    });
 
     // Redirect to WhatsApp
-    window.location.href = getWhatsAppUrl(name);
+    const timer = setTimeout(() => {
+      window.location.href = getWhatsAppUrl(name);
+    }, 500);
+    return () => clearTimeout(timer);
   }, [params]);
 
   return (
