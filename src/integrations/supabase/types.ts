@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      campaigns: {
+        Row: {
+          badge_text: string
+          created_at: string
+          description: string | null
+          discount_percent: number | null
+          end_date: string
+          id: string
+          is_active: boolean
+          start_date: string
+          title: string
+        }
+        Insert: {
+          badge_text?: string
+          created_at?: string
+          description?: string | null
+          discount_percent?: number | null
+          end_date: string
+          id?: string
+          is_active?: boolean
+          start_date?: string
+          title: string
+        }
+        Update: {
+          badge_text?: string
+          created_at?: string
+          description?: string | null
+          discount_percent?: number | null
+          end_date?: string
+          id?: string
+          is_active?: boolean
+          start_date?: string
+          title?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           created_at: string

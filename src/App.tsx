@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import CampaignBanner from "@/components/CampaignBanner";
 import Index from "./pages/Index";
 import ProgramPage from "./pages/ProgramPage";
 import AboutPage from "./pages/AboutPage";
@@ -25,6 +26,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <CampaignBanner />
         <Navbar />
         <Routes>
           <Route path="/" element={<Index />} />

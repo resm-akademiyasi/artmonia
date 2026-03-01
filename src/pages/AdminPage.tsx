@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Download, Users, BarChart3 } from "lucide-react";
+import { LogOut, Download, Users, BarChart3, Megaphone } from "lucide-react";
+import CampaignManager from "@/components/CampaignManager";
 import type { Tables } from "@/integrations/supabase/types";
 
 const AdminPage = () => {
   const [leads, setLeads] = useState<Tables<"leads">[]>([]);
   const [events, setEvents] = useState<Tables<"events">[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"leads" | "events">("leads");
+  const [tab, setTab] = useState<"leads" | "events" | "campaigns">("leads");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -135,6 +136,12 @@ const AdminPage = () => {
           >
             Events ({events.length})
           </button>
+          <button
+            onClick={() => setTab("campaigns")}
+            className={`flex items-center gap-1 pb-3 font-body text-sm font-medium transition-colors ${tab === "campaigns" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}
+          >
+            <Megaphone size={14} /> Kampaniyalar
+          </button>
         </div>
 
         {/* Export */}
@@ -148,7 +155,9 @@ const AdminPage = () => {
         </div>
 
         {/* Tables */}
-        {tab === "leads" ? (
+        {tab === "campaigns" ? (
+          <CampaignManager />
+        ) : tab === "leads" ? (
           <div className="overflow-x-auto rounded-sm border border-border">
             <table className="w-full text-left font-body text-sm">
               <thead className="border-b border-border bg-muted/30">
