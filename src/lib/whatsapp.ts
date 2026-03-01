@@ -1,4 +1,4 @@
-const WHATSAPP_PHONE = "994501112233";
+const WHATSAPP_PHONE = "994103831393";
 const BRAND_NAME = "Artmonia Academy";
 
 export const getWhatsAppUrl = (name?: string): string => {
