@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BRAND } from "@/lib/whatsapp";
+import logoImg from "@/assets/logo.png";
 
 const navLinks = [
   { label: "Proqram", href: "/program" },
@@ -18,8 +18,8 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:h-20">
-        <Link to="/" className="font-display text-xl font-bold tracking-wide md:text-2xl">
-          <span className="text-gradient-gold">{BRAND}</span>
+        <Link to="/" className="flex items-center">
+          <img src={logoImg} alt="Artmonia" className="h-10 md:h-12 w-auto" />
         </Link>
 
         {/* Desktop */}
