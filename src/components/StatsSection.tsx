@@ -47,13 +47,13 @@ const StatsSection = () => {
       />
       {/* Bottom fade - blends into next section's light bg */}
       <div className="pointer-events-none absolute -bottom-1 left-0 right-0 z-20 h-72 md:h-96" style={{ background: "linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.95) 10%, hsl(var(--background) / 0.7) 30%, hsl(var(--background) / 0.4) 50%, hsl(var(--background) / 0.15) 70%, hsl(var(--background) / 0.05) 85%, transparent 100%)" }} />
-      {/* YouTube Background with parallax */}
+      {/* YouTube Background with parallax - 16:9 aspect ratio preserved */}
       <motion.div className="absolute inset-0 z-0 -top-[15%] -bottom-[15%]" style={{ y: bgY }}>
-        <div className="relative w-full h-full flex items-center justify-center">
+        <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
           <iframe
-            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&playsinline=1`}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-            style={{ border: 0, width: "300vw", height: "300vh", minWidth: "300vw", minHeight: "168.75vw" }}
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&playsinline=1&start=4&vq=hd1080`}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-full"
+            style={{ border: 0, aspectRatio: "16/9", minWidth: "100%", minHeight: "100%", width: "max(100%, 177.78vh)", height: "max(100%, 56.25vw)" }}
             allow="autoplay; encrypted-media"
             allowFullScreen
             title="Artmoniya təqdimat videosu"
