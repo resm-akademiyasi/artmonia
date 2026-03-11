@@ -19,7 +19,7 @@ const StudentResultsManager = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
-  const [form, setForm] = useState({ student_name: "", achievement: "", display_order: "0" });
+  const [form, setForm] = useState({ student_name: "", achievement: "", display_order: "0", duration_months: "" });
   const [beforeFile, setBeforeFile] = useState<File | null>(null);
   const [afterFile, setAfterFile] = useState<File | null>(null);
 
