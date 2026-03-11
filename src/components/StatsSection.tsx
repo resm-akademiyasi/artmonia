@@ -35,7 +35,11 @@ const StatsSection = () => {
   const videoUrl = "";
 
   return (
-    <section ref={ref} className="relative overflow-hidden py-20 md:py-28">
+    <section ref={ref} className="relative overflow-hidden py-20 md:py-28 my-0">
+      {/* Top fade */}
+      <div className="pointer-events-none absolute -top-1 left-0 right-0 z-20 h-24 bg-gradient-to-b from-background to-transparent" />
+      {/* Bottom fade */}
+      <div className="pointer-events-none absolute -bottom-1 left-0 right-0 z-20 h-24 bg-gradient-to-t from-background to-transparent" />
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         {videoUrl ? (
