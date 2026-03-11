@@ -73,7 +73,7 @@ const StatsSection = () => {
         )}
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-accent/60 backdrop-blur-[2px]" />
-      </div>
+      </motion.div>
 
       {/* Stats on top */}
       <div className="container relative z-10 mx-auto px-6">
