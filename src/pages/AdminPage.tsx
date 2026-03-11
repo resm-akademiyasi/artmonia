@@ -96,6 +96,7 @@ const AdminPage = () => {
     { key: "campaigns", label: "Kampaniyalar", icon: <Megaphone size={14} /> },
     { key: "news", label: "Xəbərlər", icon: <Newspaper size={14} /> },
     { key: "results", label: "Nəticələr", icon: <Image size={14} /> },
+    { key: "stories", label: "Hekayələr", icon: <Video size={14} /> },
   ];
 
   return (
