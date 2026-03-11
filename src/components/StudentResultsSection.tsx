@@ -128,7 +128,7 @@ const StudentResultsSection = () => {
             Tələbə <span className="italic text-primary">nəticələri</span>
           </h2>
           <p className="mt-4 font-body text-sm text-muted-foreground">
-            Kartın üzərinə gəl — əvvəl/sonra fərqini gör
+            Əvvəl və sonra fərqini gör
           </p>
         </div>
       </div>
