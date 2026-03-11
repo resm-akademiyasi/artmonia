@@ -6,6 +6,7 @@ import logoImg from "@/assets/logo-transparent.png";
 
 const leftLinks = [
   { label: "Proqram", href: "/program" },
+  { label: "Müəllimlər", href: "/teachers" },
   { label: "Haqqımızda", href: "/about" },
 ];
 
