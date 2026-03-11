@@ -2,26 +2,27 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Download, Users, BarChart3, Megaphone } from "lucide-react";
+import { LogOut, Download, Users, BarChart3, Megaphone, Newspaper, Image } from "lucide-react";
 import CampaignManager from "@/components/CampaignManager";
+import NewsManager from "@/components/NewsManager";
+import StudentResultsManager from "@/components/StudentResultsManager";
 import type { Tables } from "@/integrations/supabase/types";
+
+type TabType = "leads" | "events" | "campaigns" | "news" | "results";
 
 const AdminPage = () => {
   const [leads, setLeads] = useState<Tables<"leads">[]>([]);
   const [events, setEvents] = useState<Tables<"events">[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"leads" | "events" | "campaigns">("leads");
+  const [tab, setTab] = useState<TabType>("leads");
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate("/auth");
-        return;
-      }
-      // Check admin role
+      if (!session) { navigate("/auth"); return; }
+
       const { data: role } = await supabase
         .from("user_roles")
         .select("role")
@@ -36,7 +37,6 @@ const AdminPage = () => {
         return;
       }
 
-      // Fetch data
       const [leadsRes, eventsRes] = await Promise.all([
         supabase.from("leads").select("*").order("created_at", { ascending: false }),
         supabase.from("events").select("*").order("created_at", { ascending: false }),
@@ -48,7 +48,6 @@ const AdminPage = () => {
     };
 
     checkAuth();
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_OUT") navigate("/auth");
     });
@@ -84,38 +83,45 @@ const AdminPage = () => {
     );
   }
 
-  // Stats
   const eventsBySource = events.reduce<Record<string, number>>((acc, e) => {
     const key = `${e.src || "unknown"}/${e.cta || "unknown"}`;
     acc[key] = (acc[key] || 0) + 1;
     return acc;
   }, {});
 
+  const tabs: { key: TabType; label: string; icon?: React.ReactNode; count?: number }[] = [
+    { key: "leads", label: "Leads", count: leads.length },
+    { key: "events", label: "Events", count: events.length },
+    { key: "campaigns", label: "Kampaniyalar", icon: <Megaphone size={14} /> },
+    { key: "news", label: "Xəbərlər", icon: <Newspaper size={14} /> },
+    { key: "results", label: "Nəticələr", icon: <Image size={14} /> },
+  ];
+
   return (
     <main className="min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="font-display text-3xl font-bold">Admin Panel</h1>
-          <button onClick={handleLogout} className="flex items-center gap-2 border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground rounded-sm transition-colors">
+          <h1 className="font-display text-3xl font-bold text-accent">Admin Panel</h1>
+          <button onClick={handleLogout} className="flex items-center gap-2 border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg transition-colors">
             <LogOut size={16} /> Çıxış
           </button>
         </div>
 
-        {/* Stats cards */}
+        {/* Stats */}
         <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          <div className="rounded-sm border border-border bg-card p-6">
+          <div className="rounded-xl border border-border bg-card p-6">
             <Users className="mb-2 h-5 w-5 text-primary" />
-            <p className="font-display text-2xl font-bold">{leads.length}</p>
+            <p className="font-display text-2xl font-bold text-accent">{leads.length}</p>
             <p className="font-body text-xs text-muted-foreground">Leads</p>
           </div>
-          <div className="rounded-sm border border-border bg-card p-6">
+          <div className="rounded-xl border border-border bg-card p-6">
             <BarChart3 className="mb-2 h-5 w-5 text-primary" />
-            <p className="font-display text-2xl font-bold">{events.length}</p>
+            <p className="font-display text-2xl font-bold text-accent">{events.length}</p>
             <p className="font-body text-xs text-muted-foreground">Events</p>
           </div>
-          <div className="rounded-sm border border-border bg-card p-6 col-span-2">
+          <div className="rounded-xl border border-border bg-card p-6 col-span-2">
             <p className="mb-2 font-body text-xs text-muted-foreground">Konversiya</p>
-            <p className="font-display text-2xl font-bold">
+            <p className="font-display text-2xl font-bold text-accent">
               {events.length > 0 ? ((leads.length / events.length) * 100).toFixed(1) : 0}%
             </p>
             <p className="font-body text-xs text-muted-foreground">Events → Leads</p>
@@ -123,42 +129,40 @@ const AdminPage = () => {
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex gap-4 border-b border-border">
-          <button
-            onClick={() => setTab("leads")}
-            className={`pb-3 font-body text-sm font-medium transition-colors ${tab === "leads" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}
-          >
-            Leads ({leads.length})
-          </button>
-          <button
-            onClick={() => setTab("events")}
-            className={`pb-3 font-body text-sm font-medium transition-colors ${tab === "events" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}
-          >
-            Events ({events.length})
-          </button>
-          <button
-            onClick={() => setTab("campaigns")}
-            className={`flex items-center gap-1 pb-3 font-body text-sm font-medium transition-colors ${tab === "campaigns" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}
-          >
-            <Megaphone size={14} /> Kampaniyalar
-          </button>
+        <div className="mb-6 flex gap-1 overflow-x-auto border-b border-border">
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`flex items-center gap-1.5 whitespace-nowrap px-4 pb-3 pt-1 font-body text-sm font-medium transition-colors ${
+                tab === t.key ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-accent"
+              }`}
+            >
+              {t.icon}
+              {t.label}
+              {t.count !== undefined && <span className="text-xs opacity-60">({t.count})</span>}
+            </button>
+          ))}
         </div>
 
-        {/* Export */}
-        <div className="mb-4 flex justify-end">
-          <button
-            onClick={() => exportCSV(tab === "leads" ? leads : events, tab)}
-            className="flex items-center gap-2 border border-primary/30 px-4 py-2 text-sm text-primary hover:bg-primary/5 rounded-sm transition-colors"
-          >
-            <Download size={14} /> CSV Export
-          </button>
-        </div>
+        {/* Export for leads/events */}
+        {(tab === "leads" || tab === "events") && (
+          <div className="mb-4 flex justify-end">
+            <button
+              onClick={() => exportCSV(tab === "leads" ? leads : events, tab)}
+              className="flex items-center gap-2 border border-primary/30 px-4 py-2 text-sm text-primary hover:bg-primary/5 rounded-lg transition-colors"
+            >
+              <Download size={14} /> CSV Export
+            </button>
+          </div>
+        )}
 
-        {/* Tables */}
-        {tab === "campaigns" ? (
-          <CampaignManager />
-        ) : tab === "leads" ? (
-          <div className="overflow-x-auto rounded-sm border border-border">
+        {/* Content */}
+        {tab === "campaigns" && <CampaignManager />}
+        {tab === "news" && <NewsManager />}
+        {tab === "results" && <StudentResultsManager />}
+        {tab === "leads" && (
+          <div className="overflow-x-auto rounded-xl border border-border">
             <table className="w-full text-left font-body text-sm">
               <thead className="border-b border-border bg-muted/30">
                 <tr>
@@ -175,7 +179,7 @@ const AdminPage = () => {
                 {leads.map((l) => (
                   <tr key={l.id} className="border-b border-border/50 hover:bg-muted/10">
                     <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(l.created_at).toLocaleDateString("az")}</td>
-                    <td className="px-4 py-3">{l.full_name}</td>
+                    <td className="px-4 py-3 text-accent">{l.full_name}</td>
                     <td className="px-4 py-3">{l.phone}</td>
                     <td className="px-4 py-3 text-muted-foreground">{l.email || "—"}</td>
                     <td className="px-4 py-3">{l.interest}</td>
@@ -189,11 +193,11 @@ const AdminPage = () => {
               </tbody>
             </table>
           </div>
-        ) : (
+        )}
+        {tab === "events" && (
           <div className="space-y-6">
-            {/* Event source breakdown */}
-            <div className="rounded-sm border border-border bg-card p-6">
-              <h3 className="mb-4 font-display text-lg font-bold">Mənbəyə görə</h3>
+            <div className="rounded-xl border border-border bg-card p-6">
+              <h3 className="mb-4 font-display text-lg font-bold text-accent">Mənbəyə görə</h3>
               <div className="space-y-2">
                 {Object.entries(eventsBySource)
                   .sort(([, a], [, b]) => b - a)
@@ -205,9 +209,7 @@ const AdminPage = () => {
                   ))}
               </div>
             </div>
-
-            {/* Events table */}
-            <div className="overflow-x-auto rounded-sm border border-border">
+            <div className="overflow-x-auto rounded-xl border border-border">
               <table className="w-full text-left font-body text-sm">
                 <thead className="border-b border-border bg-muted/30">
                   <tr>
