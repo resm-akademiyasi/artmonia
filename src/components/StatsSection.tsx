@@ -30,6 +30,8 @@ const StatsSection = () => {
   const ref = useRef(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
 
   // TODO: Replace with real video URL
   const videoUrl = "";
@@ -40,8 +42,8 @@ const StatsSection = () => {
       <div className="pointer-events-none absolute -top-1 left-0 right-0 z-20 h-24 bg-gradient-to-b from-background to-transparent" />
       {/* Bottom fade */}
       <div className="pointer-events-none absolute -bottom-1 left-0 right-0 z-20 h-24 bg-gradient-to-t from-background to-transparent" />
-      {/* Video Background */}
-      <div className="absolute inset-0 z-0">
+      {/* Video Background with parallax */}
+      <motion.div className="absolute inset-0 z-0 -top-[20%] -bottom-[20%]" style={{ y: bgY }}>
         {videoUrl ? (
           <video
             ref={videoRef}
