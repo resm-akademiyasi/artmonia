@@ -1,5 +1,5 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { useRef, useState } from "react";
 import { Target, TrendingUp, Users, Award } from "lucide-react";
 
 const promises = [
@@ -8,6 +8,163 @@ const promises = [
   { icon: Users, title: "Mentor dəstəyi", desc: "Peşəkar rəssamlardan birbaşa rəy alırsan." },
   { icon: Award, title: "Portfolyo qurulur", desc: "Kurs sonunda göstərə biləcəyin işlər olur." },
 ];
+
+// SVG brush stroke paths for each corner style
+const brushStrokes = [
+  // Top-left + bottom-right corners
+  `M 8 40 Q 4 4 40 8`,
+  // Top-right corner
+  `M 260 8 Q 296 4 292 40`,
+  // Bottom-left corner  
+  `M 8 260 Q 4 296 40 292`,
+  // Bottom-right corner
+  `M 260 292 Q 296 296 292 260`,
+];
+
+const PromiseCard = ({
+  p,
+  index,
+  inView,
+}: {
+  p: (typeof promises)[0];
+  index: number;
+  inView: boolean;
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [hovered, setHovered] = useState(false);
+
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+
+  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [6, -6]), { stiffness: 200, damping: 20 });
+  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-6, 6]), { stiffness: 200, damping: 20 });
+  const cardScale = useSpring(hovered ? 1.02 : 1, { stiffness: 300, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    mx.set((e.clientX - rect.left) / rect.width - 0.5);
+    my.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
+    mx.set(0);
+    my.set(0);
+  };
+
+  const Icon = p.icon;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
+      style={{ perspective: 800 }}
+    >
+      <motion.div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={handleMouseLeave}
+        style={{ rotateX, rotateY, scale: cardScale, transformStyle: "preserve-3d" }}
+        className="group relative rounded-xl border border-border bg-background p-8 text-left transition-shadow hover:shadow-lg cursor-pointer overflow-visible"
+      >
+        {/* Brush stroke SVG borders */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="0 0 300 300"
+          preserveAspectRatio="none"
+          fill="none"
+          style={{ overflow: "visible" }}
+        >
+          {brushStrokes.map((d, i) => (
+            <motion.path
+              key={i}
+              d={d}
+              stroke="hsl(var(--primary))"
+              strokeWidth={hovered ? 3 : 0}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{
+                pathLength: hovered ? 1 : 0,
+                opacity: hovered ? 0.7 : 0,
+              }}
+              transition={{
+                pathLength: { duration: 0.4, delay: i * 0.08 },
+                opacity: { duration: 0.2, delay: i * 0.08 },
+              }}
+              style={{
+                filter: "url(#brush-texture)",
+              }}
+            />
+          ))}
+          {/* Extra decorative splatter strokes */}
+          <motion.path
+            d="M 20 20 Q 30 10 50 18 Q 70 6 80 15"
+            stroke="hsl(var(--secondary))"
+            strokeWidth={hovered ? 2 : 0}
+            strokeLinecap="round"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{
+              pathLength: hovered ? 1 : 0,
+              opacity: hovered ? 0.4 : 0,
+            }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          />
+          <motion.path
+            d="M 220 280 Q 240 290 260 282 Q 275 292 285 285"
+            stroke="hsl(var(--secondary))"
+            strokeWidth={hovered ? 2 : 0}
+            strokeLinecap="round"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{
+              pathLength: hovered ? 1 : 0,
+              opacity: hovered ? 0.4 : 0,
+            }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+          />
+          <defs>
+            <filter id="brush-texture">
+              <feTurbulence type="turbulence" baseFrequency="0.04" numOctaves="4" result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+          </defs>
+        </svg>
+
+        {/* Glare */}
+        <motion.div
+          className="pointer-events-none absolute inset-0 rounded-xl"
+          style={{
+            background: useTransform(
+              mx,
+              [-0.5, 0, 0.5],
+              [
+                "linear-gradient(105deg, rgba(255,255,255,0.08) 0%, transparent 50%)",
+                "linear-gradient(105deg, transparent 0%, transparent 100%)",
+                "linear-gradient(255deg, rgba(255,255,255,0.08) 0%, transparent 50%)",
+              ]
+            ),
+          }}
+        />
+
+        <motion.div
+          className="relative mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10"
+          animate={{ rotate: hovered ? 5 : 0 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <Icon className="h-5 w-5 text-primary" />
+        </motion.div>
+        <h3 className="relative mb-2 font-display text-2xl font-semibold text-accent">{p.title}</h3>
+        <p className="relative font-body text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
+      </motion.div>
+    </motion.div>
+  );
+};
 
 const PromiseSection = () => {
   const ref = useRef(null);
@@ -35,19 +192,7 @@ const PromiseSection = () => {
 
           <div className="grid gap-8 md:grid-cols-2">
             {promises.map((p, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.2 + i * 0.1 }}
-                className="group rounded-xl border border-border bg-background p-8 text-left transition-all hover:border-primary/20 hover:shadow-lg"
-              >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <p.icon className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="mb-2 font-display text-2xl font-semibold text-accent">{p.title}</h3>
-                <p className="font-body text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
-              </motion.div>
+              <PromiseCard key={i} p={p} index={i} inView={inView} />
             ))}
           </div>
         </div>
