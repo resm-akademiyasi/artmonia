@@ -53,7 +53,7 @@ const StatsSection = () => {
           <iframe
             src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&playsinline=1`}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-            style={{ border: 0, width: "177.78vh", height: "100vh", minWidth: "100%", minHeight: "56.25vw" }}
+            style={{ border: 0, width: "300vw", height: "300vh", minWidth: "300vw", minHeight: "168.75vw" }}
             allow="autoplay; encrypted-media"
             allowFullScreen
             title="Artmoniya təqdimat videosu"
