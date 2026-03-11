@@ -12,10 +12,11 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import FaqSection from "@/components/FaqSection";
 import LeadFormSection from "@/components/LeadFormSection";
 import CtaSection from "@/components/CtaSection";
+import BrushStrokes from "@/components/BrushStrokes";
 
 const Index = () => {
   return (
-    <main>
+    <main className="relative">
       <HeroSection />
       <StatsSection />
       <ProblemSection />
