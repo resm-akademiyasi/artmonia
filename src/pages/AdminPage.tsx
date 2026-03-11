@@ -10,7 +10,7 @@ import SuccessStoriesManager from "@/components/SuccessStoriesManager";
 import TeachersManager from "@/components/TeachersManager";
 import type { Tables } from "@/integrations/supabase/types";
 
-type TabType = "leads" | "events" | "campaigns" | "news" | "results" | "stories";
+type TabType = "leads" | "events" | "campaigns" | "news" | "results" | "stories" | "teachers";
 
 const AdminPage = () => {
   const [leads, setLeads] = useState<Tables<"leads">[]>([]);
