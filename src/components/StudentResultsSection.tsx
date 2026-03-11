@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { ArrowRight, ChevronRight } from "lucide-react";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 
@@ -14,17 +15,49 @@ interface StudentResult {
 }
 
 export const ComparisonCard = ({ result }: { result: StudentResult }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [hovered, setHovered] = useState(false);
+
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+
+  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [8, -8]), { stiffness: 200, damping: 20 });
+  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-8, 8]), { stiffness: 200, damping: 20 });
+  const scale = useSpring(hovered ? 1.03 : 1, { stiffness: 300, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    mx.set((e.clientX - rect.left) / rect.width - 0.5);
+    my.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
+    mx.set(0);
+    my.set(0);
+  };
+
   return (
-    <div className="flex-shrink-0 w-[340px] md:w-[400px]">
-      <div className="overflow-hidden rounded-2xl border border-border bg-muted relative">
+    <div className="flex-shrink-0 w-[340px] md:w-[400px]" style={{ perspective: 800 }}>
+      <motion.div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={handleMouseLeave}
+        style={{ rotateX, rotateY, scale, transformStyle: "preserve-3d" }}
+        className="overflow-hidden rounded-2xl border border-border bg-muted relative cursor-pointer"
+      >
         <div className="grid grid-cols-2">
           {/* Before */}
           <div className="relative aspect-[3/4]">
             {result.before_image_url && (
-              <img
+              <motion.img
                 src={result.before_image_url}
                 alt={`${result.student_name} - əvvəl`}
                 className="h-full w-full object-cover"
+                animate={{ scale: hovered ? 1.06 : 1 }}
+                transition={{ duration: 0.5 }}
               />
             )}
             <div className="absolute bottom-0 inset-x-0 bg-accent/80 py-1.5">
@@ -36,10 +69,12 @@ export const ComparisonCard = ({ result }: { result: StudentResult }) => {
           {/* After */}
           <div className="relative aspect-[3/4]">
             {result.after_image_url && (
-              <img
+              <motion.img
                 src={result.after_image_url}
                 alt={`${result.student_name} - sonra`}
                 className="h-full w-full object-cover"
+                animate={{ scale: hovered ? 1.06 : 1 }}
+                transition={{ duration: 0.5 }}
               />
             )}
             <div className="absolute bottom-0 inset-x-0 bg-primary/90 py-1.5">
@@ -49,6 +84,22 @@ export const ComparisonCard = ({ result }: { result: StudentResult }) => {
             </div>
           </div>
         </div>
+
+        {/* Glare effect */}
+        <motion.div
+          className="pointer-events-none absolute inset-0 z-20"
+          style={{
+            background: useTransform(
+              mx,
+              [-0.5, 0, 0.5],
+              [
+                "linear-gradient(105deg, rgba(255,255,255,0.12) 0%, transparent 50%)",
+                "linear-gradient(105deg, transparent 0%, transparent 100%)",
+                "linear-gradient(255deg, rgba(255,255,255,0.12) 0%, transparent 50%)",
+              ]
+            ),
+          }}
+        />
 
         {/* Center Arrow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
@@ -67,7 +118,11 @@ export const ComparisonCard = ({ result }: { result: StudentResult }) => {
             </div>
           </div>
         )}
-      </div>
+
+        {/* Corner accents */}
+        <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-primary/0 group-hover:border-primary/50 transition-all duration-500 rounded-tr-lg z-20" style={{ borderColor: hovered ? "hsl(var(--primary) / 0.5)" : "transparent" }} />
+        <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-primary/0 group-hover:border-primary/50 transition-all duration-500 rounded-bl-lg z-20" style={{ borderColor: hovered ? "hsl(var(--primary) / 0.5)" : "transparent" }} />
+      </motion.div>
 
       {/* Info */}
       <div className="mt-4 px-1">
