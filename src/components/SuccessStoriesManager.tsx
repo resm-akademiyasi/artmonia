@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, GripVertical, Eye, EyeOff, Upload } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { SortableList } from "@/components/SortableList";
 
 interface SuccessStory {
   id: string;
@@ -85,6 +86,15 @@ const SuccessStoriesManager = () => {
     fetchStories();
   };
 
+  const handleReorder = async (reordered: SuccessStory[]) => {
+    setStories(reordered);
+    const updates = reordered.map((item, index) =>
+      supabase.from("success_stories").update({ display_order: index }).eq("id", item.id)
+    );
+    await Promise.all(updates);
+    toast({ title: "Sıra yeniləndi" });
+  };
+
   const togglePublish = async (id: string, current: boolean) => {
     await supabase.from("success_stories").update({ is_published: !current }).eq("id", id);
     fetchStories();
@@ -149,20 +159,13 @@ const SuccessStoriesManager = () => {
                   className="flex-1"
                 />
                 <label className="cursor-pointer">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => e.target.files?.[0] && uploadFile(e.target.files[0], "thumbnail")}
-                  />
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadFile(e.target.files[0], "thumbnail")} />
                   <Button type="button" variant="outline" size="icon" asChild disabled={uploading}>
                     <span><Upload size={14} /></span>
                   </Button>
                 </label>
               </div>
-              {form.thumbnail_url && (
-                <img src={form.thumbnail_url} alt="" className="mt-2 h-20 rounded-lg object-cover" />
-              )}
+              {form.thumbnail_url && <img src={form.thumbnail_url} alt="" className="mt-2 h-20 rounded-lg object-cover" />}
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Video</Label>
@@ -174,12 +177,7 @@ const SuccessStoriesManager = () => {
                   className="flex-1"
                 />
                 <label className="cursor-pointer">
-                  <input
-                    type="file"
-                    accept="video/*"
-                    className="hidden"
-                    onChange={(e) => e.target.files?.[0] && uploadFile(e.target.files[0], "video")}
-                  />
+                  <input type="file" accept="video/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadFile(e.target.files[0], "video")} />
                   <Button type="button" variant="outline" size="icon" asChild disabled={uploading}>
                     <span><Upload size={14} /></span>
                   </Button>
@@ -197,42 +195,36 @@ const SuccessStoriesManager = () => {
         </div>
       )}
 
-      {/* List */}
-      <div className="space-y-3">
-        {stories.map((s) => (
-          <div key={s.id} className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
-            <GripVertical size={16} className="text-muted-foreground/40" />
-            {s.thumbnail_url ? (
-              <img src={s.thumbnail_url} alt="" className="h-16 w-12 rounded-lg object-cover flex-shrink-0" />
-            ) : (
-              <div className="h-16 w-12 rounded-lg bg-muted flex-shrink-0" />
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="font-display text-sm font-bold text-accent truncate">{s.student_name}</p>
-              <p className="font-body text-xs text-muted-foreground truncate italic">"{s.testimonial}"</p>
-              <p className="font-body text-[10px] text-muted-foreground/60 mt-0.5">
-                {s.video_url ? "🎬 Video var" : "⏳ Video yoxdur"}
-              </p>
+      {!stories.length ? (
+        <p className="text-center text-sm text-muted-foreground py-8">Hələ hekayə yoxdur.</p>
+      ) : (
+        <SortableList
+          items={stories}
+          onReorder={handleReorder}
+          renderItem={(s) => (
+            <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
+              {s.thumbnail_url ? (
+                <img src={s.thumbnail_url} alt="" className="h-16 w-12 rounded-lg object-cover flex-shrink-0" />
+              ) : (
+                <div className="h-16 w-12 rounded-lg bg-muted flex-shrink-0" />
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="font-display text-sm font-bold text-accent truncate">{s.student_name}</p>
+                <p className="font-body text-xs text-muted-foreground truncate italic">"{s.testimonial}"</p>
+                <p className="font-body text-[10px] text-muted-foreground/60 mt-0.5">
+                  {s.video_url ? "🎬 Video var" : "⏳ Video yoxdur"}
+                </p>
+              </div>
+              <button onClick={() => togglePublish(s.id, s.is_published)} className="text-muted-foreground hover:text-accent transition-colors" title={s.is_published ? "Gizlət" : "Dərc et"}>
+                {s.is_published ? <Eye size={16} /> : <EyeOff size={16} />}
+              </button>
+              <button onClick={() => deleteStory(s.id)} className="text-muted-foreground hover:text-destructive transition-colors">
+                <Trash2 size={16} />
+              </button>
             </div>
-            <button
-              onClick={() => togglePublish(s.id, s.is_published)}
-              className="text-muted-foreground hover:text-accent transition-colors"
-              title={s.is_published ? "Gizlət" : "Dərc et"}
-            >
-              {s.is_published ? <Eye size={16} /> : <EyeOff size={16} />}
-            </button>
-            <button
-              onClick={() => deleteStory(s.id)}
-              className="text-muted-foreground hover:text-destructive transition-colors"
-            >
-              <Trash2 size={16} />
-            </button>
-          </div>
-        ))}
-        {!stories.length && (
-          <p className="text-center text-sm text-muted-foreground py-8">Hələ hekayə yoxdur.</p>
-        )}
-      </div>
+          )}
+        />
+      )}
     </div>
   );
 };

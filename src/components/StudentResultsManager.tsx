@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, Eye, EyeOff, Upload } from "lucide-react";
+import { SortableList } from "@/components/SortableList";
 
 interface StudentResult {
   id: string;
@@ -19,7 +20,7 @@ const StudentResultsManager = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
-  const [form, setForm] = useState({ student_name: "", achievement: "", display_order: "0", duration_months: "" });
+  const [form, setForm] = useState({ student_name: "", achievement: "", duration_months: "" });
   const [beforeFile, setBeforeFile] = useState<File | null>(null);
   const [afterFile, setAfterFile] = useState<File | null>(null);
 
@@ -65,7 +66,7 @@ const StudentResultsManager = () => {
       achievement: form.achievement.trim() || null,
       before_image_url,
       after_image_url,
-      display_order: parseInt(form.display_order) || 0,
+      display_order: items.length,
       duration_months: form.duration_months ? parseInt(form.duration_months) : null,
     });
 
@@ -76,10 +77,19 @@ const StudentResultsManager = () => {
     }
 
     toast({ title: "Nəticə əlavə edildi!" });
-    setForm({ student_name: "", achievement: "", display_order: "0", duration_months: "" });
+    setForm({ student_name: "", achievement: "", duration_months: "" });
     setBeforeFile(null);
     setAfterFile(null);
     fetchResults();
+  };
+
+  const handleReorder = async (reordered: StudentResult[]) => {
+    setItems(reordered);
+    const updates = reordered.map((item, index) =>
+      supabase.from("student_results").update({ display_order: index }).eq("id", item.id)
+    );
+    await Promise.all(updates);
+    toast({ title: "Sıra yeniləndi" });
   };
 
   const togglePublish = async (id: string, current: boolean) => {
@@ -88,6 +98,7 @@ const StudentResultsManager = () => {
   };
 
   const deleteItem = async (id: string) => {
+    if (!confirm("Silmək istədiyinizə əminsiniz?")) return;
     await supabase.from("student_results").delete().eq("id", id);
     fetchResults();
   };
@@ -108,13 +119,6 @@ const StudentResultsManager = () => {
           onChange={(e) => setForm(p => ({ ...p, achievement: e.target.value }))}
           placeholder="Nailiyyət (məs: '300 AZN-ə satıldı')"
           maxLength={200}
-          className="w-full border border-border bg-background px-4 py-3 font-body text-sm rounded-lg outline-none focus:border-primary"
-        />
-        <input
-          value={form.display_order}
-          onChange={(e) => setForm(p => ({ ...p, display_order: e.target.value }))}
-          placeholder="Sıra (0, 1, 2...)"
-          type="number"
           className="w-full border border-border bg-background px-4 py-3 font-body text-sm rounded-lg outline-none focus:border-primary"
         />
         <input
@@ -152,10 +156,14 @@ const StudentResultsManager = () => {
 
       {loading ? (
         <p className="text-muted-foreground text-sm">Yüklənir...</p>
+      ) : !items.length ? (
+        <p className="text-center text-sm text-muted-foreground py-8">Hələ nəticə yoxdur.</p>
       ) : (
-        <div className="space-y-3">
-          {items.map((item) => (
-            <div key={item.id} className="flex items-center gap-4 rounded-xl border border-border bg-background p-4">
+        <SortableList
+          items={items}
+          onReorder={handleReorder}
+          renderItem={(item) => (
+            <div className="flex items-center gap-4 rounded-xl border border-border bg-background p-4">
               <div className="flex gap-1 flex-shrink-0">
                 {item.before_image_url && <img src={item.before_image_url} alt="" className="h-12 w-12 rounded-lg object-cover" />}
                 {item.after_image_url && <img src={item.after_image_url} alt="" className="h-12 w-12 rounded-lg object-cover" />}
@@ -163,7 +171,7 @@ const StudentResultsManager = () => {
               <div className="flex-1 min-w-0">
                 <p className="font-body text-sm font-semibold text-accent truncate">{item.student_name}</p>
                 <p className="font-body text-xs text-muted-foreground truncate">
-                  {item.achievement || "—"} • Sıra: {item.display_order}
+                  {item.achievement || "—"}
                   {!item.is_published && " • Gizli"}
                 </p>
               </div>
@@ -174,9 +182,8 @@ const StudentResultsManager = () => {
                 <Trash2 size={16} />
               </button>
             </div>
-          ))}
-          {!items.length && <p className="text-center text-sm text-muted-foreground py-8">Hələ nəticə yoxdur.</p>}
-        </div>
+          )}
+        />
       )}
     </div>
   );
