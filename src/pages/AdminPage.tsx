@@ -6,6 +6,7 @@ import { LogOut, Download, Users, BarChart3, Megaphone, Newspaper, Image, Video 
 import CampaignManager from "@/components/CampaignManager";
 import NewsManager from "@/components/NewsManager";
 import StudentResultsManager from "@/components/StudentResultsManager";
+import SuccessStoriesManager from "@/components/SuccessStoriesManager";
 import type { Tables } from "@/integrations/supabase/types";
 
 type TabType = "leads" | "events" | "campaigns" | "news" | "results";
