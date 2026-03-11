@@ -37,10 +37,10 @@ const StatsSection = () => {
 
   return (
     <section ref={ref} className="relative overflow-hidden py-32 md:py-44 my-0">
-      {/* Top fade - very long and soft */}
-      <div className="pointer-events-none absolute -top-1 left-0 right-0 z-20 h-40 md:h-56 bg-gradient-to-b from-background via-background/80 to-transparent" />
-      {/* Bottom fade - very long and soft */}
-      <div className="pointer-events-none absolute -bottom-1 left-0 right-0 z-20 h-40 md:h-56 bg-gradient-to-t from-background via-background/80 to-transparent" />
+      {/* Top fade - ultra soft */}
+      <div className="pointer-events-none absolute -top-1 left-0 right-0 z-20 h-52 md:h-72" style={{ background: "linear-gradient(to bottom, hsl(var(--background)) 0%, hsl(var(--background) / 0.85) 25%, hsl(var(--background) / 0.5) 50%, hsl(var(--background) / 0.15) 75%, transparent 100%)" }} />
+      {/* Bottom fade - ultra soft */}
+      <div className="pointer-events-none absolute -bottom-1 left-0 right-0 z-20 h-52 md:h-72" style={{ background: "linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.85) 25%, hsl(var(--background) / 0.5) 50%, hsl(var(--background) / 0.15) 75%, transparent 100%)" }} />
       {/* YouTube Background with parallax */}
       <motion.div className="absolute inset-0 z-0 -top-[15%] -bottom-[15%]" style={{ y: bgY }}>
         <div className="relative w-full h-full flex items-center justify-center">
