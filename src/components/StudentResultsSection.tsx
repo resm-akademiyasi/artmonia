@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState } from "react";
-import { motion, useInView } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
@@ -71,8 +70,6 @@ const ComparisonCard = ({ result }: { result: StudentResult }) => {
 };
 
 const StudentResultsSection = () => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.1 });
   const scrollRef = useRef<HTMLDivElement>(null);
   const [results, setResults] = useState<StudentResult[]>([]);
   const [loading, setLoading] = useState(true);
@@ -130,50 +127,30 @@ const StudentResultsSection = () => {
   const duplicated = [...results, ...results];
 
   return (
-    <section ref={ref} className="section-padding overflow-hidden">
+    <section className="section-padding overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="mx-auto mb-20 max-w-2xl text-center">
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            className="mb-4 font-body text-[11px] tracking-[0.3em] uppercase text-primary"
-          >
+          <p className="mb-4 font-body text-[11px] tracking-[0.3em] uppercase text-primary">
             Nəticələr
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="font-display text-4xl font-bold text-accent md:text-5xl lg:text-6xl"
-          >
+          </p>
+          <h2 className="font-display text-4xl font-bold text-accent md:text-5xl lg:text-6xl">
             Tələbə <span className="italic text-primary">nəticələri</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.3 }}
-            className="mt-4 font-body text-sm text-muted-foreground"
-          >
+          </h2>
+          <p className="mt-4 font-body text-sm text-muted-foreground">
             Kartın üzərinə gəl — əvvəl/sonra fərqini gör
-          </motion.p>
+          </p>
         </div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.8, delay: 0.3 }}
+      <div
+        ref={scrollRef}
+        className="flex gap-6 overflow-x-hidden px-6"
+        style={{ scrollBehavior: "auto" }}
       >
-        <div
-          ref={scrollRef}
-          className="flex gap-6 overflow-x-hidden px-6"
-          style={{ scrollBehavior: "auto" }}
-        >
-          {duplicated.map((result, i) => (
-            <ComparisonCard key={`${result.id}-${i}`} result={result} />
-          ))}
-        </div>
-      </motion.div>
+        {duplicated.map((result, i) => (
+          <ComparisonCard key={`${result.id}-${i}`} result={result} />
+        ))}
+      </div>
 
       <div className="container mx-auto px-6 mt-12 text-center">
         <Link

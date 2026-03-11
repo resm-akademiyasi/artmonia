@@ -1,5 +1,4 @@
-import { motion, useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -13,8 +12,6 @@ interface NewsItem {
 }
 
 const NewsSection = () => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.1 });
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,34 +33,20 @@ const NewsSection = () => {
   if (!news.length) return null;
 
   return (
-    <section ref={ref} className="section-padding bg-gradient-section">
+    <section className="section-padding bg-gradient-section">
       <div className="container mx-auto px-6">
         <div className="mx-auto mb-20 max-w-2xl text-center">
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            className="mb-4 font-body text-[11px] tracking-[0.3em] uppercase text-primary"
-          >
+          <p className="mb-4 font-body text-[11px] tracking-[0.3em] uppercase text-primary">
             Yeniliklər
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="font-display text-4xl font-bold text-accent md:text-5xl lg:text-6xl"
-          >
+          </p>
+          <h2 className="font-display text-4xl font-bold text-accent md:text-5xl lg:text-6xl">
             Son <span className="italic text-primary">xəbərlər</span>
-          </motion.h2>
+          </h2>
         </div>
 
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {news.map((item, i) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.15 + i * 0.08 }}
-            >
+          {news.map((item) => (
+            <div key={item.id}>
               <a
                 href={item.link || "#"}
                 target={item.link ? "_blank" : undefined}
@@ -105,7 +88,7 @@ const NewsSection = () => {
                   </span>
                 </div>
               </a>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
