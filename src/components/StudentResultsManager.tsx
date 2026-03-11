@@ -116,6 +116,13 @@ const StudentResultsManager = () => {
           type="number"
           className="w-full border border-border bg-background px-4 py-3 font-body text-sm rounded-lg outline-none focus:border-primary"
         />
+        <input
+          value={form.duration_months}
+          onChange={(e) => setForm(p => ({ ...p, duration_months: e.target.value }))}
+          placeholder="Müddət (ay, məs: 6)"
+          type="number"
+          className="w-full border border-border bg-background px-4 py-3 font-body text-sm rounded-lg outline-none focus:border-primary"
+        />
         <div className="grid grid-cols-2 gap-4">
           <label className="flex items-center gap-2 cursor-pointer border border-dashed border-border rounded-lg px-4 py-3 hover:border-primary transition-colors">
             <Upload size={16} className="text-muted-foreground" />
