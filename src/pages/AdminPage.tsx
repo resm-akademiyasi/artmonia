@@ -7,6 +7,7 @@ import CampaignManager from "@/components/CampaignManager";
 import NewsManager from "@/components/NewsManager";
 import StudentResultsManager from "@/components/StudentResultsManager";
 import SuccessStoriesManager from "@/components/SuccessStoriesManager";
+import TeachersManager from "@/components/TeachersManager";
 import type { Tables } from "@/integrations/supabase/types";
 
 type TabType = "leads" | "events" | "campaigns" | "news" | "results" | "stories";
