@@ -14,7 +14,6 @@ interface NewsItem {
 const NewsSection = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const sectionRef = useScrollReveal<HTMLElement>();
 
   useEffect(() => {
     const fetchNews = async () => {
