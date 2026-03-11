@@ -66,6 +66,7 @@ const StudentResultsManager = () => {
       before_image_url,
       after_image_url,
       display_order: parseInt(form.display_order) || 0,
+      duration_months: form.duration_months ? parseInt(form.duration_months) : null,
     });
 
     setUploading(false);
