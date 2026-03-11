@@ -63,6 +63,7 @@ const ComparisonCard = ({ result }: { result: StudentResult }) => {
 };
 const StudentResultsSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useScrollReveal<HTMLElement>();
   const [results, setResults] = useState<StudentResult[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -117,8 +118,6 @@ const StudentResultsSection = () => {
 
   // Duplicate for infinite loop
   const duplicated = [...results, ...results];
-
-  const sectionRef = useScrollReveal<HTMLElement>();
 
   return (
     <section ref={sectionRef} className="section-padding overflow-hidden scroll-reveal">
