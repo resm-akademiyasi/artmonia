@@ -1,10 +1,13 @@
 import HeroSection from "@/components/HeroSection";
+import StatsSection from "@/components/StatsSection";
 import ProblemSection from "@/components/ProblemSection";
 import PromiseSection from "@/components/PromiseSection";
+import ProgramsSection from "@/components/ProgramsSection";
+import GallerySection from "@/components/GallerySection";
 import ModulesSection from "@/components/ModulesSection";
+import PricingCards from "@/components/PricingCards";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import FaqSection from "@/components/FaqSection";
-import PricingCards from "@/components/PricingCards";
 import LeadFormSection from "@/components/LeadFormSection";
 import CtaSection from "@/components/CtaSection";
 
@@ -12,8 +15,11 @@ const Index = () => {
   return (
     <main>
       <HeroSection />
+      <StatsSection />
       <ProblemSection />
       <PromiseSection />
+      <ProgramsSection />
+      <GallerySection />
       <ModulesSection />
       <PricingCards />
       <TestimonialsSection />

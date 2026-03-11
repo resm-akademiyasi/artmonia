@@ -63,13 +63,13 @@ const LeadFormSection = () => {
   if (submitted) {
     return (
       <section id="lead-form" className="section-padding">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-lg rounded-sm border border-primary/20 bg-card p-10 text-center gold-glow">
+        <div className="container mx-auto px-6">
+          <div className="mx-auto max-w-lg rounded-xl border border-primary/20 bg-background p-10 text-center shadow-xl">
             <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                 <Send className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="mb-2 font-display text-2xl font-bold">Təşəkkürlər!</h3>
+              <h3 className="mb-2 font-display text-2xl font-bold text-accent">Təşəkkürlər!</h3>
               <p className="mb-6 font-body text-muted-foreground">
                 Qeydiyyatınız qəbul edildi. Daha sürətli cavab almaq üçün WhatsApp-da yazın.
               </p>
@@ -77,7 +77,7 @@ const LeadFormSection = () => {
                 href={getWhatsAppUrl(formData.full_name)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-gradient-gold px-6 py-3 text-sm font-semibold text-primary-foreground rounded-sm transition-transform hover:scale-105"
+                className="inline-flex items-center gap-2 bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground rounded-full transition-transform hover:scale-105"
               >
                 <MessageCircle size={18} />
                 WhatsApp-a keç
@@ -89,81 +89,48 @@ const LeadFormSection = () => {
     );
   }
 
+  const inputClass = "w-full border border-border bg-background px-4 py-3.5 font-body text-sm text-foreground outline-none rounded-lg transition-all focus:border-primary focus:ring-2 focus:ring-primary/10";
+
   return (
     <section ref={ref} id="lead-form" className="section-padding">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7 }}
           className="mx-auto max-w-lg"
         >
-          <p className="mb-4 text-center font-body text-xs tracking-[0.3em] uppercase text-primary">
+          <p className="mb-4 text-center font-body text-[11px] tracking-[0.3em] uppercase text-primary">
             Ön Qeydiyyat
           </p>
-          <h2 className="mb-8 text-center font-display text-3xl font-bold md:text-4xl">
-            Yerini <span className="text-gradient-gold">ayır.</span>
+          <h2 className="mb-10 text-center font-display text-4xl font-bold text-accent md:text-5xl">
+            Yerini <span className="italic text-primary">ayır.</span>
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4 rounded-sm border border-border bg-card p-8">
+          <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-border bg-card p-8 shadow-sm">
             <div>
-              <label className="mb-1 block font-body text-sm text-muted-foreground">Ad, Soyad *</label>
-              <input
-                name="full_name"
-                value={formData.full_name}
-                onChange={handleChange}
-                required
-                maxLength={100}
-                className="w-full border border-border bg-background px-4 py-3 font-body text-sm text-foreground outline-none transition-colors focus:border-primary rounded-sm"
-                placeholder="Adınız"
-              />
+              <label className="mb-1.5 block font-body text-xs tracking-wider uppercase text-muted-foreground">Ad, Soyad *</label>
+              <input name="full_name" value={formData.full_name} onChange={handleChange} required maxLength={100} className={inputClass} placeholder="Adınız" />
             </div>
             <div>
-              <label className="mb-1 block font-body text-sm text-muted-foreground">Telefon *</label>
-              <input
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                maxLength={20}
-                type="tel"
-                className="w-full border border-border bg-background px-4 py-3 font-body text-sm text-foreground outline-none transition-colors focus:border-primary rounded-sm"
-                placeholder="+994 50 111 22 33"
-              />
+              <label className="mb-1.5 block font-body text-xs tracking-wider uppercase text-muted-foreground">Telefon *</label>
+              <input name="phone" value={formData.phone} onChange={handleChange} required maxLength={20} type="tel" className={inputClass} placeholder="+994 50 111 22 33" />
             </div>
             <div>
-              <label className="mb-1 block font-body text-sm text-muted-foreground">Email</label>
-              <input
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                type="email"
-                maxLength={255}
-                className="w-full border border-border bg-background px-4 py-3 font-body text-sm text-foreground outline-none transition-colors focus:border-primary rounded-sm"
-                placeholder="email@nümunə.az"
-              />
+              <label className="mb-1.5 block font-body text-xs tracking-wider uppercase text-muted-foreground">Email</label>
+              <input name="email" value={formData.email} onChange={handleChange} type="email" maxLength={255} className={inputClass} placeholder="email@nümunə.az" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="mb-1 block font-body text-sm text-muted-foreground">Format</label>
-                <select
-                  name="interest"
-                  value={formData.interest}
-                  onChange={handleChange}
-                  className="w-full border border-border bg-background px-4 py-3 font-body text-sm text-foreground outline-none transition-colors focus:border-primary rounded-sm"
-                >
+                <label className="mb-1.5 block font-body text-xs tracking-wider uppercase text-muted-foreground">Format</label>
+                <select name="interest" value={formData.interest} onChange={handleChange} className={inputClass}>
                   <option value="online">Online</option>
                   <option value="offline">Offline</option>
                 </select>
               </div>
               <div>
-                <label className="mb-1 block font-body text-sm text-muted-foreground">Səviyyə</label>
-                <select
-                  name="level"
-                  value={formData.level}
-                  onChange={handleChange}
-                  className="w-full border border-border bg-background px-4 py-3 font-body text-sm text-foreground outline-none transition-colors focus:border-primary rounded-sm"
-                >
+                <label className="mb-1.5 block font-body text-xs tracking-wider uppercase text-muted-foreground">Səviyyə</label>
+                <select name="level" value={formData.level} onChange={handleChange} className={inputClass}>
                   <option value="beginner">Başlayan</option>
                   <option value="intermediate">Orta</option>
                   <option value="advanced">İrəliləmiş</option>
@@ -171,24 +138,16 @@ const LeadFormSection = () => {
               </div>
             </div>
             <div>
-              <label className="mb-1 block font-body text-sm text-muted-foreground">Məqsədin nədir?</label>
-              <textarea
-                name="goal"
-                value={formData.goal}
-                onChange={handleChange}
-                maxLength={500}
-                rows={3}
-                className="w-full resize-none border border-border bg-background px-4 py-3 font-body text-sm text-foreground outline-none transition-colors focus:border-primary rounded-sm"
-                placeholder="Hobim üçün / Peşəkar olmaq istəyirəm..."
-              />
+              <label className="mb-1.5 block font-body text-xs tracking-wider uppercase text-muted-foreground">Məqsədin nədir?</label>
+              <textarea name="goal" value={formData.goal} onChange={handleChange} maxLength={500} rows={3} className={`${inputClass} resize-none`} placeholder="Hobim üçün / Peşəkar olmaq istəyirəm..." />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="group flex w-full items-center justify-center gap-2 bg-gradient-gold py-3 text-sm font-semibold tracking-wide text-primary-foreground rounded-sm transition-all hover:scale-[1.02] disabled:opacity-50"
+              className="group flex w-full items-center justify-center gap-2 bg-primary py-3.5 text-sm font-semibold tracking-wide text-primary-foreground rounded-full transition-all hover:scale-[1.02] hover:shadow-lg disabled:opacity-50"
             >
               {loading ? "Göndərilir..." : "Qeydiyyatdan keç"}
-              <Send size={16} className="transition-transform group-hover:translate-x-1" />
+              <Send size={15} className="transition-transform group-hover:translate-x-1" />
             </button>
           </form>
         </motion.div>

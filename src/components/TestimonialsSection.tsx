@@ -16,12 +16,12 @@ const TestimonialsSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding">
-      <div className="container mx-auto px-4">
+    <section ref={ref} className="section-padding bg-gradient-section">
+      <div className="container mx-auto px-6">
         <motion.p
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
-          className="mb-4 text-center font-body text-xs tracking-[0.3em] uppercase text-primary"
+          className="mb-4 text-center font-body text-[11px] tracking-[0.3em] uppercase text-primary"
         >
           Nəticələr
         </motion.p>
@@ -29,9 +29,9 @@ const TestimonialsSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.1 }}
-          className="mb-16 text-center font-display text-3xl font-bold md:text-5xl"
+          className="mb-20 text-center font-display text-4xl font-bold text-accent md:text-5xl"
         >
-          Onlar artıq <span className="text-gradient-gold">nəticə aldı.</span>
+          Onlar artıq <span className="italic text-primary">nəticə aldı.</span>
         </motion.h2>
 
         <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -41,16 +41,16 @@ const TestimonialsSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.2 + i * 0.08 }}
-              className="rounded-sm border border-border bg-card p-6 transition-all hover:border-primary/20"
+              className="rounded-xl border border-border bg-background p-7 transition-all hover:border-primary/20 hover:shadow-lg"
             >
-              <div className="mb-3 flex gap-1">
+              <div className="mb-4 flex gap-1">
                 {[...Array(5)].map((_, s) => (
-                  <Star key={s} size={14} className="fill-primary text-primary" />
+                  <Star key={s} size={13} className="fill-primary text-primary" />
                 ))}
               </div>
-              <p className="mb-4 font-body text-sm leading-relaxed text-muted-foreground">"{t.text}"</p>
+              <p className="mb-5 font-body text-sm leading-relaxed text-muted-foreground">"{t.text}"</p>
               <div>
-                <p className="font-body text-sm font-semibold">{t.name}</p>
+                <p className="font-body text-sm font-semibold text-accent">{t.name}</p>
                 <p className="font-body text-xs text-muted-foreground">{t.role}</p>
               </div>
             </motion.div>
