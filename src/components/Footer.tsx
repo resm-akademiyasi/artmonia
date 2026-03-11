@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { BRAND } from "@/lib/whatsapp";
-import logoImg from "@/assets/logo-dark.png";
+import logoImg from "@/assets/logo-transparent.png";
 
 const Footer = () => {
   return (
