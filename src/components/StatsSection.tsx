@@ -36,21 +36,23 @@ const StatsSection = () => {
   const youtubeId = "5BviDLRa67U";
 
   return (
-    <section ref={ref} className="relative overflow-hidden py-20 md:py-28 my-0">
-      {/* Top fade */}
-      <div className="pointer-events-none absolute -top-1 left-0 right-0 z-20 h-24 bg-gradient-to-b from-background to-transparent" />
-      {/* Bottom fade */}
-      <div className="pointer-events-none absolute -bottom-1 left-0 right-0 z-20 h-24 bg-gradient-to-t from-background to-transparent" />
+    <section ref={ref} className="relative overflow-hidden py-14 md:py-20 my-0">
+      {/* Top fade - very long and soft */}
+      <div className="pointer-events-none absolute -top-1 left-0 right-0 z-20 h-40 md:h-56 bg-gradient-to-b from-background via-background/80 to-transparent" />
+      {/* Bottom fade - very long and soft */}
+      <div className="pointer-events-none absolute -bottom-1 left-0 right-0 z-20 h-40 md:h-56 bg-gradient-to-t from-background via-background/80 to-transparent" />
       {/* YouTube Background with parallax */}
-      <motion.div className="absolute inset-0 z-0 -top-[20%] -bottom-[20%]" style={{ y: bgY }}>
-        <iframe
-          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&playsinline=1`}
-          className="absolute top-1/2 left-1/2 w-[180%] h-[180%] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-          style={{ border: 0 }}
-          title="Artmoniya təqdimat videosu"
-        />
+      <motion.div className="absolute inset-0 z-0 -top-[15%] -bottom-[15%]" style={{ y: bgY }}>
+        <div className="relative w-full h-full flex items-center justify-center">
+          <iframe
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&playsinline=1`}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ border: 0, width: "177.78vh", height: "100vh", minWidth: "100%", minHeight: "56.25vw" }}
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            title="Artmoniya təqdimat videosu"
+          />
+        </div>
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-accent/60 backdrop-blur-[2px]" />
       </motion.div>
