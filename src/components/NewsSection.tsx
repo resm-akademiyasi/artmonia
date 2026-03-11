@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 interface NewsItem {
   id: string;
