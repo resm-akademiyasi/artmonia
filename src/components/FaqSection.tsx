@@ -24,12 +24,12 @@ const FaqSection = () => {
 
   return (
     <section ref={ref} id="faq" className="section-padding bg-gradient-section">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6">
         <div className="mx-auto max-w-3xl">
           <motion.p
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
-            className="mb-4 text-center font-body text-xs tracking-[0.3em] uppercase text-primary"
+            className="mb-4 text-center font-body text-[11px] tracking-[0.3em] uppercase text-primary"
           >
             FAQ
           </motion.p>
@@ -37,9 +37,9 @@ const FaqSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="mb-16 text-center font-display text-3xl font-bold md:text-5xl"
+            className="mb-16 text-center font-display text-4xl font-bold text-accent md:text-5xl"
           >
-            Tez-tez verilən <span className="text-gradient-gold">suallar</span>
+            Tez-tez verilən <span className="italic text-primary">suallar</span>
           </motion.h2>
 
           <Accordion type="single" collapsible className="space-y-2">
@@ -51,7 +51,7 @@ const FaqSection = () => {
                 transition={{ duration: 0.4, delay: 0.2 + i * 0.05 }}
               >
                 <AccordionItem value={`item-${i}`} className="border-border">
-                  <AccordionTrigger className="font-body text-left text-base hover:text-primary hover:no-underline">
+                  <AccordionTrigger className="font-body text-left text-base text-accent hover:text-primary hover:no-underline">
                     {f.q}
                   </AccordionTrigger>
                   <AccordionContent className="font-body text-muted-foreground leading-relaxed">

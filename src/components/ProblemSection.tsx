@@ -1,9 +1,8 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 const problems = [
-  "YouTube-dan öyrənirsən, amma struktur yoxdur.",
+  "YouTube-dan öyrənirsən, amma sistem yoxdur.",
   "Başlayırsan, yarımçıq qoyursan.",
   "Feedback almırsan — səhvlərini görmürsən.",
   "Nə vaxt keçid etməli olduğunu bilmirsən.",
@@ -14,14 +13,14 @@ const ProblemSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding bg-gradient-section">
-      <div className="container mx-auto px-4">
+    <section ref={ref} className="section-padding">
+      <div className="container mx-auto px-6">
         <div className="mx-auto max-w-3xl">
           <motion.p
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.6 }}
-            className="mb-4 font-body text-xs tracking-[0.3em] uppercase text-primary"
+            className="mb-4 font-body text-[11px] tracking-[0.3em] uppercase text-primary"
           >
             Problem
           </motion.p>
@@ -29,7 +28,7 @@ const ProblemSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="mb-12 font-display text-3xl font-bold md:text-5xl"
+            className="mb-14 font-display text-4xl font-bold text-accent md:text-5xl"
           >
             Tanış gəlir?
           </motion.h2>
@@ -41,7 +40,7 @@ const ProblemSection = () => {
                 initial={{ opacity: 0, x: -30 }}
                 animate={inView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.2 + i * 0.1 }}
-                className="flex items-start gap-4 border-l-2 border-primary/30 pl-6 py-2"
+                className="flex items-start gap-4 border-l-2 border-primary/30 pl-6 py-3"
               >
                 <p className="font-body text-lg text-muted-foreground md:text-xl">{p}</p>
               </motion.div>

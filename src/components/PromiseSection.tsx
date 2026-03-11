@@ -14,13 +14,13 @@ const PromiseSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding">
-      <div className="container mx-auto px-4">
+    <section ref={ref} className="section-padding bg-gradient-section">
+      <div className="container mx-auto px-6">
         <div className="mx-auto max-w-4xl text-center">
           <motion.p
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
-            className="mb-4 font-body text-xs tracking-[0.3em] uppercase text-primary"
+            className="mb-4 font-body text-[11px] tracking-[0.3em] uppercase text-primary"
           >
             Transformasiya
           </motion.p>
@@ -28,9 +28,9 @@ const PromiseSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="mb-16 font-display text-3xl font-bold md:text-5xl"
+            className="mb-20 font-display text-4xl font-bold text-accent md:text-5xl"
           >
-            Proqram sənə <span className="text-gradient-gold">nə verir?</span>
+            Proqram sənə <span className="italic text-primary">nə verir?</span>
           </motion.h2>
 
           <div className="grid gap-8 md:grid-cols-2">
@@ -40,11 +40,13 @@ const PromiseSection = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.2 + i * 0.1 }}
-                className="group rounded-sm border border-border bg-card p-8 text-left transition-all hover:border-primary/30 hover:gold-glow"
+                className="group rounded-xl border border-border bg-background p-8 text-left transition-all hover:border-primary/20 hover:shadow-lg"
               >
-                <p.icon className="mb-4 h-8 w-8 text-primary" />
-                <h3 className="mb-2 font-display text-xl font-semibold">{p.title}</h3>
-                <p className="font-body text-muted-foreground leading-relaxed">{p.desc}</p>
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                  <p.icon className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="mb-2 font-display text-2xl font-semibold text-accent">{p.title}</h3>
+                <p className="font-body text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
               </motion.div>
             ))}
           </div>
