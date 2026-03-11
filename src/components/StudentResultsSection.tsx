@@ -2,7 +2,6 @@ import { useRef, useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
-import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 interface StudentResult {
   id: string;
@@ -63,7 +62,6 @@ const ComparisonCard = ({ result }: { result: StudentResult }) => {
 };
 const StudentResultsSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useScrollReveal<HTMLElement>();
   const [results, setResults] = useState<StudentResult[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -120,7 +118,7 @@ const StudentResultsSection = () => {
   const duplicated = [...results, ...results];
 
   return (
-    <section ref={sectionRef} className="section-padding overflow-hidden scroll-reveal">
+    <section className="section-padding overflow-hidden animate-fade-in">
       <div className="container mx-auto px-6">
         <div className="mx-auto mb-20 max-w-2xl text-center">
           <p className="mb-4 font-body text-[11px] tracking-[0.3em] uppercase text-primary">

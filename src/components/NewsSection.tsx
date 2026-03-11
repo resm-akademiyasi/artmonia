@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 interface NewsItem {
   id: string;
@@ -15,7 +14,6 @@ interface NewsItem {
 const NewsSection = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const sectionRef = useScrollReveal<HTMLElement>();
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -35,7 +33,7 @@ const NewsSection = () => {
   if (!news.length) return null;
 
   return (
-    <section ref={sectionRef} className="section-padding bg-gradient-section scroll-reveal">
+    <section className="section-padding bg-gradient-section animate-fade-in">
       <div className="container mx-auto px-6">
         <div className="mx-auto mb-20 max-w-2xl text-center">
           <p className="mb-4 font-body text-[11px] tracking-[0.3em] uppercase text-primary">
