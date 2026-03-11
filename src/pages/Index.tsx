@@ -17,6 +17,7 @@ import BrushStrokes from "@/components/BrushStrokes";
 const Index = () => {
   return (
     <main className="relative">
+      <BrushStrokes />
       <HeroSection />
       <StatsSection />
       <ProblemSection />
