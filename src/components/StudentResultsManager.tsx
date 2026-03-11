@@ -19,7 +19,7 @@ const StudentResultsManager = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
-  const [form, setForm] = useState({ student_name: "", achievement: "", display_order: "0" });
+  const [form, setForm] = useState({ student_name: "", achievement: "", display_order: "0", duration_months: "" });
   const [beforeFile, setBeforeFile] = useState<File | null>(null);
   const [afterFile, setAfterFile] = useState<File | null>(null);
 
@@ -66,6 +66,7 @@ const StudentResultsManager = () => {
       before_image_url,
       after_image_url,
       display_order: parseInt(form.display_order) || 0,
+      duration_months: form.duration_months ? parseInt(form.duration_months) : null,
     });
 
     setUploading(false);
@@ -75,7 +76,7 @@ const StudentResultsManager = () => {
     }
 
     toast({ title: "Nəticə əlavə edildi!" });
-    setForm({ student_name: "", achievement: "", display_order: "0" });
+    setForm({ student_name: "", achievement: "", display_order: "0", duration_months: "" });
     setBeforeFile(null);
     setAfterFile(null);
     fetchResults();
@@ -113,6 +114,13 @@ const StudentResultsManager = () => {
           value={form.display_order}
           onChange={(e) => setForm(p => ({ ...p, display_order: e.target.value }))}
           placeholder="Sıra (0, 1, 2...)"
+          type="number"
+          className="w-full border border-border bg-background px-4 py-3 font-body text-sm rounded-lg outline-none focus:border-primary"
+        />
+        <input
+          value={form.duration_months}
+          onChange={(e) => setForm(p => ({ ...p, duration_months: e.target.value }))}
+          placeholder="Müddət (ay, məs: 6)"
           type="number"
           className="w-full border border-border bg-background px-4 py-3 font-body text-sm rounded-lg outline-none focus:border-primary"
         />

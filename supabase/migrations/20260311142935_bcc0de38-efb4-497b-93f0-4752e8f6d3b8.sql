@@ -1,0 +1,1 @@
+ALTER TABLE public.student_results ADD COLUMN duration_months integer NULL;

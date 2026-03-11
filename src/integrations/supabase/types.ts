@@ -177,6 +177,7 @@ export type Database = {
           before_image_url: string | null
           created_at: string
           display_order: number
+          duration_months: number | null
           id: string
           is_published: boolean
           student_name: string
@@ -187,6 +188,7 @@ export type Database = {
           before_image_url?: string | null
           created_at?: string
           display_order?: number
+          duration_months?: number | null
           id?: string
           is_published?: boolean
           student_name: string
@@ -197,6 +199,7 @@ export type Database = {
           before_image_url?: string | null
           created_at?: string
           display_order?: number
+          duration_months?: number | null
           id?: string
           is_published?: boolean
           student_name?: string
