@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { ArrowRight, ChevronRight } from "lucide-react";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 
