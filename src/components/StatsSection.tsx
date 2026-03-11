@@ -61,6 +61,10 @@ const StatsSection = () => {
         </div>
         {/* Light overlay for text readability */}
         <div className="absolute inset-0 bg-accent/20" />
+        {/* Left edge fade - hides black bar */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-40 md:w-56" style={{ background: "linear-gradient(to right, hsl(var(--accent)) 0%, hsl(var(--accent) / 0.7) 30%, hsl(var(--accent) / 0.3) 60%, transparent 100%)" }} />
+        {/* Right edge fade - hides black bar */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-40 md:w-56" style={{ background: "linear-gradient(to left, hsl(var(--accent)) 0%, hsl(var(--accent) / 0.7) 30%, hsl(var(--accent) / 0.3) 60%, transparent 100%)" }} />
       </motion.div>
 
       {/* Stats on top */}
