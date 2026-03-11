@@ -1,5 +1,5 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { useRef, useState } from "react";
 import artwork1 from "@/assets/artwork-1.jpg";
 import artwork2 from "@/assets/artwork-2.jpg";
 import artwork4 from "@/assets/artwork-4.jpg";
@@ -13,6 +13,120 @@ const interiorPhotos = [
   { src: artwork5, title: "Material guşəsi", category: "Resurslar" },
   { src: artwork6, title: "Giriş", category: "Lobby" },
 ];
+
+const TiltCard = ({
+  photo,
+  index,
+  inView,
+  isLarge,
+}: {
+  photo: (typeof interiorPhotos)[0];
+  index: number;
+  inView: boolean;
+  isLarge: boolean;
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [hovered, setHovered] = useState(false);
+
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [8, -8]), { stiffness: 200, damping: 20 });
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-8, 8]), { stiffness: 200, damping: 20 });
+  const scale = useSpring(hovered ? 1.03 : 1, { stiffness: 300, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    x.set((e.clientX - rect.left) / rect.width - 0.5);
+    y.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40, rotateX: 5 }}
+      animate={inView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
+      transition={{ duration: 0.7, delay: 0.15 + index * 0.1 }}
+      className={`${isLarge ? "md:row-span-2" : ""}`}
+      style={{ perspective: 800 }}
+    >
+      <motion.div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          rotateX,
+          rotateY,
+          scale,
+          transformStyle: "preserve-3d",
+        }}
+        className="group relative overflow-hidden rounded-2xl cursor-pointer h-full"
+      >
+        {/* Image */}
+        <motion.img
+          src={photo.src}
+          alt={photo.title}
+          className="h-full w-full object-cover"
+          style={{
+            minHeight: isLarge ? "100%" : "240px",
+            maxHeight: isLarge ? "none" : "320px",
+          }}
+          animate={{ scale: hovered ? 1.08 : 1 }}
+          transition={{ duration: 0.6 }}
+        />
+
+        {/* Shine / glare effect */}
+        <motion.div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: useTransform(
+              x,
+              [-0.5, 0, 0.5],
+              [
+                "linear-gradient(105deg, rgba(255,255,255,0.15) 0%, transparent 50%)",
+                "linear-gradient(105deg, transparent 0%, transparent 100%)",
+                "linear-gradient(255deg, rgba(255,255,255,0.15) 0%, transparent 50%)",
+              ]
+            ),
+          }}
+        />
+
+        {/* Bottom gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-accent/70 via-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+
+        {/* Floating label with 3D translateZ */}
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 p-5"
+          style={{ transform: "translateZ(30px)" }}
+          initial={false}
+          animate={{
+            y: hovered ? 0 : 20,
+            opacity: hovered ? 1 : 0,
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          <p className="font-body text-[10px] tracking-[0.25em] uppercase text-primary drop-shadow-lg">
+            {photo.category}
+          </p>
+          <p className="font-display text-xl font-semibold text-primary-foreground drop-shadow-lg">
+            {photo.title}
+          </p>
+        </motion.div>
+
+        {/* Corner accent */}
+        <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-primary/0 group-hover:border-primary/60 transition-all duration-500 rounded-tr-lg" />
+        <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-primary/0 group-hover:border-primary/60 transition-all duration-500 rounded-bl-lg" />
+      </motion.div>
+    </motion.div>
+  );
+};
 
 const GallerySection = () => {
   const ref = useRef(null);
@@ -49,29 +163,13 @@ const GallerySection = () => {
 
         <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3 md:grid-rows-2">
           {interiorPhotos.map((photo, i) => (
-            <motion.div
+            <TiltCard
               key={i}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.15 + i * 0.08 }}
-              className={`group relative overflow-hidden rounded-lg ${
-                i === 0 ? "md:row-span-2" : ""
-              }`}
-            >
-              <img
-                src={photo.src}
-                alt={photo.title}
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                style={{ minHeight: i === 0 ? "100%" : "240px", maxHeight: i === 0 ? "none" : "320px" }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-accent/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-full transition-transform duration-300 group-hover:translate-y-0">
-                <p className="font-body text-[10px] tracking-[0.2em] uppercase text-primary">
-                  {photo.category}
-                </p>
-                <p className="font-display text-xl font-semibold text-primary-foreground">{photo.title}</p>
-              </div>
-            </motion.div>
+              photo={photo}
+              index={i}
+              inView={inView}
+              isLarge={i === 0}
+            />
           ))}
         </div>
       </div>
