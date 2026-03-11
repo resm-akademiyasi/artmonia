@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState } from "react";
-import { motion, useInView } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
