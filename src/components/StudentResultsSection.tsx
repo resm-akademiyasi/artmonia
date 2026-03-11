@@ -70,8 +70,6 @@ const ComparisonCard = ({ result }: { result: StudentResult }) => {
 };
 
 const StudentResultsSection = () => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.1 });
   const scrollRef = useRef<HTMLDivElement>(null);
   const [results, setResults] = useState<StudentResult[]>([]);
   const [loading, setLoading] = useState(true);
