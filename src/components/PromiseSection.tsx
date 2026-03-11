@@ -9,16 +9,16 @@ const promises = [
   { icon: Award, title: "Portfolyo qurulur", desc: "Kurs sonunda göstərə biləcəyin işlər olur." },
 ];
 
-// SVG brush stroke paths for each corner style
+// Longer, more organic brush stroke paths with variation
 const brushStrokes = [
-  // Top-left + bottom-right corners
-  `M 8 40 Q 4 4 40 8`,
-  // Top-right corner
-  `M 260 8 Q 296 4 292 40`,
-  // Bottom-left corner  
-  `M 8 260 Q 4 296 40 292`,
-  // Bottom-right corner
-  `M 260 292 Q 296 296 292 260`,
+  // Top edge - thick sweeping stroke
+  `M 2 12 C 15 3, 40 8, 70 5 S 120 10, 160 4 S 220 9, 260 6 S 285 3, 298 10`,
+  // Right edge - dripping downward
+  `M 292 6 C 297 20, 290 50, 295 80 S 288 130, 293 170 S 296 220, 290 260 S 295 280, 292 296`,
+  // Bottom edge - rough sweep
+  `M 296 290 C 280 298, 250 288, 210 295 S 150 290, 110 296 S 60 288, 30 294 S 10 298, 4 292`,
+  // Left edge - organic crawl
+  `M 8 296 C 3 275, 10 245, 5 210 S 8 170, 4 130 S 10 80, 6 50 S 3 25, 8 6`,
 ];
 
 const PromiseCard = ({
