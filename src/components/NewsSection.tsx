@@ -15,6 +15,7 @@ interface NewsItem {
 const NewsSection = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const sectionRef = useScrollReveal<HTMLElement>();
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -32,8 +33,6 @@ const NewsSection = () => {
 
   if (loading) return null;
   if (!news.length) return null;
-
-  const sectionRef = useScrollReveal<HTMLElement>();
 
   return (
     <section ref={sectionRef} className="section-padding bg-gradient-section scroll-reveal">
