@@ -163,6 +163,7 @@ const AdminPage = () => {
         {tab === "campaigns" && <CampaignManager />}
         {tab === "news" && <NewsManager />}
         {tab === "results" && <StudentResultsManager />}
+        {tab === "stories" && <SuccessStoriesManager />}
         {tab === "leads" && (
           <div className="overflow-x-auto rounded-xl border border-border">
             <table className="w-full text-left font-body text-sm">
