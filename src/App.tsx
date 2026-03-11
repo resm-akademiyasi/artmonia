@@ -19,6 +19,7 @@ import AdminPage from "./pages/AdminPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ResultsPage from "./pages/ResultsPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
+import StoriesPage from "./pages/StoriesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
