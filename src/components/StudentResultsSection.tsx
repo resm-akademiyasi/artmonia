@@ -62,7 +62,6 @@ const ComparisonCard = ({ result }: { result: StudentResult }) => {
 };
 const StudentResultsSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useScrollReveal<HTMLElement>();
   const [results, setResults] = useState<StudentResult[]>([]);
   const [loading, setLoading] = useState(true);
 
