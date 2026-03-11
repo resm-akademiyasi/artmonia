@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 interface NewsItem {
   id: string;
@@ -47,10 +48,8 @@ const NewsSection = () => {
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3">
           {news.map((item) => (
             <div key={item.id}>
-              <a
-                href={item.link || "#"}
-                target={item.link ? "_blank" : undefined}
-                rel={item.link ? "noopener noreferrer" : undefined}
+              <Link
+                to={`/news/${item.id}`}
                 className="group block overflow-hidden rounded-2xl border border-border bg-background transition-all duration-300 hover:border-primary/20 hover:shadow-xl"
               >
                 {item.image_url && (
@@ -80,14 +79,10 @@ const NewsSection = () => {
                   )}
                   <span className="inline-flex items-center gap-1.5 font-body text-xs font-semibold tracking-wider uppercase text-primary">
                     Ətraflı
-                    {item.link ? (
-                      <ExternalLink size={12} className="transition-transform group-hover:translate-x-0.5" />
-                    ) : (
-                      <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
-                    )}
+                    <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
                   </span>
                 </div>
-              </a>
+              </Link>
             </div>
           ))}
         </div>
