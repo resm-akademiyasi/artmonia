@@ -36,7 +36,7 @@ const StatsSection = () => {
   const youtubeId = "5BviDLRa67U";
 
   return (
-    <section ref={ref} className="relative overflow-hidden py-14 md:py-20 my-0">
+    <section ref={ref} className="relative overflow-hidden py-32 md:py-44 my-0">
       {/* Top fade - very long and soft */}
       <div className="pointer-events-none absolute -top-1 left-0 right-0 z-20 h-40 md:h-56 bg-gradient-to-b from-background via-background/80 to-transparent" />
       {/* Bottom fade - very long and soft */}
@@ -53,8 +53,8 @@ const StatsSection = () => {
             title="Artmoniya təqdimat videosu"
           />
         </div>
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-accent/35" />
+        {/* Light overlay for text readability */}
+        <div className="absolute inset-0 bg-accent/20" />
       </motion.div>
 
       {/* Stats on top */}
