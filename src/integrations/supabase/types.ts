@@ -206,6 +206,39 @@ export type Database = {
         }
         Relationships: []
       }
+      success_stories: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          is_published: boolean
+          student_name: string
+          testimonial: string
+          thumbnail_url: string | null
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_published?: boolean
+          student_name: string
+          testimonial: string
+          thumbnail_url?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_published?: boolean
+          student_name?: string
+          testimonial?: string
+          thumbnail_url?: string | null
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
