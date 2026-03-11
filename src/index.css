@@ -159,15 +159,22 @@
 
 html {
   scroll-behavior: smooth;
-  cursor: url("/brush-cursor.png") 4 28, auto;
-  cursor: image-set(url("/brush-cursor.png") 1x) 4 28, auto;
+  cursor: none !important;
 }
 
 *, *::before, *::after {
-  cursor: inherit;
+  cursor: none !important;
 }
 
-a, button, [role="button"], input, select, textarea, label, summary {
-  cursor: url("/brush-cursor.png") 4 28, pointer;
-  cursor: image-set(url("/brush-cursor.png") 1x) 4 28, pointer;
+.custom-brush-cursor {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-4px, -32px);
+  background-image: url("/brush-cursor.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 0.05s ease-out;
 }
