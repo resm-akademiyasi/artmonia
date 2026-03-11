@@ -140,6 +140,69 @@ export type Database = {
         }
         Relationships: []
       }
+      news: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_published: boolean
+          link: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          link?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          link?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      student_results: {
+        Row: {
+          achievement: string | null
+          after_image_url: string | null
+          before_image_url: string | null
+          created_at: string
+          display_order: number
+          id: string
+          is_published: boolean
+          student_name: string
+        }
+        Insert: {
+          achievement?: string | null
+          after_image_url?: string | null
+          before_image_url?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_published?: boolean
+          student_name: string
+        }
+        Update: {
+          achievement?: string | null
+          after_image_url?: string | null
+          before_image_url?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_published?: boolean
+          student_name?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
