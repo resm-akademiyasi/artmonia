@@ -16,6 +16,7 @@ import PrivacyPage from "./pages/PrivacyPage";
 import GoPage from "./pages/GoPage";
 import AuthPage from "./pages/AuthPage";
 import AdminPage from "./pages/AdminPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
