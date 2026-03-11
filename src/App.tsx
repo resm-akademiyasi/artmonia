@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import BrushCursor from "@/components/BrushCursor";
 import CampaignBanner from "@/components/CampaignBanner";
 import Index from "./pages/Index";
 import ProgramPage from "./pages/ProgramPage";
