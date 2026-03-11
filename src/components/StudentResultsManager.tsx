@@ -76,7 +76,7 @@ const StudentResultsManager = () => {
     }
 
     toast({ title: "Nəticə əlavə edildi!" });
-    setForm({ student_name: "", achievement: "", display_order: "0" });
+    setForm({ student_name: "", achievement: "", display_order: "0", duration_months: "" });
     setBeforeFile(null);
     setAfterFile(null);
     fetchResults();

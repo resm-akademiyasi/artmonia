@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 
@@ -10,12 +10,13 @@ interface StudentResult {
   before_image_url: string | null;
   after_image_url: string | null;
   display_order: number;
+  duration_months: number | null;
 }
 
-const ComparisonCard = ({ result }: { result: StudentResult }) => {
+export const ComparisonCard = ({ result }: { result: StudentResult }) => {
   return (
     <div className="flex-shrink-0 w-[340px] md:w-[400px]">
-      <div className="overflow-hidden rounded-2xl border border-border bg-muted">
+      <div className="overflow-hidden rounded-2xl border border-border bg-muted relative">
         <div className="grid grid-cols-2">
           {/* Before */}
           <div className="relative aspect-[3/4]">
@@ -48,6 +49,24 @@ const ComparisonCard = ({ result }: { result: StudentResult }) => {
             </div>
           </div>
         </div>
+
+        {/* Center Arrow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+          <div className="w-10 h-10 rounded-full bg-primary shadow-lg flex items-center justify-center border-2 border-white">
+            <ChevronRight size={20} className="text-white" />
+          </div>
+        </div>
+
+        {/* Duration Badge */}
+        {result.duration_months && (
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10">
+            <div className="bg-accent/90 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/20 shadow-lg">
+              <p className="font-display text-[11px] font-bold tracking-[0.1em] text-white whitespace-nowrap">
+                {result.duration_months} ay
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Info */}
@@ -60,6 +79,7 @@ const ComparisonCard = ({ result }: { result: StudentResult }) => {
     </div>
   );
 };
+
 const StudentResultsSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [results, setResults] = useState<StudentResult[]>([]);
@@ -72,7 +92,7 @@ const StudentResultsSection = () => {
         .select("*")
         .eq("is_published", true)
         .order("display_order", { ascending: true });
-      if (data) setResults(data);
+      if (data) setResults(data as unknown as StudentResult[]);
       setLoading(false);
     };
     fetchResults();
@@ -145,7 +165,7 @@ const StudentResultsSection = () => {
 
       <div className="container mx-auto px-6 mt-12 text-center">
         <Link
-          to="/about"
+          to="/results"
           className="group inline-flex items-center gap-2 font-body text-sm font-semibold tracking-wider uppercase text-primary hover:text-accent transition-colors"
         >
           Bütün nəticələri gör
