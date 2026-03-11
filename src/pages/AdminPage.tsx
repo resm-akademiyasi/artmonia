@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Download, Users, BarChart3, Megaphone, Newspaper, Image, Video } from "lucide-react";
+import { LogOut, Download, Users, BarChart3, Megaphone, Newspaper, Image, Video, GraduationCap } from "lucide-react";
 import CampaignManager from "@/components/CampaignManager";
 import NewsManager from "@/components/NewsManager";
 import StudentResultsManager from "@/components/StudentResultsManager";
 import SuccessStoriesManager from "@/components/SuccessStoriesManager";
+import TeachersManager from "@/components/TeachersManager";
 import type { Tables } from "@/integrations/supabase/types";
 
-type TabType = "leads" | "events" | "campaigns" | "news" | "results" | "stories";
+type TabType = "leads" | "events" | "campaigns" | "news" | "results" | "stories" | "teachers";
 
 const AdminPage = () => {
   const [leads, setLeads] = useState<Tables<"leads">[]>([]);
@@ -97,6 +98,7 @@ const AdminPage = () => {
     { key: "news", label: "Xəbərlər", icon: <Newspaper size={14} /> },
     { key: "results", label: "Nəticələr", icon: <Image size={14} /> },
     { key: "stories", label: "Hekayələr", icon: <Video size={14} /> },
+    { key: "teachers", label: "Müəllimlər", icon: <GraduationCap size={14} /> },
   ];
 
   return (
@@ -164,6 +166,7 @@ const AdminPage = () => {
         {tab === "news" && <NewsManager />}
         {tab === "results" && <StudentResultsManager />}
         {tab === "stories" && <SuccessStoriesManager />}
+        {tab === "teachers" && <TeachersManager />}
         {tab === "leads" && (
           <div className="overflow-x-auto rounded-xl border border-border">
             <table className="w-full text-left font-body text-sm">

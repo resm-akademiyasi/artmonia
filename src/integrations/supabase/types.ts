@@ -239,6 +239,42 @@ export type Database = {
         }
         Relationships: []
       }
+      teachers: {
+        Row: {
+          bio: string | null
+          created_at: string
+          display_order: number
+          full_name: string
+          id: string
+          is_published: boolean
+          photo_url: string | null
+          specialties: string[] | null
+          title: string | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          display_order?: number
+          full_name: string
+          id?: string
+          is_published?: boolean
+          photo_url?: string | null
+          specialties?: string[] | null
+          title?: string | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          display_order?: number
+          full_name?: string
+          id?: string
+          is_published?: boolean
+          photo_url?: string | null
+          specialties?: string[] | null
+          title?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
