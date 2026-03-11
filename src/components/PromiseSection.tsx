@@ -9,16 +9,16 @@ const promises = [
   { icon: Award, title: "Portfolyo qurulur", desc: "Kurs sonunda göstərə biləcəyin işlər olur." },
 ];
 
-// Longer, more organic brush stroke paths with variation
+// SVG brush stroke paths for each corner style
 const brushStrokes = [
-  // Top edge - thick sweeping stroke
-  `M 2 12 C 15 3, 40 8, 70 5 S 120 10, 160 4 S 220 9, 260 6 S 285 3, 298 10`,
-  // Right edge - dripping downward
-  `M 292 6 C 297 20, 290 50, 295 80 S 288 130, 293 170 S 296 220, 290 260 S 295 280, 292 296`,
-  // Bottom edge - rough sweep
-  `M 296 290 C 280 298, 250 288, 210 295 S 150 290, 110 296 S 60 288, 30 294 S 10 298, 4 292`,
-  // Left edge - organic crawl
-  `M 8 296 C 3 275, 10 245, 5 210 S 8 170, 4 130 S 10 80, 6 50 S 3 25, 8 6`,
+  // Top-left + bottom-right corners
+  `M 8 40 Q 4 4 40 8`,
+  // Top-right corner
+  `M 260 8 Q 296 4 292 40`,
+  // Bottom-left corner  
+  `M 8 260 Q 4 296 40 292`,
+  // Bottom-right corner
+  `M 260 292 Q 296 296 292 260`,
 ];
 
 const PromiseCard = ({
@@ -72,7 +72,7 @@ const PromiseCard = ({
       >
         {/* Brush stroke SVG borders */}
         <svg
-          className="absolute -inset-3 pointer-events-none"
+          className="absolute inset-0 w-full h-full pointer-events-none"
           viewBox="0 0 300 300"
           preserveAspectRatio="none"
           fill="none"
@@ -80,86 +80,58 @@ const PromiseCard = ({
         >
           {brushStrokes.map((d, i) => (
             <motion.path
-              key={`main-${i}`}
+              key={i}
               d={d}
               stroke="hsl(var(--primary))"
-              strokeWidth={hovered ? 5.5 : 0}
+              strokeWidth={hovered ? 3 : 0}
               strokeLinecap="round"
               strokeLinejoin="round"
               fill="none"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{
                 pathLength: hovered ? 1 : 0,
-                opacity: hovered ? 0.85 : 0,
+                opacity: hovered ? 0.7 : 0,
               }}
               transition={{
-                pathLength: { duration: 0.5, delay: i * 0.1 },
-                opacity: { duration: 0.15, delay: i * 0.1 },
+                pathLength: { duration: 0.4, delay: i * 0.08 },
+                opacity: { duration: 0.2, delay: i * 0.08 },
               }}
-              style={{ filter: `url(#brush-${index})` }}
+              style={{
+                filter: "url(#brush-texture)",
+              }}
             />
           ))}
-          {/* Secondary thinner strokes offset for depth */}
-          {brushStrokes.map((d, i) => (
-            <motion.path
-              key={`shadow-${i}`}
-              d={d}
-              stroke="hsl(var(--primary))"
-              strokeWidth={hovered ? 8 : 0}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{
-                pathLength: hovered ? 1 : 0,
-                opacity: hovered ? 0.15 : 0,
-              }}
-              transition={{
-                pathLength: { duration: 0.5, delay: i * 0.1 },
-                opacity: { duration: 0.15, delay: i * 0.1 },
-              }}
-              style={{ filter: `url(#brush-${index})` }}
-            />
-          ))}
-          {/* Corner splatter accents */}
+          {/* Extra decorative splatter strokes */}
           <motion.path
-            d="M 15 15 C 25 5, 45 12, 65 8 Q 80 3, 95 10"
+            d="M 20 20 Q 30 10 50 18 Q 70 6 80 15"
             stroke="hsl(var(--secondary))"
-            strokeWidth={hovered ? 3.5 : 0}
+            strokeWidth={hovered ? 2 : 0}
             strokeLinecap="round"
             fill="none"
             initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: hovered ? 1 : 0, opacity: hovered ? 0.55 : 0 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
-            style={{ filter: `url(#brush-${index})` }}
+            animate={{
+              pathLength: hovered ? 1 : 0,
+              opacity: hovered ? 0.4 : 0,
+            }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           />
           <motion.path
-            d="M 205 288 C 225 296, 248 285, 268 292 Q 280 298, 290 288"
+            d="M 220 280 Q 240 290 260 282 Q 275 292 285 285"
             stroke="hsl(var(--secondary))"
-            strokeWidth={hovered ? 3.5 : 0}
+            strokeWidth={hovered ? 2 : 0}
             strokeLinecap="round"
             fill="none"
             initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: hovered ? 1 : 0, opacity: hovered ? 0.55 : 0 }}
-            transition={{ duration: 0.4, delay: 0.45 }}
-            style={{ filter: `url(#brush-${index})` }}
-          />
-          {/* Paint drip accent */}
-          <motion.path
-            d="M 290 80 C 296 90, 298 105, 295 115 S 300 130, 297 138"
-            stroke="hsl(var(--primary))"
-            strokeWidth={hovered ? 2.5 : 0}
-            strokeLinecap="round"
-            fill="none"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: hovered ? 1 : 0, opacity: hovered ? 0.4 : 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            style={{ filter: `url(#brush-${index})` }}
+            animate={{
+              pathLength: hovered ? 1 : 0,
+              opacity: hovered ? 0.4 : 0,
+            }}
+            transition={{ duration: 0.5, delay: 0.35 }}
           />
           <defs>
-            <filter id={`brush-${index}`}>
-              <feTurbulence type="turbulence" baseFrequency="0.035" numOctaves="5" seed={index * 7 + 3} result="noise" />
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" />
+            <filter id="brush-texture">
+              <feTurbulence type="turbulence" baseFrequency="0.04" numOctaves="4" result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
             </filter>
           </defs>
         </svg>
