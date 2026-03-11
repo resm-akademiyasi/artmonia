@@ -72,7 +72,7 @@ const PromiseCard = ({
       >
         {/* Brush stroke SVG borders */}
         <svg
-          className="absolute inset-0 w-full h-full pointer-events-none"
+          className="absolute -inset-3 pointer-events-none"
           viewBox="0 0 300 300"
           preserveAspectRatio="none"
           fill="none"
@@ -80,58 +80,86 @@ const PromiseCard = ({
         >
           {brushStrokes.map((d, i) => (
             <motion.path
-              key={i}
+              key={`main-${i}`}
               d={d}
               stroke="hsl(var(--primary))"
-              strokeWidth={hovered ? 3 : 0}
+              strokeWidth={hovered ? 5.5 : 0}
               strokeLinecap="round"
               strokeLinejoin="round"
               fill="none"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{
                 pathLength: hovered ? 1 : 0,
-                opacity: hovered ? 0.7 : 0,
+                opacity: hovered ? 0.85 : 0,
               }}
               transition={{
-                pathLength: { duration: 0.4, delay: i * 0.08 },
-                opacity: { duration: 0.2, delay: i * 0.08 },
+                pathLength: { duration: 0.5, delay: i * 0.1 },
+                opacity: { duration: 0.15, delay: i * 0.1 },
               }}
-              style={{
-                filter: "url(#brush-texture)",
-              }}
+              style={{ filter: `url(#brush-${index})` }}
             />
           ))}
-          {/* Extra decorative splatter strokes */}
+          {/* Secondary thinner strokes offset for depth */}
+          {brushStrokes.map((d, i) => (
+            <motion.path
+              key={`shadow-${i}`}
+              d={d}
+              stroke="hsl(var(--primary))"
+              strokeWidth={hovered ? 8 : 0}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{
+                pathLength: hovered ? 1 : 0,
+                opacity: hovered ? 0.15 : 0,
+              }}
+              transition={{
+                pathLength: { duration: 0.5, delay: i * 0.1 },
+                opacity: { duration: 0.15, delay: i * 0.1 },
+              }}
+              style={{ filter: `url(#brush-${index})` }}
+            />
+          ))}
+          {/* Corner splatter accents */}
           <motion.path
-            d="M 20 20 Q 30 10 50 18 Q 70 6 80 15"
+            d="M 15 15 C 25 5, 45 12, 65 8 Q 80 3, 95 10"
             stroke="hsl(var(--secondary))"
-            strokeWidth={hovered ? 2 : 0}
+            strokeWidth={hovered ? 3.5 : 0}
             strokeLinecap="round"
             fill="none"
             initial={{ pathLength: 0, opacity: 0 }}
-            animate={{
-              pathLength: hovered ? 1 : 0,
-              opacity: hovered ? 0.4 : 0,
-            }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            animate={{ pathLength: hovered ? 1 : 0, opacity: hovered ? 0.55 : 0 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
+            style={{ filter: `url(#brush-${index})` }}
           />
           <motion.path
-            d="M 220 280 Q 240 290 260 282 Q 275 292 285 285"
+            d="M 205 288 C 225 296, 248 285, 268 292 Q 280 298, 290 288"
             stroke="hsl(var(--secondary))"
-            strokeWidth={hovered ? 2 : 0}
+            strokeWidth={hovered ? 3.5 : 0}
             strokeLinecap="round"
             fill="none"
             initial={{ pathLength: 0, opacity: 0 }}
-            animate={{
-              pathLength: hovered ? 1 : 0,
-              opacity: hovered ? 0.4 : 0,
-            }}
-            transition={{ duration: 0.5, delay: 0.35 }}
+            animate={{ pathLength: hovered ? 1 : 0, opacity: hovered ? 0.55 : 0 }}
+            transition={{ duration: 0.4, delay: 0.45 }}
+            style={{ filter: `url(#brush-${index})` }}
+          />
+          {/* Paint drip accent */}
+          <motion.path
+            d="M 290 80 C 296 90, 298 105, 295 115 S 300 130, 297 138"
+            stroke="hsl(var(--primary))"
+            strokeWidth={hovered ? 2.5 : 0}
+            strokeLinecap="round"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: hovered ? 1 : 0, opacity: hovered ? 0.4 : 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            style={{ filter: `url(#brush-${index})` }}
           />
           <defs>
-            <filter id="brush-texture">
-              <feTurbulence type="turbulence" baseFrequency="0.04" numOctaves="4" result="noise" />
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+            <filter id={`brush-${index}`}>
+              <feTurbulence type="turbulence" baseFrequency="0.035" numOctaves="5" seed={index * 7 + 3} result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" />
             </filter>
           </defs>
         </svg>
