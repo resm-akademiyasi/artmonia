@@ -1,6 +1,6 @@
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { Play } from "lucide-react";
+
 
 const stats = [
   { value: 500, suffix: "+", label: "Tələbə" },
