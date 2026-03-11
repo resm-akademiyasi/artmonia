@@ -118,8 +118,10 @@ const StudentResultsSection = () => {
   // Duplicate for infinite loop
   const duplicated = [...results, ...results];
 
+  const sectionRef = useScrollReveal<HTMLElement>();
+
   return (
-    <section className="section-padding overflow-hidden">
+    <section ref={sectionRef} className="section-padding overflow-hidden scroll-reveal">
       <div className="container mx-auto px-6">
         <div className="mx-auto mb-20 max-w-2xl text-center">
           <p className="mb-4 font-body text-[11px] tracking-[0.3em] uppercase text-primary">
