@@ -36,9 +36,15 @@ const StatsSection = () => {
   const youtubeId = "5BviDLRa67U";
 
   return (
-    <section ref={ref} className="relative overflow-hidden py-32 md:py-44 -mt-1" style={{ backgroundColor: "hsl(246 96% 12%)" }}>
-      {/* Top fade - blends from hero's dark navy */}
-      <div className="pointer-events-none absolute -top-1 left-0 right-0 z-20 h-72 md:h-96" style={{ background: "linear-gradient(to bottom, hsl(246 96% 18%) 0%, hsl(246 96% 18% / 0.95) 10%, hsl(246 96% 18% / 0.7) 30%, hsl(246 96% 18% / 0.4) 50%, hsl(246 96% 18% / 0.15) 70%, hsl(246 96% 18% / 0.05) 85%, transparent 100%)" }} />
+    <section ref={ref} className="relative -mt-10 overflow-hidden bg-accent py-32 md:-mt-14 md:py-44">
+      {/* Top fade - seamless from hero */}
+      <div
+        className="pointer-events-none absolute -top-1 left-0 right-0 z-20 h-72 md:h-96"
+        style={{
+          background:
+            "linear-gradient(to bottom, hsl(var(--accent) / 0.97) 0%, hsl(var(--accent) / 0.82) 20%, hsl(var(--accent) / 0.55) 45%, hsl(var(--accent) / 0.25) 70%, hsl(var(--accent) / 0.08) 88%, transparent 100%)",
+        }}
+      />
       {/* Bottom fade - blends into next section's light bg */}
       <div className="pointer-events-none absolute -bottom-1 left-0 right-0 z-20 h-72 md:h-96" style={{ background: "linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.95) 10%, hsl(var(--background) / 0.7) 30%, hsl(var(--background) / 0.4) 50%, hsl(var(--background) / 0.15) 70%, hsl(var(--background) / 0.05) 85%, transparent 100%)" }} />
       {/* YouTube Background with parallax */}

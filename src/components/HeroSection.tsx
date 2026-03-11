@@ -66,8 +66,14 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Bottom fade to white */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
+      {/* Bottom fade - seamless blend to stats video section */}
+      <div
+        className="pointer-events-none absolute -bottom-1 left-0 right-0 h-56"
+        style={{
+          background:
+            "linear-gradient(to top, hsl(var(--accent) / 0.88) 0%, hsl(var(--accent) / 0.62) 35%, hsl(var(--accent) / 0.26) 70%, transparent 100%)",
+        }}
+      />
     </section>
   );
 };
