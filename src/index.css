@@ -159,7 +159,7 @@
 
 html {
   scroll-behavior: smooth;
-  cursor: url("/brush-cursor.png") 2 30, auto;
+  cursor: url("/brush-cursor.svg") 16 30, auto;
 }
 
 *, *::before, *::after {
@@ -167,5 +167,5 @@ html {
 }
 
 a, button, [role="button"], input, select, textarea, label, summary {
-  cursor: url("/brush-cursor.png") 2 30, pointer;
+  cursor: url("/brush-cursor.svg") 16 30, pointer;
 }
