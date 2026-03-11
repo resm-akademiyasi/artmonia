@@ -13,49 +13,41 @@ interface StudentResult {
 }
 
 const ComparisonCard = ({ result }: { result: StudentResult }) => {
-  const [hovered, setHovered] = useState(false);
-
   return (
-    <div
-      className="group relative flex-shrink-0 w-[300px] md:w-[340px] cursor-pointer"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-muted">
-        {/* Before image */}
-        {result.before_image_url && (
-          <img
-            src={result.before_image_url}
-            alt={`${result.student_name} - əvvəl`}
-            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
-            style={{ opacity: hovered ? 0 : 1 }}
-          />
-        )}
-        {/* After image */}
-        {result.after_image_url && (
-          <img
-            src={result.after_image_url}
-            alt={`${result.student_name} - sonra`}
-            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
-            style={{ opacity: hovered ? 1 : 0 }}
-          />
-        )}
-
-        {/* Label */}
-        <div className="absolute top-4 left-4 z-10">
-          <span
-            className="inline-block rounded-full px-3 py-1 font-body text-[10px] font-semibold tracking-[0.15em] uppercase transition-all duration-500"
-            style={{
-              backgroundColor: hovered ? "hsl(33 89% 51%)" : "hsl(246 96% 18% / 0.8)",
-              color: "white",
-            }}
-          >
-            {hovered ? "Sonra" : "Əvvəl"}
-          </span>
+    <div className="flex-shrink-0 w-[340px] md:w-[400px]">
+      <div className="overflow-hidden rounded-2xl border border-border bg-muted">
+        <div className="grid grid-cols-2">
+          {/* Before */}
+          <div className="relative aspect-[3/4]">
+            {result.before_image_url && (
+              <img
+                src={result.before_image_url}
+                alt={`${result.student_name} - əvvəl`}
+                className="h-full w-full object-cover"
+              />
+            )}
+            <div className="absolute bottom-0 inset-x-0 bg-accent/80 py-1.5">
+              <p className="text-center font-display text-[11px] font-bold tracking-[0.15em] uppercase text-white">
+                Əvvəl
+              </p>
+            </div>
+          </div>
+          {/* After */}
+          <div className="relative aspect-[3/4]">
+            {result.after_image_url && (
+              <img
+                src={result.after_image_url}
+                alt={`${result.student_name} - sonra`}
+                className="h-full w-full object-cover"
+              />
+            )}
+            <div className="absolute bottom-0 inset-x-0 bg-primary/90 py-1.5">
+              <p className="text-center font-display text-[11px] font-bold tracking-[0.15em] uppercase text-white">
+                Sonra
+              </p>
+            </div>
+          </div>
         </div>
-
-        {/* Gradient overlay */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[hsl(246_96%_18%/0.9)] to-transparent" />
       </div>
 
       {/* Info */}
@@ -68,7 +60,6 @@ const ComparisonCard = ({ result }: { result: StudentResult }) => {
     </div>
   );
 };
-
 const StudentResultsSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [results, setResults] = useState<StudentResult[]>([]);
