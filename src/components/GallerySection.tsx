@@ -1,5 +1,5 @@
 import { motion, useInView, useMotionValue, useTransform, useSpring } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, memo } from "react";
 import artwork1 from "@/assets/artwork-1.jpg";
 import artwork2 from "@/assets/artwork-2.jpg";
 import artwork4 from "@/assets/artwork-4.jpg";
@@ -14,7 +14,7 @@ const interiorPhotos = [
   { src: artwork6, title: "Giriş", category: "Lobby" },
 ];
 
-const TiltCard = ({
+const TiltCard = memo(({
   photo,
   index,
   inView,
@@ -61,55 +61,31 @@ const TiltCard = ({
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={handleMouseLeave}
-        style={{
-          rotateX,
-          rotateY,
-          scale,
-          transformStyle: "preserve-3d",
-        }}
+        style={{ rotateX, rotateY, scale, transformStyle: "preserve-3d" }}
         className="group relative overflow-hidden rounded-2xl cursor-pointer h-full"
       >
-        {/* Image */}
-        <motion.img
+        <img
           src={photo.src}
           alt={photo.title}
-          className="h-full w-full object-cover"
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover transition-transform duration-600"
           style={{
             minHeight: isLarge ? "100%" : "240px",
             maxHeight: isLarge ? "none" : "320px",
-          }}
-          animate={{ scale: hovered ? 1.08 : 1 }}
-          transition={{ duration: 0.6 }}
-        />
-
-        {/* Shine / glare effect */}
-        <motion.div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background: useTransform(
-              x,
-              [-0.5, 0, 0.5],
-              [
-                "linear-gradient(105deg, rgba(255,255,255,0.15) 0%, transparent 50%)",
-                "linear-gradient(105deg, transparent 0%, transparent 100%)",
-                "linear-gradient(255deg, rgba(255,255,255,0.15) 0%, transparent 50%)",
-              ]
-            ),
+            transform: hovered ? "scale(1.08)" : "scale(1)",
           }}
         />
 
         {/* Bottom gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-accent/70 via-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
 
-        {/* Floating label with 3D translateZ */}
+        {/* Floating label */}
         <motion.div
           className="absolute bottom-0 left-0 right-0 p-5"
           style={{ transform: "translateZ(30px)" }}
           initial={false}
-          animate={{
-            y: hovered ? 0 : 20,
-            opacity: hovered ? 1 : 0,
-          }}
+          animate={{ y: hovered ? 0 : 20, opacity: hovered ? 1 : 0 }}
           transition={{ duration: 0.3 }}
         >
           <p className="font-body text-[10px] tracking-[0.25em] uppercase text-primary drop-shadow-lg">
@@ -126,7 +102,9 @@ const TiltCard = ({
       </motion.div>
     </motion.div>
   );
-};
+});
+
+TiltCard.displayName = "TiltCard";
 
 const GallerySection = () => {
   const ref = useRef(null);
@@ -163,13 +141,7 @@ const GallerySection = () => {
 
         <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3 md:grid-rows-2">
           {interiorPhotos.map((photo, i) => (
-            <TiltCard
-              key={i}
-              photo={photo}
-              index={i}
-              inView={inView}
-              isLarge={i === 0}
-            />
+            <TiltCard key={i} photo={photo} index={i} inView={inView} isLarge={i === 0} />
           ))}
         </div>
       </div>

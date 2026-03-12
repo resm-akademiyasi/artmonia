@@ -51,36 +51,30 @@ const ProblemSection = () => {
             </div>
           </div>
 
-          {/* Right — founder image with decorative elements */}
+          {/* Right — founder image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.8, delay: 0.3 }}
             className="relative flex-shrink-0 hidden lg:block"
           >
-            {/* Decorative background blob */}
             <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-primary/15 via-secondary/10 to-transparent blur-2xl" />
-            
-            {/* Decorative ring */}
             <div className="absolute -inset-4 rounded-[2rem] border-2 border-dashed border-primary/20 rotate-3" />
-            
-            {/* Orange accent dots */}
             <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-primary/40" />
             <div className="absolute -bottom-2 -left-2 w-4 h-4 rounded-full bg-secondary/40" />
             <div className="absolute top-1/2 -right-6 w-3 h-3 rounded-full bg-primary/30" />
 
-            {/* Main image */}
             <div className="relative w-[340px] h-[420px] overflow-hidden rounded-2xl">
               <img
                 src={founderImg}
                 alt="Artmonia rəssam"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover object-top"
               />
-              {/* Bottom gradient overlay */}
               <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-accent/60 to-transparent" />
             </div>
 
-            {/* Floating paint palette badge */}
             <motion.div
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -89,7 +83,6 @@ const ProblemSection = () => {
               <p className="font-display text-lg font-bold">🎨</p>
             </motion.div>
 
-            {/* Floating brush badge */}
             <motion.div
               animate={{ y: [0, 6, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
