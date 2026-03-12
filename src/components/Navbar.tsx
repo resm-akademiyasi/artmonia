@@ -46,6 +46,7 @@ const navGroups: NavGroup[] = [
 
 const standaloneLinks: NavItem[] = [
   { label: "Yeniliklər", id: "news" },
+  { label: "Blog", href: "/blog" },
 ];
 
 // All section IDs for scroll tracking

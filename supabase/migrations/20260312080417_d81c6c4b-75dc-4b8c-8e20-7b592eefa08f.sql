@@ -1,0 +1,1 @@
+ALTER TABLE public.teachers ADD COLUMN IF NOT EXISTS video_intro_url TEXT DEFAULT NULL;
