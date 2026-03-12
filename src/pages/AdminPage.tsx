@@ -101,6 +101,8 @@ const AdminPage = () => {
     { key: "results", label: "Nəticələr", icon: <Image size={14} /> },
     { key: "stories", label: "Hekayələr", icon: <Video size={14} /> },
     { key: "teachers", label: "Müəllimlər", icon: <GraduationCap size={14} /> },
+    { key: "blog", label: "Blog", icon: <BookOpen size={14} /> },
+    { key: "settings", label: "Parametrlər", icon: <Settings size={14} /> },
   ];
 
   return (
