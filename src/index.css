@@ -160,6 +160,7 @@
 html {
   scroll-behavior: smooth;
   cursor: none !important;
+  overflow-x: hidden;
 }
 
 *, *::before, *::after {
