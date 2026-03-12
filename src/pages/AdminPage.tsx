@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Download, Users, BarChart3, Megaphone, Newspaper, Image, Video, GraduationCap } from "lucide-react";
+import { LogOut, Download, Users, BarChart3, Megaphone, Newspaper, Image, Video, GraduationCap, Settings, BookOpen } from "lucide-react";
 import CampaignManager from "@/components/CampaignManager";
 import NewsManager from "@/components/NewsManager";
 import StudentResultsManager from "@/components/StudentResultsManager";
