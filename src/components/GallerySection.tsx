@@ -111,7 +111,7 @@ const GallerySection = () => {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section ref={ref} className="section-padding">
+    <section id="interior" ref={ref} className="section-padding">
       <div className="container mx-auto px-6">
         <div className="mx-auto mb-20 max-w-2xl text-center">
           <motion.p

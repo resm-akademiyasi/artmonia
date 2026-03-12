@@ -36,6 +36,7 @@ const navGroups: NavGroup[] = [
     label: "Akademiya",
     items: [
       { label: "Müəllimlər", id: "teachers" },
+      { label: "İnteryer", id: "interior" },
       { label: "FAQ", id: "faq" },
       { label: "Haqqımızda", href: "/about" },
       { label: "Əlaqə", href: "/contact" },
@@ -51,7 +52,7 @@ const standaloneLinks: NavItem[] = [
 const allSectionIds = [
   "programs", "modules", "pricing",
   "results", "stories", "testimonials",
-  "teachers", "faq", "news",
+  "teachers", "interior", "faq", "news",
 ];
 
 const Navbar = () => {
