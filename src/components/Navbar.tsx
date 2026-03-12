@@ -1,28 +1,32 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImg from "@/assets/logo-transparent.png";
 
-const leftLinks = [
-  { label: "Proqram", href: "/program" },
-  { label: "Müəllimlər", href: "/teachers" },
+const pageLinks = [
   { label: "Haqqımızda", href: "/about" },
+  { label: "Əlaqə", href: "/contact" },
 ];
 
-const rightLinks = [
-  { label: "FAQ", href: "/faq" },
-  { label: "Əlaqə", href: "/contact" },
+const sectionLinks = [
+  { label: "Proqramlar", id: "programs" },
+  { label: "Modullar", id: "modules" },
+  { label: "Qiymətlər", id: "pricing" },
+  { label: "Müəllimlər", id: "teachers" },
+  { label: "Rəylər", id: "testimonials" },
+  { label: "FAQ", id: "faq" },
 ];
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -31,9 +35,9 @@ const Navbar = () => {
     ? "bg-background/95 backdrop-blur-xl shadow-sm"
     : "bg-transparent";
 
-  const textColor = (href: string) =>
-    `font-body text-[11px] tracking-[0.25em] uppercase transition-all duration-300 hover:text-primary ${
-      location.pathname === href
+  const baseTextClass = (active?: boolean) =>
+    `font-body text-[11px] tracking-[0.25em] uppercase transition-all duration-300 hover:text-primary whitespace-nowrap ${
+      active
         ? "text-primary"
         : scrolled || !isHome
         ? "text-foreground/70"
@@ -42,13 +46,25 @@ const Navbar = () => {
 
   const logoFilter = scrolled || !isHome ? "" : "brightness(0) invert(1)";
 
+  const scrollToSection = (id: string) => {
+    setOpen(false);
+    if (!isHome) {
+      navigate("/");
+      // Wait for navigation then scroll
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${navBg}`}>
       <div className="container mx-auto flex h-16 items-center justify-between px-6 md:h-20">
         {/* Mobile */}
         <div className="flex w-full items-center md:hidden">
           <Link to="/" className="relative flex items-center">
-            {/* Glow */}
             <div
               className="absolute inset-0 -m-4 rounded-full blur-2xl opacity-50 transition-opacity duration-500"
               style={{
@@ -75,16 +91,8 @@ const Navbar = () => {
 
         {/* Desktop */}
         <div className="hidden w-full items-center md:flex">
-          <div className="flex flex-1 items-center gap-10">
-            {leftLinks.map((l) => (
-              <Link key={l.href} to={l.href} className={textColor(l.href)}>
-                {l.label}
-              </Link>
-            ))}
-          </div>
-
-          <Link to="/" className="relative mx-10 flex items-center justify-center">
-            {/* Radial glow behind logo */}
+          {/* Left - logo */}
+          <Link to="/" className="relative mr-8 flex items-center justify-center flex-shrink-0">
             <motion.div
               className="absolute rounded-full"
               style={{
@@ -106,28 +114,35 @@ const Navbar = () => {
               style={{ filter: logoFilter }}
               initial={{ opacity: 0, scale: 0.2, rotate: -15, y: -10 }}
               animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
-              transition={{
-                type: "spring",
-                stiffness: 180,
-                damping: 16,
-                delay: 0.3,
-              }}
+              transition={{ type: "spring", stiffness: 180, damping: 16, delay: 0.3 }}
             />
           </Link>
 
-          <div className="flex flex-1 items-center justify-end gap-10">
-            {rightLinks.map((l) => (
-              <Link key={l.href} to={l.href} className={textColor(l.href)}>
+          {/* Center - section links */}
+          <div className="flex flex-1 items-center justify-center gap-6 lg:gap-8">
+            {sectionLinks.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => scrollToSection(s.id)}
+                className={baseTextClass(false)}
+              >
+                {s.label}
+              </button>
+            ))}
+            {pageLinks.map((l) => (
+              <Link key={l.href} to={l.href} className={baseTextClass(location.pathname === l.href)}>
                 {l.label}
               </Link>
             ))}
-            <a
-              href="#lead-form"
-              className="font-body text-[11px] tracking-[0.15em] uppercase bg-primary px-5 py-2.5 text-primary-foreground rounded-full transition-all hover:scale-105 hover:shadow-lg"
-            >
-              Qeydiyyat
-            </a>
           </div>
+
+          {/* Right - CTA */}
+          <button
+            onClick={() => scrollToSection("lead-form")}
+            className="ml-8 flex-shrink-0 font-body text-[11px] tracking-[0.15em] uppercase bg-primary px-5 py-2.5 text-primary-foreground rounded-full transition-all hover:scale-105 hover:shadow-lg"
+          >
+            Qeydiyyat
+          </button>
         </div>
       </div>
 
@@ -141,7 +156,16 @@ const Navbar = () => {
             className="border-b border-border bg-background md:hidden"
           >
             <div className="container mx-auto flex flex-col gap-5 px-6 py-8">
-              {[...leftLinks, ...rightLinks].map((l) => (
+              {sectionLinks.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => scrollToSection(s.id)}
+                  className="text-left font-body text-sm tracking-widest uppercase text-foreground/70 hover:text-primary"
+                >
+                  {s.label}
+                </button>
+              ))}
+              {pageLinks.map((l) => (
                 <Link
                   key={l.href}
                   to={l.href}
@@ -151,13 +175,12 @@ const Navbar = () => {
                   {l.label}
                 </Link>
               ))}
-              <a
-                href="#lead-form"
-                onClick={() => setOpen(false)}
+              <button
+                onClick={() => scrollToSection("lead-form")}
                 className="bg-primary px-5 py-3 text-center text-sm font-semibold text-primary-foreground rounded-full"
               >
                 Qeydiyyat
-              </a>
+              </button>
             </div>
           </motion.div>
         )}

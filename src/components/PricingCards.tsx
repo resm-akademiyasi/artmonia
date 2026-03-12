@@ -32,7 +32,7 @@ const PricingCards = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding">
+    <section ref={ref} id="pricing" className="section-padding">
       <div className="container mx-auto px-6">
         <motion.p
           initial={{ opacity: 0 }}
