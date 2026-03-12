@@ -1,6 +1,6 @@
 const BrushStrokes = () => {
   return (
-    <div className="pointer-events-none absolute inset-0 z-0 overflow-visible" aria-hidden="true">
+    <div className="pointer-events-none absolute inset-0 z-0 hidden overflow-hidden md:block" aria-hidden="true">
 
       {/* === TOP ZONE — Right orange diagonal === */}
       <svg
