@@ -46,7 +46,7 @@ const ProgramsSection = () => {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section ref={ref} className="section-padding bg-gradient-section">
+    <section ref={ref} id="programs" className="section-padding bg-gradient-section">
       <div className="container mx-auto px-6">
         <div className="mx-auto mb-20 max-w-2xl text-center">
           <motion.p

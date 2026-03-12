@@ -15,7 +15,7 @@ const ModulesSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding">
+    <section ref={ref} id="modules" className="section-padding">
       <div className="container mx-auto px-6">
         <div className="mx-auto max-w-4xl">
           <motion.p
