@@ -27,6 +27,7 @@ import NewsDetailPage from "./pages/NewsDetailPage";
 import StoriesPage from "./pages/StoriesPage";
 import TeachersPage from "./pages/TeachersPage";
 import BlogPage from "./pages/BlogPage";
+import BlogDetailPage from "./pages/BlogDetailPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -50,6 +51,7 @@ const AnimatedRoutes = () => {
         <Route path="/stories" element={<PageTransition><StoriesPage /></PageTransition>} />
         <Route path="/teachers" element={<PageTransition><TeachersPage /></PageTransition>} />
         <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
+        <Route path="/blog/:slug" element={<PageTransition><BlogDetailPage /></PageTransition>} />
         <Route path="/admin" element={<PageTransition><AdminPage /></PageTransition>} />
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>

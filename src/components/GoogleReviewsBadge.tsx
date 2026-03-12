@@ -1,6 +1,11 @@
 import { Star } from "lucide-react";
+import { useSettings } from "@/hooks/use-settings";
 
 const GoogleReviewsBadge = () => {
+  const { getSetting } = useSettings();
+  const rating = getSetting("google_review_rating", "4.9");
+  const count = getSetting("google_review_count", "127");
+
   return (
     <div className="inline-flex items-center gap-2.5 rounded-full border border-border/60 bg-muted/40 px-4 py-2">
       <svg viewBox="0 0 24 24" className="h-5 w-5" aria-label="Google">
@@ -11,15 +16,11 @@ const GoogleReviewsBadge = () => {
       </svg>
       <div className="flex items-center gap-1">
         {[...Array(5)].map((_, i) => (
-          <Star
-            key={i}
-            size={12}
-            className={i < 5 ? "fill-primary text-primary" : "fill-muted text-muted"}
-          />
+          <Star key={i} size={12} className={i < Math.round(Number(rating)) ? "fill-primary text-primary" : "fill-muted text-muted"} />
         ))}
       </div>
-      <span className="font-body text-xs font-bold text-foreground">4.9</span>
-      <span className="font-body text-[10px] text-muted-foreground">(127 rəy)</span>
+      <span className="font-body text-xs font-bold text-foreground">{rating}</span>
+      <span className="font-body text-[10px] text-muted-foreground">({count} rəy)</span>
     </div>
   );
 };

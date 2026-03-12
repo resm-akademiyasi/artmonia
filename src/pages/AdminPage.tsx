@@ -2,15 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Download, Users, BarChart3, Megaphone, Newspaper, Image, Video, GraduationCap } from "lucide-react";
+import { LogOut, Download, Users, BarChart3, Megaphone, Newspaper, Image, Video, GraduationCap, Settings, BookOpen } from "lucide-react";
 import CampaignManager from "@/components/CampaignManager";
 import NewsManager from "@/components/NewsManager";
 import StudentResultsManager from "@/components/StudentResultsManager";
 import SuccessStoriesManager from "@/components/SuccessStoriesManager";
 import TeachersManager from "@/components/TeachersManager";
+import SettingsManager from "@/components/SettingsManager";
+import BlogManager from "@/components/BlogManager";
 import type { Tables } from "@/integrations/supabase/types";
 
-type TabType = "leads" | "events" | "campaigns" | "news" | "results" | "stories" | "teachers";
+type TabType = "leads" | "events" | "campaigns" | "news" | "results" | "stories" | "teachers" | "settings" | "blog";
 
 const AdminPage = () => {
   const [leads, setLeads] = useState<Tables<"leads">[]>([]);
@@ -99,6 +101,8 @@ const AdminPage = () => {
     { key: "results", label: "Nəticələr", icon: <Image size={14} /> },
     { key: "stories", label: "Hekayələr", icon: <Video size={14} /> },
     { key: "teachers", label: "Müəllimlər", icon: <GraduationCap size={14} /> },
+    { key: "blog", label: "Blog", icon: <BookOpen size={14} /> },
+    { key: "settings", label: "Parametrlər", icon: <Settings size={14} /> },
   ];
 
   return (
@@ -167,6 +171,8 @@ const AdminPage = () => {
         {tab === "results" && <StudentResultsManager />}
         {tab === "stories" && <SuccessStoriesManager />}
         {tab === "teachers" && <TeachersManager />}
+        {tab === "settings" && <SettingsManager />}
+        {tab === "blog" && <BlogManager />}
         {tab === "leads" && (
           <div className="overflow-x-auto rounded-xl border border-border">
             <table className="w-full text-left font-body text-sm">

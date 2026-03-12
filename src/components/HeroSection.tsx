@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Palette } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 import TrialLessonModal from "@/components/TrialLessonModal";
-import GoogleReviewsBadge from "@/components/GoogleReviewsBadge";
+
 
 const HeroSection = () => {
   const [trialOpen, setTrialOpen] = useState(false);
@@ -78,15 +78,6 @@ const HeroSection = () => {
               </button>
             </motion.div>
 
-            {/* Google Reviews */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="mt-12 flex justify-center"
-            >
-              <GoogleReviewsBadge />
-            </motion.div>
           </div>
         </motion.div>
 
