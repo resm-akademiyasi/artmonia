@@ -16,7 +16,7 @@ const TestimonialsSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding bg-gradient-section">
+    <section ref={ref} id="testimonials" className="section-padding bg-gradient-section">
       <div className="container mx-auto px-6">
         <motion.p
           initial={{ opacity: 0 }}
