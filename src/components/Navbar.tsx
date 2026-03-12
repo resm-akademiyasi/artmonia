@@ -52,7 +52,7 @@ const standaloneLinks: NavItem[] = [
 const allSectionIds = [
   "programs", "modules", "pricing",
   "results", "stories", "testimonials",
-  "teachers", "faq", "news",
+  "teachers", "interior", "faq", "news",
 ];
 
 const Navbar = () => {
