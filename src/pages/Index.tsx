@@ -27,7 +27,7 @@ const LazySection = ({ children }: { children: React.ReactNode }) => (
 
 const Index = () => {
   return (
-    <main className="relative">
+    <main className="relative overflow-x-hidden">
       <BrushStrokes />
       <HeroSection />
       <StatsSection />
