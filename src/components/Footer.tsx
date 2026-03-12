@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <img src={logoImg} alt={BRAND} className="mb-4 h-14 w-auto" />
+            <img src={logoImg} alt={BRAND} className="mb-4 h-14 w-auto" loading="lazy" decoding="async" />
             <p className="font-body text-sm leading-relaxed text-muted-foreground">
               Bütün sənətsevərləri peşəkar rəssama çevirən bir rəssamlıq akademiyası.
             </p>
