@@ -12,6 +12,7 @@ const StudentResultsSection = lazy(() => import("@/components/StudentResultsSect
 const NewsSection = lazy(() => import("@/components/NewsSection"));
 const ModulesSection = lazy(() => import("@/components/ModulesSection"));
 const PricingCards = lazy(() => import("@/components/PricingCards"));
+const PriceCalculator = lazy(() => import("@/components/PriceCalculator"));
 const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
 const SuccessStoriesSection = lazy(() => import("@/components/SuccessStoriesSection"));
 const TeachersSection = lazy(() => import("@/components/TeachersSection"));
@@ -38,6 +39,7 @@ const Index = () => {
       <LazySection><StudentResultsSection /></LazySection>
       <LazySection><ModulesSection /></LazySection>
       <LazySection><PricingCards /></LazySection>
+      <LazySection><PriceCalculator /></LazySection>
       <LazySection><TeachersSection /></LazySection>
       <LazySection><TestimonialsSection /></LazySection>
       <LazySection><SuccessStoriesSection /></LazySection>

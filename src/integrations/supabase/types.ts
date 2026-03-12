@@ -250,6 +250,7 @@ export type Database = {
           photo_url: string | null
           specialties: string[] | null
           title: string | null
+          video_intro_url: string | null
         }
         Insert: {
           bio?: string | null
@@ -261,6 +262,7 @@ export type Database = {
           photo_url?: string | null
           specialties?: string[] | null
           title?: string | null
+          video_intro_url?: string | null
         }
         Update: {
           bio?: string | null
@@ -272,6 +274,7 @@ export type Database = {
           photo_url?: string | null
           specialties?: string[] | null
           title?: string | null
+          video_intro_url?: string | null
         }
         Relationships: []
       }

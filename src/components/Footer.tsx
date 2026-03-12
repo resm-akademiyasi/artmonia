@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { BRAND } from "@/lib/whatsapp";
 import logoImg from "@/assets/logo-transparent.png";
+import GoogleReviewsBadge from "@/components/GoogleReviewsBadge";
 
 const Footer = () => {
   return (
@@ -15,12 +16,16 @@ const Footer = () => {
             <p className="mt-3 font-body text-xs italic text-muted-foreground/70">
               "İstək varsa, yol da var." — Leonardo da Vinçi
             </p>
+            <div className="mt-5">
+              <GoogleReviewsBadge />
+            </div>
           </div>
           <div>
             <h4 className="mb-4 font-body text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Səhifələr</h4>
             <div className="flex flex-col gap-3">
               <Link to="/program" className="font-body text-sm text-foreground/60 hover:text-primary transition-colors">Proqram</Link>
               <Link to="/about" className="font-body text-sm text-foreground/60 hover:text-primary transition-colors">Haqqımızda</Link>
+              <Link to="/blog" className="font-body text-sm text-foreground/60 hover:text-primary transition-colors">Blog</Link>
               <Link to="/faq" className="font-body text-sm text-foreground/60 hover:text-primary transition-colors">FAQ</Link>
               <Link to="/contact" className="font-body text-sm text-foreground/60 hover:text-primary transition-colors">Əlaqə</Link>
             </div>
