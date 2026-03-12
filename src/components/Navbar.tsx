@@ -25,22 +25,34 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
+    label: "Nəticələr",
+    items: [
+      { label: "Tələbə nəticələri", id: "results" },
+      { label: "Uğur hekayələri", id: "stories" },
+      { label: "Rəylər", id: "testimonials" },
+    ],
+  },
+  {
     label: "Akademiya",
     items: [
       { label: "Müəllimlər", id: "teachers" },
-      { label: "Rəylər", id: "testimonials" },
       { label: "FAQ", id: "faq" },
+      { label: "Haqqımızda", href: "/about" },
+      { label: "Əlaqə", href: "/contact" },
     ],
   },
 ];
 
-const directLinks: NavItem[] = [
-  { label: "Haqqımızda", href: "/about" },
-  { label: "Əlaqə", href: "/contact" },
+const standaloneLinks: NavItem[] = [
+  { label: "Yeniliklər", id: "news" },
 ];
 
 // All section IDs for scroll tracking
-const allSectionIds = ["programs", "modules", "pricing", "teachers", "testimonials", "faq"];
+const allSectionIds = [
+  "programs", "modules", "pricing",
+  "results", "stories", "testimonials",
+  "teachers", "faq", "news",
+];
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -58,18 +70,17 @@ const Navbar = () => {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 50);
-
       if (!isHome) return;
 
-      const scrollY = window.scrollY + 120;
+      const scrollY = window.scrollY + 150;
       let current: string | null = null;
 
       for (const id of allSectionIds) {
         const el = document.getElementById(id);
         if (el) {
-          const { top, bottom } = el.getBoundingClientRect();
-          const absTop = top + window.scrollY;
-          const absBottom = bottom + window.scrollY;
+          const rect = el.getBoundingClientRect();
+          const absTop = rect.top + window.scrollY;
+          const absBottom = rect.bottom + window.scrollY;
           if (scrollY >= absTop && scrollY < absBottom) {
             current = id;
             break;
@@ -107,16 +118,20 @@ const Navbar = () => {
     }
   }, [navigate, scrollToSection]);
 
+  // Toggle on click (for touch), hover for desktop
+  const toggleDropdown = (label: string) => {
+    setOpenDropdown((prev) => (prev === label ? null : label));
+  };
+
   const handleDropdownEnter = (label: string) => {
     if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
     setOpenDropdown(label);
   };
 
   const handleDropdownLeave = () => {
-    dropdownTimeout.current = setTimeout(() => setOpenDropdown(null), 200);
+    dropdownTimeout.current = setTimeout(() => setOpenDropdown(null), 250);
   };
 
-  // Check if a group contains the active section
   const groupIsActive = (group: NavGroup) =>
     group.items.some((item) => item.id && item.id === activeSection);
 
@@ -174,30 +189,29 @@ const Navbar = () => {
                 onMouseLeave={handleDropdownLeave}
               >
                 <button
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-full font-body text-[10px] tracking-[0.18em] uppercase transition-all duration-300 ${
+                  onClick={() => toggleDropdown(group.label)}
+                  className={`relative flex items-center gap-1 px-3 py-2 rounded-full font-body text-[11px] font-medium tracking-[0.15em] uppercase transition-all duration-300 ${
                     groupIsActive(group)
                       ? "text-primary bg-primary/10"
                       : isDark
-                      ? "text-white/70 hover:text-white hover:bg-white/10"
-                      : "text-foreground/60 hover:text-foreground hover:bg-muted"
+                      ? "text-white/75 hover:text-white hover:bg-white/10"
+                      : "text-foreground/65 hover:text-foreground hover:bg-muted"
                   }`}
                 >
                   {group.label}
                   <ChevronDown
-                    size={10}
+                    size={11}
                     className={`transition-transform duration-200 ${openDropdown === group.label ? "rotate-180" : ""}`}
                   />
-                  {/* Active indicator dot */}
                   {groupIsActive(group) && (
                     <motion.span
-                      layoutId="nav-active-dot"
-                      className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
+                      layoutId="nav-dot"
+                      className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-primary"
                       transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
                   )}
                 </button>
 
-                {/* Dropdown panel */}
                 <AnimatePresence>
                   {openDropdown === group.label && (
                     <motion.div
@@ -205,32 +219,37 @@ const Navbar = () => {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 4, scale: 0.97 }}
                       transition={{ duration: 0.18 }}
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 rounded-xl overflow-hidden shadow-xl border"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-52 rounded-xl overflow-hidden shadow-2xl border"
                       style={{
-                        background: "hsl(var(--background) / 0.97)",
+                        background: "hsl(var(--background) / 0.98)",
                         backdropFilter: "blur(20px)",
                         borderColor: "hsl(var(--border) / 0.5)",
                       }}
                       onMouseEnter={() => handleDropdownEnter(group.label)}
                       onMouseLeave={handleDropdownLeave}
                     >
-                      <div className="py-1.5">
+                      {/* Group header */}
+                      <div className="px-4 pt-3 pb-1.5">
+                        <p className="font-body text-[9px] font-semibold tracking-[0.25em] uppercase text-muted-foreground/60">
+                          {group.label}
+                        </p>
+                      </div>
+                      <div className="pb-2">
                         {group.items.map((item) => (
                           <button
                             key={item.label}
                             onClick={() => handleNavClick(item)}
-                            className={`w-full flex items-center gap-3 px-4 py-2.5 font-body text-[11px] tracking-[0.12em] uppercase transition-all duration-200 ${
+                            className={`w-full flex items-center gap-3 px-4 py-2.5 font-body text-[12px] font-medium tracking-[0.06em] transition-all duration-200 ${
                               item.id && item.id === activeSection
                                 ? "text-primary bg-primary/8"
-                                : "text-foreground/65 hover:text-primary hover:bg-primary/5"
+                                : "text-foreground/70 hover:text-primary hover:bg-primary/5"
                             }`}
                           >
-                            {/* Active marker */}
                             <span
                               className={`w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all duration-300 ${
                                 item.id && item.id === activeSection
                                   ? "bg-primary scale-100"
-                                  : "bg-transparent scale-0"
+                                  : "bg-border scale-75"
                               }`}
                             />
                             {item.label}
@@ -243,30 +262,37 @@ const Navbar = () => {
               </div>
             ))}
 
-            {/* Direct page links */}
-            {directLinks.map((l) => (
-              <Link
-                key={l.label}
-                to={l.href!}
-                className={`px-3 py-1.5 rounded-full font-body text-[10px] tracking-[0.18em] uppercase transition-all duration-300 ${
-                  location.pathname === l.href
+            {/* Standalone links */}
+            {standaloneLinks.map((item) => (
+              <button
+                key={item.label}
+                onClick={() => handleNavClick(item)}
+                className={`relative px-3 py-2 rounded-full font-body text-[11px] font-medium tracking-[0.15em] uppercase transition-all duration-300 ${
+                  item.id && item.id === activeSection
                     ? "text-primary bg-primary/10"
                     : isDark
-                    ? "text-white/70 hover:text-white hover:bg-white/10"
-                    : "text-foreground/60 hover:text-foreground hover:bg-muted"
+                    ? "text-white/75 hover:text-white hover:bg-white/10"
+                    : "text-foreground/65 hover:text-foreground hover:bg-muted"
                 }`}
               >
-                {l.label}
-              </Link>
+                {item.label}
+                {item.id && item.id === activeSection && (
+                  <motion.span
+                    layoutId="nav-dot"
+                    className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-primary"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
             ))}
 
             {/* CTA */}
             <button
               onClick={() => scrollToSection("lead-form")}
-              className="group flex items-center gap-1.5 ml-1 px-4 py-1.5 rounded-full bg-primary font-body text-[10px] tracking-[0.15em] uppercase text-primary-foreground transition-all duration-300 hover:shadow-[0_4px_20px_hsl(33_89%_51%/0.4)] hover:scale-[1.03]"
+              className="group flex items-center gap-1.5 ml-1 px-4 py-2 rounded-full bg-primary font-body text-[11px] font-semibold tracking-[0.12em] uppercase text-primary-foreground transition-all duration-300 hover:shadow-[0_4px_20px_hsl(33_89%_51%/0.4)] hover:scale-[1.03]"
             >
               Qeydiyyat
-              <ArrowRight size={11} className="transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
             </button>
           </div>
         </div>
@@ -290,9 +316,9 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="absolute top-full left-0 right-0 bg-background/98 backdrop-blur-xl border-b border-border shadow-xl md:hidden"
+            className="absolute top-full left-0 right-0 bg-background/98 backdrop-blur-xl border-b border-border shadow-xl md:hidden max-h-[80vh] overflow-y-auto"
           >
-            <div className="container mx-auto px-5 py-5 space-y-4">
+            <div className="container mx-auto px-5 py-5 space-y-5">
               {navGroups.map((group, gi) => (
                 <motion.div
                   key={group.label}
@@ -300,7 +326,7 @@ const Navbar = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: gi * 0.06 }}
                 >
-                  <p className="font-body text-[9px] tracking-[0.25em] uppercase text-muted-foreground mb-2 px-1">
+                  <p className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/60 mb-2 px-1">
                     {group.label}
                   </p>
                   <div className="grid grid-cols-3 gap-1.5">
@@ -308,7 +334,7 @@ const Navbar = () => {
                       <button
                         key={item.label}
                         onClick={() => handleNavClick(item)}
-                        className={`py-2.5 px-2 rounded-lg border font-body text-[10px] tracking-[0.12em] uppercase transition-all text-center ${
+                        className={`py-2.5 px-2 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center leading-tight ${
                           item.id && item.id === activeSection
                             ? "border-primary/40 bg-primary/8 text-primary"
                             : "border-border/60 bg-muted/20 text-foreground/65 hover:border-primary/30 hover:text-primary"
@@ -321,26 +347,25 @@ const Navbar = () => {
                 </motion.div>
               ))}
 
-              {/* Page links row */}
+              {/* Standalone links */}
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
-                className="grid grid-cols-2 gap-1.5"
+                transition={{ delay: 0.2 }}
+                className="grid grid-cols-1 gap-1.5"
               >
-                {directLinks.map((l) => (
-                  <Link
-                    key={l.label}
-                    to={l.href!}
-                    onClick={() => setOpen(false)}
-                    className={`py-2.5 px-2 rounded-lg border font-body text-[10px] tracking-[0.12em] uppercase transition-all text-center ${
-                      location.pathname === l.href
+                {standaloneLinks.map((item) => (
+                  <button
+                    key={item.label}
+                    onClick={() => handleNavClick(item)}
+                    className={`py-2.5 px-3 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center ${
+                      item.id && item.id === activeSection
                         ? "border-primary/40 bg-primary/8 text-primary"
                         : "border-border/60 bg-muted/20 text-foreground/65 hover:border-primary/30 hover:text-primary"
                     }`}
                   >
-                    {l.label}
-                  </Link>
+                    {item.label}
+                  </button>
                 ))}
               </motion.div>
 
@@ -348,9 +373,9 @@ const Navbar = () => {
               <motion.button
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.22 }}
+                transition={{ delay: 0.28 }}
                 onClick={() => scrollToSection("lead-form")}
-                className="group flex w-full items-center justify-center gap-2 bg-primary py-3 text-sm font-semibold text-primary-foreground rounded-xl transition-all hover:shadow-lg"
+                className="group flex w-full items-center justify-center gap-2 bg-primary py-3.5 font-body text-sm font-semibold text-primary-foreground rounded-xl transition-all hover:shadow-lg"
               >
                 Qeydiyyat
                 <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
