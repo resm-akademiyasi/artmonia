@@ -8,6 +8,8 @@ import NewsManager from "@/components/NewsManager";
 import StudentResultsManager from "@/components/StudentResultsManager";
 import SuccessStoriesManager from "@/components/SuccessStoriesManager";
 import TeachersManager from "@/components/TeachersManager";
+import SettingsManager from "@/components/SettingsManager";
+import BlogManager from "@/components/BlogManager";
 import type { Tables } from "@/integrations/supabase/types";
 
 type TabType = "leads" | "events" | "campaigns" | "news" | "results" | "stories" | "teachers";
