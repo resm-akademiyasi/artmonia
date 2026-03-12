@@ -34,7 +34,7 @@ const NewsSection = () => {
   if (!news.length) return null;
 
   return (
-    <section className="section-padding bg-gradient-section animate-fade-in">
+    <section id="news" className="section-padding bg-gradient-section animate-fade-in">
       <div className="container mx-auto px-6">
         <div className="mx-auto mb-20 max-w-2xl text-center">
           <p className="mb-4 font-body text-[11px] tracking-[0.3em] uppercase text-primary">
