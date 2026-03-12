@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Palette } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 import TrialLessonModal from "@/components/TrialLessonModal";
-import GoogleReviewsBadge from "@/components/GoogleReviewsBadge";
+
 
 const HeroSection = () => {
   const [trialOpen, setTrialOpen] = useState(false);
