@@ -12,7 +12,7 @@ import SettingsManager from "@/components/SettingsManager";
 import BlogManager from "@/components/BlogManager";
 import type { Tables } from "@/integrations/supabase/types";
 
-type TabType = "leads" | "events" | "campaigns" | "news" | "results" | "stories" | "teachers";
+type TabType = "leads" | "events" | "campaigns" | "news" | "results" | "stories" | "teachers" | "settings" | "blog";
 
 const AdminPage = () => {
   const [leads, setLeads] = useState<Tables<"leads">[]>([]);
