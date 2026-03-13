@@ -288,6 +288,20 @@ const Navbar = () => {
               </button>
             ))}
 
+            {/* Online Kurslar */}
+            <a
+              href="https://online.artmoniya.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative ml-1 px-4 py-2 rounded-full font-body text-[11px] font-semibold tracking-[0.12em] uppercase transition-all duration-300 border-2 border-primary/60 text-primary bg-primary/5 hover:bg-primary/15 hover:border-primary hover:scale-[1.03] hover:shadow-[0_4px_20px_hsl(var(--primary)/0.25)] animate-pulse-subtle"
+            >
+              <span className="absolute -top-1.5 -right-1.5 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+              </span>
+              Online Kurslar
+            </a>
+
             {/* CTA */}
             <button
               onClick={() => scrollToSection("lead-form")}
@@ -371,11 +385,24 @@ const Navbar = () => {
                 ))}
               </motion.div>
 
+              {/* Online Kurslar */}
+              <motion.a
+                href="https://online.artmoniya.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.24 }}
+                className="flex w-full items-center justify-center gap-2 py-3.5 font-body text-sm font-semibold rounded-xl border-2 border-primary/60 text-primary bg-primary/5 transition-all"
+              >
+                🎓 Online Kurslar
+              </motion.a>
+
               {/* CTA */}
               <motion.button
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.28 }}
+                transition={{ delay: 0.32 }}
                 onClick={() => scrollToSection("lead-form")}
                 className="group flex w-full items-center justify-center gap-2 bg-primary py-3.5 font-body text-sm font-semibold text-primary-foreground rounded-xl transition-all hover:shadow-lg"
               >
