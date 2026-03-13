@@ -137,7 +137,7 @@ const Navbar = () => {
   const groupIsActive = (group: NavGroup) =>
     group.items.some((item) => item.id && item.id === activeSection);
 
-  const navBg = scrolled || !isHome
+  const navBg = scrolled || !isHome || open
     ? "bg-background/95 backdrop-blur-xl shadow-sm border-b border-border/50"
     : "bg-transparent";
 
@@ -332,7 +332,7 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="absolute top-full left-0 right-0 bg-background/98 backdrop-blur-xl border-b border-border shadow-xl md:hidden max-h-[80vh] overflow-y-auto"
+            className="fixed top-16 left-0 right-0 bottom-0 bg-background/95 backdrop-blur-2xl border-b border-border shadow-xl md:hidden overflow-y-auto"
           >
             <div className="container mx-auto px-5 py-5 space-y-5">
               {navGroups.map((group, gi) => (
@@ -352,8 +352,8 @@ const Navbar = () => {
                         onClick={() => handleNavClick(item)}
                         className={`py-2.5 px-2 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center leading-tight ${
                           item.id && item.id === activeSection
-                            ? "border-primary/40 bg-primary/8 text-primary"
-                            : "border-border/60 bg-muted/20 text-foreground/65 hover:border-primary/30 hover:text-primary"
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
                         }`}
                       >
                         {item.label}
@@ -376,8 +376,8 @@ const Navbar = () => {
                     onClick={() => handleNavClick(item)}
                     className={`py-2.5 px-3 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center ${
                       item.id && item.id === activeSection
-                        ? "border-primary/40 bg-primary/8 text-primary"
-                        : "border-border/60 bg-muted/20 text-foreground/65 hover:border-primary/30 hover:text-primary"
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
                     }`}
                   >
                     {item.label}
