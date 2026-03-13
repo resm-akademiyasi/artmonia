@@ -137,7 +137,7 @@ const Navbar = () => {
   const groupIsActive = (group: NavGroup) =>
     group.items.some((item) => item.id && item.id === activeSection);
 
-  const navBg = scrolled || !isHome
+  const navBg = scrolled || !isHome || open
     ? "bg-background/95 backdrop-blur-xl shadow-sm border-b border-border/50"
     : "bg-transparent";
 
