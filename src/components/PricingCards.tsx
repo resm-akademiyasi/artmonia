@@ -7,26 +7,26 @@ import { useSettings } from "@/hooks/use-settings";
 const basePlans = [
   {
     name: "Mini",
-    settingsKey: "price_mini",
-    fallback: "99",
-    desc: "Rəsmə giriş — əsasları öyrən.",
-    features: ["2 modul (Əsaslar + İşıq/Kölgə)", "Video dərslər", "Topluluq çatı", "Sertifikat"],
+    key: "mini",
+    fallbackPrice: "99",
+    fallbackDesc: "Rəsmə giriş — əsasları öyrən.",
+    fallbackFeatures: "2 modul (Əsaslar + İşıq/Kölgə), Video dərslər, Topluluq çatı, Sertifikat",
     featured: false,
   },
   {
     name: "Standart",
-    settingsKey: "price_standard",
-    fallback: "199",
-    desc: "Tam proqram — bütün modullar + feedback.",
-    features: ["6 modul — tam proqram", "Həftəlik canlı sessiya", "Fərdi feedback", "Portfolyo layihəsi", "Sertifikat", "6 ay material girişi"],
+    key: "standard",
+    fallbackPrice: "199",
+    fallbackDesc: "Tam proqram — bütün modullar + feedback.",
+    fallbackFeatures: "6 modul — tam proqram, Həftəlik canlı sessiya, Fərdi feedback, Portfolyo layihəsi, Sertifikat, 6 ay material girişi",
     featured: true,
   },
   {
     name: "Premium",
-    settingsKey: "price_premium",
-    fallback: "349",
-    desc: "1-on-1 mentorluq + VIP dəstək.",
-    features: ["Standart-ın hər şeyi", "4 fərdi mentorluq sessiyası", "Portfolyo review", "Karyera məsləhəti", "Ömürlük material girişi", "VIP WhatsApp qrup"],
+    key: "premium",
+    fallbackPrice: "349",
+    fallbackDesc: "1-on-1 mentorluq + VIP dəstək.",
+    fallbackFeatures: "Standart-ın hər şeyi, 4 fərdi mentorluq sessiyası, Portfolyo review, Karyera məsləhəti, Ömürlük material girişi, VIP WhatsApp qrup",
     featured: false,
   },
 ];
@@ -34,8 +34,11 @@ const basePlans = [
 const PricingCards = () => {
   const { getSetting } = useSettings();
   const plans = basePlans.map((p) => ({
-    ...p,
-    price: getSetting(p.settingsKey, p.fallback),
+    name: p.name,
+    featured: p.featured,
+    price: getSetting(`price_${p.key}`, p.fallbackPrice),
+    desc: getSetting(`plan_${p.key}_desc`, p.fallbackDesc),
+    features: getSetting(`plan_${p.key}_features`, p.fallbackFeatures).split(",").map((f) => f.trim()).filter(Boolean),
   }));
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
