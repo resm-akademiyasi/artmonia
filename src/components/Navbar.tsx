@@ -385,11 +385,24 @@ const Navbar = () => {
                 ))}
               </motion.div>
 
+              {/* Online Kurslar */}
+              <motion.a
+                href="https://online.artmoniya.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.24 }}
+                className="flex w-full items-center justify-center gap-2 py-3.5 font-body text-sm font-semibold rounded-xl border-2 border-primary/60 text-primary bg-primary/5 transition-all"
+              >
+                🎓 Online Kurslar
+              </motion.a>
+
               {/* CTA */}
               <motion.button
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.28 }}
+                transition={{ delay: 0.32 }}
                 onClick={() => scrollToSection("lead-form")}
                 className="group flex w-full items-center justify-center gap-2 bg-primary py-3.5 font-body text-sm font-semibold text-primary-foreground rounded-xl transition-all hover:shadow-lg"
               >
