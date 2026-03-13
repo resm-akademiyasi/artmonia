@@ -2,25 +2,29 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Check, ArrowRight } from "lucide-react";
 import { getGoUrl } from "@/lib/whatsapp";
+import { useSettings } from "@/hooks/use-settings";
 
-const plans = [
+const basePlans = [
   {
     name: "Mini",
-    price: "99",
+    settingsKey: "price_mini",
+    fallback: "99",
     desc: "Rəsmə giriş — əsasları öyrən.",
     features: ["2 modul (Əsaslar + İşıq/Kölgə)", "Video dərslər", "Topluluq çatı", "Sertifikat"],
     featured: false,
   },
   {
     name: "Standart",
-    price: "199",
+    settingsKey: "price_standard",
+    fallback: "199",
     desc: "Tam proqram — bütün modullar + feedback.",
     features: ["6 modul — tam proqram", "Həftəlik canlı sessiya", "Fərdi feedback", "Portfolyo layihəsi", "Sertifikat", "6 ay material girişi"],
     featured: true,
   },
   {
     name: "Premium",
-    price: "349",
+    settingsKey: "price_premium",
+    fallback: "349",
     desc: "1-on-1 mentorluq + VIP dəstək.",
     features: ["Standart-ın hər şeyi", "4 fərdi mentorluq sessiyası", "Portfolyo review", "Karyera məsləhəti", "Ömürlük material girişi", "VIP WhatsApp qrup"],
     featured: false,
@@ -28,6 +32,11 @@ const plans = [
 ];
 
 const PricingCards = () => {
+  const { getSetting } = useSettings();
+  const plans = basePlans.map((p) => ({
+    ...p,
+    price: getSetting(p.settingsKey, p.fallback),
+  }));
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
