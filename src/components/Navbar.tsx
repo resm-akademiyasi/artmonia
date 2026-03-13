@@ -352,8 +352,8 @@ const Navbar = () => {
                         onClick={() => handleNavClick(item)}
                         className={`py-2.5 px-2 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center leading-tight ${
                           item.id && item.id === activeSection
-                            ? "border-primary/40 bg-primary/8 text-primary"
-                            : "border-border/60 bg-muted/20 text-foreground/65 hover:border-primary/30 hover:text-primary"
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
                         }`}
                       >
                         {item.label}
