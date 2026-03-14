@@ -168,10 +168,9 @@ const Navbar = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
           />
           <motion.img
-            src={logoImg}
+            src={currentLogo}
             alt="Artmonia"
-            className="relative h-10 w-auto md:h-11"
-            style={{ filter: logoFilter }}
+            className="relative h-[44px] w-auto"
             initial={{ opacity: 0, scale: 0.3, rotate: -12 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 200, damping: 18, delay: 0.2 }}
