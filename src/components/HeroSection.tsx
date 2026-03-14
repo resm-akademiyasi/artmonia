@@ -16,7 +16,7 @@ const HeroSection = () => {
     <>
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         {/* Parallax background */}
-        <motion.div className="absolute inset-0" style={{ y: bgY }}>
+        <motion.div className="absolute inset-0 will-change-transform" style={{ y: bgY }}>
           <img src={heroBg} alt="" className="h-[120%] w-full object-cover" fetchPriority="high" />
           <div className="absolute inset-0 bg-gradient-to-b from-[hsl(246_96%_18%/0.7)] via-[hsl(246_96%_18%/0.5)] to-[hsl(246_96%_18%/0.85)]" />
         </motion.div>
