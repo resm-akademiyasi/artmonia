@@ -78,7 +78,7 @@ const ProblemSection = () => {
             <motion.div
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground px-5 py-3 rounded-xl shadow-lg"
+              className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground px-5 py-3 rounded-xl shadow-lg will-change-transform"
             >
               <p className="font-display text-lg font-bold">🎨</p>
             </motion.div>
