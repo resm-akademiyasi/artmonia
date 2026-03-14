@@ -68,28 +68,33 @@ const Navbar = () => {
   const isHome = location.pathname === "/";
   const isDark = !scrolled && isHome;
 
-  // Scroll tracking
+  // Scroll tracking — throttled with rAF
   useEffect(() => {
+    let ticking = false;
     const onScroll = () => {
-      setScrolled(window.scrollY > 50);
-      if (!isHome) return;
-
-      const scrollY = window.scrollY + 150;
-      let current: string | null = null;
-
-      for (const id of allSectionIds) {
-        const el = document.getElementById(id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          const absTop = rect.top + window.scrollY;
-          const absBottom = rect.bottom + window.scrollY;
-          if (scrollY >= absTop && scrollY < absBottom) {
-            current = id;
-            break;
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 50);
+        if (isHome) {
+          const scrollY = window.scrollY + 150;
+          let current: string | null = null;
+          for (const id of allSectionIds) {
+            const el = document.getElementById(id);
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              const absTop = rect.top + window.scrollY;
+              const absBottom = rect.bottom + window.scrollY;
+              if (scrollY >= absTop && scrollY < absBottom) {
+                current = id;
+                break;
+              }
+            }
           }
+          setActiveSection(current);
         }
-      }
-      setActiveSection(current);
+        ticking = false;
+      });
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
