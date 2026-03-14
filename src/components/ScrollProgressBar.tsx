@@ -6,7 +6,7 @@ const ScrollProgressBar = () => {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 z-[60] h-[3px] origin-left"
+      className="fixed top-0 left-0 right-0 z-[60] h-[3px] origin-left will-change-transform"
       style={{
         scaleX,
         background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--primary)))",
