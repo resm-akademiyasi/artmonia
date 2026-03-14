@@ -332,7 +332,7 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="fixed top-16 left-0 right-0 bottom-0 bg-background/95 backdrop-blur-2xl border-b border-border shadow-xl md:hidden overflow-y-auto"
+            className="fixed top-16 left-0 right-0 bottom-0 z-50 bg-background/95 backdrop-blur-2xl border-b border-border shadow-xl md:hidden overflow-y-auto"
           >
             <div className="container mx-auto px-5 py-5 space-y-5">
               {navGroups.map((group, gi) => (
