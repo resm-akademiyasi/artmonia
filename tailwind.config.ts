@@ -105,6 +105,7 @@ export default {
         "fade-up": "fade-up 0.8s ease-out forwards",
         "fade-in": "fade-in 0.6s ease-out forwards",
         "gold-shimmer": "gold-shimmer 3s linear infinite",
+        "pulse-subtle": "pulse-subtle 2.5s ease-in-out infinite",
       },
     },
   },
