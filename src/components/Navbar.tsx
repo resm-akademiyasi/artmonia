@@ -147,7 +147,7 @@ const Navbar = () => {
     ? "bg-background/95 backdrop-blur-xl shadow-sm border-b border-border/50"
     : "bg-transparent";
 
-  const logoFilter = isDark ? "brightness(0) invert(1)" : "";
+  const currentLogo = isDark ? logoDark : logoLight;
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${navBg}`}>
