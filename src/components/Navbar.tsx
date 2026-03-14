@@ -333,19 +333,19 @@ const Navbar = () => {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-            className="fixed top-16 left-0 right-0 bottom-0 z-50 bg-background/95 backdrop-blur-2xl border-b border-border shadow-xl md:hidden overflow-y-auto"
+            initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+            exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed top-16 left-0 right-0 bottom-0 z-50 bg-background/98 backdrop-blur-2xl border-b border-border shadow-xl md:hidden overflow-y-auto will-change-[clip-path,opacity]"
           >
             <div className="container mx-auto px-5 py-5 space-y-5">
               {navGroups.map((group, gi) => (
                 <motion.div
                   key={group.label}
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: gi * 0.06 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 28, delay: gi * 0.05 }}
                 >
                   <p className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/60 mb-2 px-1">
                     {group.label}
@@ -370,9 +370,9 @@ const Navbar = () => {
 
               {/* Standalone links */}
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 28, delay: 0.15 }}
                 className="grid grid-cols-1 gap-1.5"
               >
                 {standaloneLinks.map((item) => (
@@ -395,9 +395,9 @@ const Navbar = () => {
                 href="https://online.artmoniya.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.24 }}
+                transition={{ type: "spring", stiffness: 400, damping: 28, delay: 0.2 }}
                 className="flex w-full items-center justify-center gap-2 py-3.5 font-body text-sm font-semibold rounded-xl border-2 border-primary/60 text-primary bg-primary/5 transition-all"
               >
                 🎓 Online Kurslar
@@ -405,9 +405,9 @@ const Navbar = () => {
 
               {/* CTA */}
               <motion.button
-                initial={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.32 }}
+                transition={{ type: "spring", stiffness: 400, damping: 28, delay: 0.25 }}
                 onClick={() => scrollToSection("lead-form")}
                 className="group flex w-full items-center justify-center gap-2 bg-primary py-3.5 font-body text-sm font-semibold text-primary-foreground rounded-xl transition-all hover:shadow-lg"
               >

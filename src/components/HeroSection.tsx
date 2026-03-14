@@ -22,7 +22,7 @@ const HeroSection = () => {
         </motion.div>
 
         <motion.div
-          className="container relative z-10 mx-auto px-6 pt-20"
+          className="container relative z-10 mx-auto px-6 pt-20 will-change-transform"
           style={{ y: textY, opacity }}>
           
           <div className="mx-auto max-w-4xl text-center">

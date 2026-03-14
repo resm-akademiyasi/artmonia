@@ -55,7 +55,7 @@ const StatsSection = () => {
       <div className="pointer-events-none absolute -bottom-1 left-0 right-0 z-20 h-72 md:h-96" style={{ background: "linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.95) 10%, hsl(var(--background) / 0.7) 30%, hsl(var(--background) / 0.4) 50%, hsl(var(--background) / 0.15) 70%, hsl(var(--background) / 0.05) 85%, transparent 100%)" }} />
       
       {/* YouTube Background with parallax */}
-      <motion.div className="absolute inset-0 z-0 -top-[15%] -bottom-[15%]" style={{ y: bgY }}>
+      <motion.div className="absolute inset-0 z-0 -top-[15%] -bottom-[15%] will-change-transform" style={{ y: bgY }}>
         <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
           {loadVideo ? (
             <iframe

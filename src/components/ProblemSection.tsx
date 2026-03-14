@@ -86,7 +86,7 @@ const ProblemSection = () => {
             <motion.div
               animate={{ y: [0, 6, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              className="absolute -top-4 -left-4 bg-accent text-accent-foreground px-4 py-2 rounded-xl shadow-lg"
+              className="absolute -top-4 -left-4 bg-accent text-accent-foreground px-4 py-2 rounded-xl shadow-lg will-change-transform"
             >
               <p className="font-display text-sm font-bold">✨ Sənət</p>
             </motion.div>
