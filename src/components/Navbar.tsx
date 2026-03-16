@@ -2,8 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import logoLight from "@/assets/logo-clean.png";
-import logoDark from "@/assets/logo-navbar-white.png";
+import logoMain from "@/assets/logo-clean.png";
 
 interface NavItem {
   label: string;
