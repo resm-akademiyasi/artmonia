@@ -28,6 +28,15 @@ const LazySection = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Index = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (searchParams.has("admin")) {
+      navigate("/admin", { replace: true });
+    }
+  }, [searchParams, navigate]);
+
   return (
     <main className="relative overflow-x-hidden">
       <BrushStrokes />
