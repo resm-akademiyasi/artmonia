@@ -1,4 +1,5 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import StatsSection from "@/components/StatsSection";
 import ProblemSection from "@/components/ProblemSection";
@@ -27,6 +28,15 @@ const LazySection = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Index = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (searchParams.has("admin")) {
+      navigate("/admin", { replace: true });
+    }
+  }, [searchParams, navigate]);
+
   return (
     <main className="relative overflow-x-hidden">
       <BrushStrokes />
