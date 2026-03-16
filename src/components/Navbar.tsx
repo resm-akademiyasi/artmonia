@@ -154,23 +154,10 @@ const Navbar = () => {
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:h-[72px] md:px-6">
         {/* Logo */}
         <Link to="/" className="relative flex items-center flex-shrink-0 z-10">
-          <motion.div
-            className="absolute rounded-full"
-            style={{
-              width: 100, height: 100,
-              background: isDark
-                ? "radial-gradient(circle, rgba(255,255,255,0.2), transparent 70%)"
-                : "radial-gradient(circle, hsl(var(--primary) / 0.12), transparent 70%)",
-              filter: "blur(14px)",
-            }}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          />
           <motion.img
             src={currentLogo}
             alt="Artmonia"
-            className="relative h-[44px] w-auto"
+            className="h-[44px] w-auto"
             initial={{ opacity: 0, scale: 0.3, rotate: -12 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 200, damping: 18, delay: 0.2 }}
