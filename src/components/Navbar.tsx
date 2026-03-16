@@ -146,17 +146,16 @@ const Navbar = () => {
     ? "bg-background/95 backdrop-blur-xl shadow-sm border-b border-border/50"
     : "bg-transparent";
 
-  const currentLogo = isDark ? logoDark : logoLight;
-
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${navBg}`}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:h-[72px] md:px-6">
         {/* Logo */}
         <Link to="/" className="relative flex items-center flex-shrink-0 z-10">
           <motion.img
-            src={currentLogo}
+            src={logoMain}
             alt="Artmonia"
-            className="h-[44px] w-auto"
+            className="h-[44px] w-auto transition-all duration-300"
+            style={isDark ? { filter: "brightness(0) invert(1) drop-shadow(0 0 1px rgba(255,255,255,0.3))" } : {}}
             initial={{ opacity: 0, scale: 0.3, rotate: -12 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 200, damping: 18, delay: 0.2 }}
