@@ -12,11 +12,13 @@ const GallerySection = lazy(() => import("@/components/GallerySection"));
 const StudentResultsSection = lazy(() => import("@/components/StudentResultsSection"));
 const NewsSection = lazy(() => import("@/components/NewsSection"));
 const ModulesSection = lazy(() => import("@/components/ModulesSection"));
+const DiagnosticQuiz = lazy(() => import("@/components/DiagnosticQuiz"));
 const PricingCards = lazy(() => import("@/components/PricingCards"));
 const PriceCalculator = lazy(() => import("@/components/PriceCalculator"));
 const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
 const SuccessStoriesSection = lazy(() => import("@/components/SuccessStoriesSection"));
 const TeachersSection = lazy(() => import("@/components/TeachersSection"));
+const KnowledgeTeaser = lazy(() => import("@/components/KnowledgeTeaser"));
 const FaqSection = lazy(() => import("@/components/FaqSection"));
 const LeadFormSection = lazy(() => import("@/components/LeadFormSection"));
 const CtaSection = lazy(() => import("@/components/CtaSection"));
@@ -48,9 +50,11 @@ const Index = () => {
       <LazySection><GallerySection /></LazySection>
       <LazySection><StudentResultsSection /></LazySection>
       <LazySection><ModulesSection /></LazySection>
+      <LazySection><DiagnosticQuiz /></LazySection>
       <LazySection><PricingCards /></LazySection>
       <LazySection><PriceCalculator /></LazySection>
       <LazySection><TeachersSection /></LazySection>
+      <LazySection><KnowledgeTeaser /></LazySection>
       <LazySection><TestimonialsSection /></LazySection>
       <LazySection><SuccessStoriesSection /></LazySection>
       <LazySection><NewsSection /></LazySection>
