@@ -154,8 +154,8 @@ const Navbar = () => {
           <motion.img
             src={logoMain}
             alt="Artmonia"
-            className="h-[44px] w-auto transition-all duration-300"
-            style={isDark ? { filter: "brightness(0) invert(1) drop-shadow(0 0 1px rgba(255,255,255,0.3))" } : {}}
+            className="h-[44px] w-auto transition-all duration-300 rounded-md"
+            style={isDark ? { filter: "drop-shadow(0 0 8px rgba(255,255,255,0.5)) drop-shadow(0 0 2px rgba(255,255,255,0.8))" } : {}}
             initial={{ opacity: 0, scale: 0.3, rotate: -12 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 200, damping: 18, delay: 0.2 }}
