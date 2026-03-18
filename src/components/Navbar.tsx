@@ -319,11 +319,11 @@ const Navbar = () => {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed top-16 left-0 right-0 bottom-0 z-[60] bg-background backdrop-blur-2xl border-b border-border shadow-xl md:hidden overflow-y-auto"
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="fixed top-16 left-0 right-0 bottom-0 z-[70] bg-background backdrop-blur-2xl border-b border-border shadow-xl md:hidden overflow-y-auto"
           >
             <div className="container mx-auto px-5 py-5 space-y-5">
               {navGroups.map((group, gi) => (
