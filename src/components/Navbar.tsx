@@ -305,12 +305,13 @@ const Navbar = () => {
 
         {/* Mobile hamburger */}
         <button
-          onClick={() => { console.log('HAMBURGER CLICKED, open was:', open); setOpen(!open); }}
-          className={`md:hidden z-10 p-2 rounded-full transition-colors ${
-            isDark ? "text-white hover:bg-white/10" : "text-foreground hover:bg-muted"
+          onClick={() => setOpen(!open)}
+          aria-label={open ? "Menyunu bağla" : "Menyunu aç"}
+          className={`md:hidden relative z-20 p-2.5 rounded-full transition-colors touch-manipulation ${
+            isDark && !open ? "text-white hover:bg-white/10" : "text-foreground hover:bg-muted"
           }`}
         >
-          {open ? <X size={20} /> : <Menu size={20} />}
+          {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
