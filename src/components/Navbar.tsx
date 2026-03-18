@@ -147,7 +147,8 @@ const Navbar = () => {
     : "bg-transparent";
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${navBg}`}>
+    <>
+    <nav className={`fixed top-0 left-0 right-0 z-[70] transition-all duration-500 ${navBg}`}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:h-[72px] md:px-6">
         {/* Logo */}
         <Link to="/" className="relative flex items-center flex-shrink-0 z-10">
@@ -306,65 +307,31 @@ const Navbar = () => {
         {/* Mobile hamburger */}
         <button
           onClick={() => setOpen(!open)}
-          className={`md:hidden z-10 p-2 rounded-full transition-colors ${
-            isDark ? "text-white hover:bg-white/10" : "text-foreground hover:bg-muted"
+          aria-label={open ? "Menyunu bağla" : "Menyunu aç"}
+          className={`md:hidden relative z-20 p-2.5 rounded-full transition-colors touch-manipulation ${
+            isDark && !open ? "text-white hover:bg-white/10" : "text-foreground hover:bg-muted"
           }`}
         >
-          {open ? <X size={20} /> : <Menu size={20} />}
+          {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
+    </nav>
 
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
-            animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
-            exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed top-16 left-0 right-0 bottom-0 z-50 bg-background/98 backdrop-blur-2xl border-b border-border shadow-xl md:hidden overflow-y-auto will-change-[clip-path,opacity]"
-          >
-            <div className="container mx-auto px-5 py-5 space-y-5">
-              {navGroups.map((group, gi) => (
-                <motion.div
-                  key={group.label}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 28, delay: gi * 0.05 }}
-                >
-                  <p className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/60 mb-2 px-1">
-                    {group.label}
-                  </p>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {group.items.map((item) => (
-                      <button
-                        key={item.label}
-                        onClick={() => handleNavClick(item)}
-                        className={`py-2.5 px-2 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center leading-tight ${
-                          item.id && item.id === activeSection
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-
-              {/* Standalone links */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 400, damping: 28, delay: 0.15 }}
-                className="grid grid-cols-1 gap-1.5"
-              >
-                {standaloneLinks.map((item) => (
+    {/* Mobile menu - rendered outside nav to avoid stacking context issues */}
+    {open && (
+      <div className="fixed inset-0 top-16 z-[80] bg-background border-b border-border shadow-xl md:hidden overflow-y-auto">
+        <div className="container mx-auto px-5 py-5 space-y-5">
+          {navGroups.map((group) => (
+            <div key={group.label}>
+              <p className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/60 mb-2 px-1">
+                {group.label}
+              </p>
+              <div className="grid grid-cols-3 gap-1.5">
+                {group.items.map((item) => (
                   <button
                     key={item.label}
                     onClick={() => handleNavClick(item)}
-                    className={`py-2.5 px-3 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center ${
+                    className={`py-2.5 px-2 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center leading-tight ${
                       item.id && item.id === activeSection
                         ? "border-primary bg-primary/10 text-primary"
                         : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
@@ -373,37 +340,46 @@ const Navbar = () => {
                     {item.label}
                   </button>
                 ))}
-              </motion.div>
-
-              {/* Online Kurslar */}
-              <motion.a
-                href="https://online.artmoniya.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 400, damping: 28, delay: 0.2 }}
-                className="flex w-full items-center justify-center gap-2 py-3.5 font-body text-sm font-semibold rounded-xl border-2 border-primary/60 text-primary bg-primary/5 transition-all"
-              >
-                🎓 Online Kurslar
-              </motion.a>
-
-              {/* CTA */}
-              <motion.button
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 400, damping: 28, delay: 0.25 }}
-                onClick={() => scrollToSection("lead-form")}
-                className="group flex w-full items-center justify-center gap-2 bg-primary py-3.5 font-body text-sm font-semibold text-primary-foreground rounded-xl transition-all hover:shadow-lg"
-              >
-                Qeydiyyat
-                <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-              </motion.button>
+              </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
+          ))}
+
+          <div className="grid grid-cols-1 gap-1.5">
+            {standaloneLinks.map((item) => (
+              <button
+                key={item.label}
+                onClick={() => handleNavClick(item)}
+                className={`py-2.5 px-3 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center ${
+                  item.id && item.id === activeSection
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <a
+            href="https://online.artmoniya.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex w-full items-center justify-center gap-2 py-3.5 font-body text-sm font-semibold rounded-xl border-2 border-primary/60 text-primary bg-primary/5 transition-all"
+          >
+            🎓 Online Kurslar
+          </a>
+
+          <button
+            onClick={() => scrollToSection("lead-form")}
+            className="group flex w-full items-center justify-center gap-2 bg-primary py-3.5 font-body text-sm font-semibold text-primary-foreground rounded-xl transition-all hover:shadow-lg"
+          >
+            Qeydiyyat
+            <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+          </button>
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 
