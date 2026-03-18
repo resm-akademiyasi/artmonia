@@ -315,73 +315,71 @@ const Navbar = () => {
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
-
-      {/* Mobile menu */}
-      {open && (
-        <div className="fixed inset-0 top-16 z-[70] bg-background border-b border-border shadow-xl md:hidden overflow-y-auto">
-          <div className="container mx-auto px-5 py-5 space-y-5">
-            {navGroups.map((group) => (
-              <div key={group.label}>
-                <p className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/60 mb-2 px-1">
-                  {group.label}
-                </p>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {group.items.map((item) => (
-                    <button
-                      key={item.label}
-                      onClick={() => handleNavClick(item)}
-                      className={`py-2.5 px-2 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center leading-tight ${
-                        item.id && item.id === activeSection
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
-
-            {/* Standalone links */}
-            <div className="grid grid-cols-1 gap-1.5">
-              {standaloneLinks.map((item) => (
-                <button
-                  key={item.label}
-                  onClick={() => handleNavClick(item)}
-                  className={`py-2.5 px-3 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center ${
-                    item.id && item.id === activeSection
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Online Kurslar */}
-            <a
-              href="https://online.artmoniya.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 py-3.5 font-body text-sm font-semibold rounded-xl border-2 border-primary/60 text-primary bg-primary/5 transition-all"
-            >
-              🎓 Online Kurslar
-            </a>
-
-            {/* CTA */}
-            <button
-              onClick={() => scrollToSection("lead-form")}
-              className="group flex w-full items-center justify-center gap-2 bg-primary py-3.5 font-body text-sm font-semibold text-primary-foreground rounded-xl transition-all hover:shadow-lg"
-            >
-              Qeydiyyat
-              <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-            </button>
-          </div>
-        </div>
-      )}
     </nav>
+
+    {/* Mobile menu - rendered outside nav to avoid stacking context issues */}
+    {open && (
+      <div className="fixed inset-0 top-16 z-[80] bg-background border-b border-border shadow-xl md:hidden overflow-y-auto">
+        <div className="container mx-auto px-5 py-5 space-y-5">
+          {navGroups.map((group) => (
+            <div key={group.label}>
+              <p className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/60 mb-2 px-1">
+                {group.label}
+              </p>
+              <div className="grid grid-cols-3 gap-1.5">
+                {group.items.map((item) => (
+                  <button
+                    key={item.label}
+                    onClick={() => handleNavClick(item)}
+                    className={`py-2.5 px-2 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center leading-tight ${
+                      item.id && item.id === activeSection
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          <div className="grid grid-cols-1 gap-1.5">
+            {standaloneLinks.map((item) => (
+              <button
+                key={item.label}
+                onClick={() => handleNavClick(item)}
+                className={`py-2.5 px-3 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center ${
+                  item.id && item.id === activeSection
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <a
+            href="https://online.artmoniya.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex w-full items-center justify-center gap-2 py-3.5 font-body text-sm font-semibold rounded-xl border-2 border-primary/60 text-primary bg-primary/5 transition-all"
+          >
+            🎓 Online Kurslar
+          </a>
+
+          <button
+            onClick={() => scrollToSection("lead-form")}
+            className="group flex w-full items-center justify-center gap-2 bg-primary py-3.5 font-body text-sm font-semibold text-primary-foreground rounded-xl transition-all hover:shadow-lg"
+          >
+            Qeydiyyat
+            <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+          </button>
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 
