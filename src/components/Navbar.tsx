@@ -147,7 +147,7 @@ const Navbar = () => {
     : "bg-transparent";
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${navBg}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-[70] transition-all duration-500 ${navBg}`}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:h-[72px] md:px-6">
         {/* Logo */}
         <Link to="/" className="relative flex items-center flex-shrink-0 z-10">
