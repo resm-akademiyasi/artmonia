@@ -53,7 +53,7 @@ const CampaignBanner = () => {
   if (!campaign || !timeLeft) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] bg-gradient-gold text-primary-foreground">
+    <div className="fixed top-0 left-0 right-0 z-[55] bg-gradient-gold text-primary-foreground pointer-events-auto">
       
 
 
