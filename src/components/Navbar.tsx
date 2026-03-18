@@ -316,94 +316,70 @@ const Navbar = () => {
       </div>
 
       {/* Mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="fixed top-16 left-0 right-0 bottom-0 z-[70] bg-background backdrop-blur-2xl border-b border-border shadow-xl md:hidden overflow-y-auto"
-          >
-            <div className="container mx-auto px-5 py-5 space-y-5">
-              {navGroups.map((group, gi) => (
-                <motion.div
-                  key={group.label}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 28, delay: gi * 0.05 }}
+      {open && (
+        <div className="fixed inset-0 top-16 z-[70] bg-background border-b border-border shadow-xl md:hidden overflow-y-auto">
+          <div className="container mx-auto px-5 py-5 space-y-5">
+            {navGroups.map((group) => (
+              <div key={group.label}>
+                <p className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/60 mb-2 px-1">
+                  {group.label}
+                </p>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {group.items.map((item) => (
+                    <button
+                      key={item.label}
+                      onClick={() => handleNavClick(item)}
+                      className={`py-2.5 px-2 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center leading-tight ${
+                        item.id && item.id === activeSection
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* Standalone links */}
+            <div className="grid grid-cols-1 gap-1.5">
+              {standaloneLinks.map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => handleNavClick(item)}
+                  className={`py-2.5 px-3 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center ${
+                    item.id && item.id === activeSection
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
+                  }`}
                 >
-                  <p className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/60 mb-2 px-1">
-                    {group.label}
-                  </p>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {group.items.map((item) => (
-                      <button
-                        key={item.label}
-                        onClick={() => handleNavClick(item)}
-                        className={`py-2.5 px-2 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center leading-tight ${
-                          item.id && item.id === activeSection
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
+                  {item.label}
+                </button>
               ))}
-
-              {/* Standalone links */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 400, damping: 28, delay: 0.15 }}
-                className="grid grid-cols-1 gap-1.5"
-              >
-                {standaloneLinks.map((item) => (
-                  <button
-                    key={item.label}
-                    onClick={() => handleNavClick(item)}
-                    className={`py-2.5 px-3 rounded-lg border font-body text-[10px] font-medium tracking-[0.08em] uppercase transition-all text-center ${
-                      item.id && item.id === activeSection
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-primary/40 bg-muted/20 text-foreground/80 hover:border-primary hover:text-primary"
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </motion.div>
-
-              {/* Online Kurslar */}
-              <motion.a
-                href="https://online.artmoniya.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 400, damping: 28, delay: 0.2 }}
-                className="flex w-full items-center justify-center gap-2 py-3.5 font-body text-sm font-semibold rounded-xl border-2 border-primary/60 text-primary bg-primary/5 transition-all"
-              >
-                🎓 Online Kurslar
-              </motion.a>
-
-              {/* CTA */}
-              <motion.button
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 400, damping: 28, delay: 0.25 }}
-                onClick={() => scrollToSection("lead-form")}
-                className="group flex w-full items-center justify-center gap-2 bg-primary py-3.5 font-body text-sm font-semibold text-primary-foreground rounded-xl transition-all hover:shadow-lg"
-              >
-                Qeydiyyat
-                <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-              </motion.button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+            {/* Online Kurslar */}
+            <a
+              href="https://online.artmoniya.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-2 py-3.5 font-body text-sm font-semibold rounded-xl border-2 border-primary/60 text-primary bg-primary/5 transition-all"
+            >
+              🎓 Online Kurslar
+            </a>
+
+            {/* CTA */}
+            <button
+              onClick={() => scrollToSection("lead-form")}
+              className="group flex w-full items-center justify-center gap-2 bg-primary py-3.5 font-body text-sm font-semibold text-primary-foreground rounded-xl transition-all hover:shadow-lg"
+            >
+              Qeydiyyat
+              <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+            </button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
