@@ -305,7 +305,7 @@ const Navbar = () => {
 
         {/* Mobile hamburger */}
         <button
-          onClick={() => setOpen(!open)}
+          onClick={() => { console.log('HAMBURGER CLICKED, open was:', open); setOpen(!open); }}
           className={`md:hidden z-10 p-2 rounded-full transition-colors ${
             isDark ? "text-white hover:bg-white/10" : "text-foreground hover:bg-muted"
           }`}
