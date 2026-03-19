@@ -13,7 +13,7 @@ const HeroSection = () => {
 
   return (
     <>
-      <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-accent">
         {/* Parallax background with video-like gradient animation */}
         <motion.div className="absolute inset-0 will-change-transform" style={{ y: bgY }}>
           <img src={heroBg} alt="" className="h-[120%] w-full object-cover" fetchPriority="high" />
@@ -89,15 +89,6 @@ const HeroSection = () => {
             </motion.div>
           </div>
         </motion.div>
-
-        {/* Bottom fade — seamless merge into Stats */}
-        <div
-          className="pointer-events-none absolute -bottom-1 left-0 right-0 h-80"
-          style={{
-            background:
-              "linear-gradient(to top, hsl(var(--accent)) 0%, hsl(var(--accent) / 0.95) 15%, hsl(var(--accent) / 0.7) 40%, hsl(var(--accent) / 0.3) 65%, transparent 100%)",
-          }}
-        />
       </section>
 
       <TrialLessonModal open={trialOpen} onClose={() => setTrialOpen(false)} />
