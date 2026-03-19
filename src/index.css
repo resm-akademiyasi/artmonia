@@ -177,15 +177,24 @@ body,
   body {
     background-attachment: scroll;
   }
-  html, *, *::before, *::after {
-    cursor: auto !important;
-  }
 }
 
-@media (min-width: 769px) {
-  *, *::before, *::after {
-    cursor: none !important;
-  }
+*, *::before, *::after {
+  cursor: none !important;
+}
+
+.custom-brush-cursor {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  pointer-events: none;
+  z-index: 99999;
+  background-image: url("/brush-cursor.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  will-change: transform;
+  left: 0;
+  top: 0;
 }
 
 /* Hide Lovable badge */

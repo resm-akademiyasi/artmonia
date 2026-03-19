@@ -90,12 +90,12 @@ const HeroSection = () => {
           </div>
         </motion.div>
 
-        {/* Bottom fade — seamless merge into Stats */}
+        {/* Bottom fade */}
         <div
-          className="pointer-events-none absolute -bottom-1 left-0 right-0 h-80"
+          className="pointer-events-none absolute -bottom-1 left-0 right-0 h-56"
           style={{
             background:
-              "linear-gradient(to top, hsl(var(--accent)) 0%, hsl(var(--accent) / 0.95) 15%, hsl(var(--accent) / 0.7) 40%, hsl(var(--accent) / 0.3) 65%, transparent 100%)",
+              "linear-gradient(to top, hsl(var(--accent) / 0.88) 0%, hsl(var(--accent) / 0.62) 35%, hsl(var(--accent) / 0.26) 70%, transparent 100%)",
           }}
         />
       </section>
