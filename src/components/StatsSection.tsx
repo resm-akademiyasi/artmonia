@@ -242,7 +242,15 @@ const StatsSection = () => {
   const bgY = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
 
   return (
-    <section ref={ref} className="relative overflow-hidden bg-accent py-32 md:py-44">
+    <section ref={ref} className="relative -mt-20 overflow-hidden bg-accent py-32 md:-mt-28 md:py-44">
+      {/* Top fade — seamless merge from Hero */}
+      <div
+        className="pointer-events-none absolute -top-1 left-0 right-0 z-20 h-40 md:h-56"
+        style={{
+          background:
+            "linear-gradient(to bottom, hsl(var(--accent)) 0%, hsl(var(--accent) / 0.6) 40%, transparent 100%)",
+        }}
+      />
       {/* Bottom fade */}
       <div
         className="pointer-events-none absolute -bottom-1 left-0 right-0 z-20 h-72 md:h-96"

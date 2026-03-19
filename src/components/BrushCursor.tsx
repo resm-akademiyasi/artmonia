@@ -1,68 +1,24 @@
 import { useEffect, useRef, useCallback } from "react";
 
-/**
- * Antigravity-style confetti cursor effect.
- * Colorful dashes/dots scatter outward from the cursor path as you move,
- * then slowly drift and fade away.
- */
-
-const PARTICLE_COLORS = [
-  "#F28E14", // orange (brand)
-  "#6929F2", // purple (brand)
-  "#3B82F6", // blue
-  "#EF4444", // red
-  "#10B981", // green
-  "#F59E0B", // amber
-  "#8B5CF6", // violet
-  "#EC4899", // pink
+const TRAIL_LENGTH = 20;
+const COLORS = [
+  "hsla(33, 89%, 51%,",   // orange
+  "hsla(263, 87%, 55%,",  // purple
+  "hsla(33, 89%, 65%,",   // light orange
 ];
 
-interface ConfettiParticle {
+interface TrailPoint {
   x: number;
   y: number;
-  vx: number;
-  vy: number;
-  rotation: number;
-  rotationSpeed: number;
-  width: number;
-  height: number;
-  color: string;
-  alpha: number;
-  life: number;
-  maxLife: number;
-  shape: "dash" | "dot" | "square";
 }
 
 const BrushCursor = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particles = useRef<ConfettiParticle[]>([]);
-  const mouseRef = useRef({ x: -200, y: -200 });
-  const prevMouseRef = useRef({ x: -200, y: -200 });
+  const mouseRef = useRef<TrailPoint>({ x: -100, y: -100 });
+  const trailRef = useRef<TrailPoint[]>([]);
   const rafRef = useRef(0);
-  const spawnAccum = useRef(0);
-
-  const spawnParticle = useCallback((x: number, y: number, speed: number) => {
-    const angle = Math.random() * Math.PI * 2;
-    const force = 0.5 + Math.random() * 1.5 + speed * 0.02;
-    const shapes: ConfettiParticle["shape"][] = ["dash", "dash", "dot", "square"];
-    const maxLife = 80 + Math.random() * 100;
-
-    return {
-      x,
-      y,
-      vx: Math.cos(angle) * force,
-      vy: Math.sin(angle) * force - 0.3,
-      rotation: Math.random() * Math.PI * 2,
-      rotationSpeed: (Math.random() - 0.5) * 0.08,
-      width: 3 + Math.random() * 6,
-      height: 1.5 + Math.random() * 2,
-      color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
-      alpha: 0.7 + Math.random() * 0.3,
-      life: 0,
-      maxLife,
-      shape: shapes[Math.floor(Math.random() * shapes.length)],
-    } satisfies ConfettiParticle;
-  }, []);
+  const isMovingRef = useRef(false);
+  const fadeRef = useRef(0);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -84,87 +40,105 @@ const BrushCursor = () => {
 
     ctx.clearRect(0, 0, w, h);
 
-    const mx = mouseRef.current.x;
-    const my = mouseRef.current.y;
-    const pmx = prevMouseRef.current.x;
-    const pmy = prevMouseRef.current.y;
+    const trail = trailRef.current;
+    const mouse = mouseRef.current;
 
-    const dx = mx - pmx;
-    const dy = my - pmy;
-    const speed = Math.sqrt(dx * dx + dy * dy);
-
-    // Spawn particles based on movement speed
-    if (speed > 2) {
-      spawnAccum.current += Math.min(speed * 0.3, 4);
-      while (spawnAccum.current >= 1) {
-        const t = Math.random();
-        const sx = pmx + dx * t + (Math.random() - 0.5) * 10;
-        const sy = pmy + dy * t + (Math.random() - 0.5) * 10;
-        particles.current.push(spawnParticle(sx, sy, speed));
-        spawnAccum.current -= 1;
-      }
+    // Smoothly follow mouse
+    if (trail.length === 0) {
+      trail.push({ x: mouse.x, y: mouse.y });
     }
 
-    prevMouseRef.current = { x: mx, y: my };
+    // Add new point at head
+    const head = trail[0];
+    const dx = mouse.x - head.x;
+    const dy = mouse.y - head.y;
+    const speed = Math.sqrt(dx * dx + dy * dy);
 
-    // Update & draw particles
-    const alive: ConfettiParticle[] = [];
-    for (const p of particles.current) {
-      p.life++;
-      if (p.life > p.maxLife) continue;
+    // Smooth interpolation for head
+    const newHead = {
+      x: head.x + dx * 0.35,
+      y: head.y + dy * 0.35,
+    };
 
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.01; // very gentle gravity
-      p.vx *= 0.995;
-      p.vy *= 0.995;
-      p.rotation += p.rotationSpeed;
+    trail.unshift(newHead);
+    if (trail.length > TRAIL_LENGTH) trail.pop();
 
-      // Fade: quick fade-in, long sustain, fade-out
-      const progress = p.life / p.maxLife;
-      let alpha: number;
-      if (progress < 0.05) {
-        alpha = progress / 0.05;
-      } else if (progress > 0.6) {
-        alpha = (1 - progress) / 0.4;
-      } else {
-        alpha = 1;
-      }
-      alpha *= p.alpha;
+    // Each subsequent point follows the one before it
+    for (let i = 1; i < trail.length; i++) {
+      const prev = trail[i - 1];
+      const curr = trail[i];
+      curr.x += (prev.x - curr.x) * 0.28;
+      curr.y += (prev.y - curr.y) * 0.28;
+    }
+
+    // Fade control
+    if (speed > 1) {
+      isMovingRef.current = true;
+      fadeRef.current = Math.min(fadeRef.current + 0.08, 1);
+    } else {
+      isMovingRef.current = false;
+      fadeRef.current = Math.max(fadeRef.current - 0.03, 0);
+    }
+
+    const globalAlpha = fadeRef.current;
+    if (globalAlpha < 0.01) {
+      rafRef.current = requestAnimationFrame(draw);
+      return;
+    }
+
+    // Draw trail
+    for (let i = 0; i < trail.length; i++) {
+      const t = i / trail.length; // 0 = head, 1 = tail
+      const size = (1 - t) * 8 + 1;
+      const alpha = (1 - t * t) * 0.6 * globalAlpha;
 
       if (alpha < 0.01) continue;
 
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rotation);
-      ctx.globalAlpha = alpha;
+      const color = COLORS[i % COLORS.length];
+      const p = trail[i];
 
-      if (p.shape === "dash") {
-        // Short colored dash/line
-        ctx.beginPath();
-        ctx.roundRect(-p.width / 2, -p.height / 2, p.width, p.height, 1);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-      } else if (p.shape === "dot") {
-        ctx.beginPath();
-        ctx.arc(0, 0, p.height, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-      } else {
-        // small square
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.height, -p.height, p.height * 2, p.height * 2);
-      }
+      // Main dot
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+      ctx.fillStyle = color + alpha + ")";
+      ctx.fill();
 
-      ctx.restore();
-      alive.push(p);
+      // Soft glow
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, size * 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = color + (alpha * 0.15) + ")";
+      ctx.fill();
     }
 
-    // Cap max particles
-    particles.current = alive.length > 300 ? alive.slice(-300) : alive;
+    // Connecting line through trail
+    if (trail.length > 2) {
+      ctx.beginPath();
+      ctx.moveTo(trail[0].x, trail[0].y);
+      for (let i = 1; i < trail.length - 1; i++) {
+        const xc = (trail[i].x + trail[i + 1].x) / 2;
+        const yc = (trail[i].y + trail[i + 1].y) / 2;
+        ctx.quadraticCurveTo(trail[i].x, trail[i].y, xc, yc);
+      }
+      ctx.strokeStyle = `hsla(33, 89%, 51%, ${0.12 * globalAlpha})`;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Main cursor dot (bright)
+    ctx.beginPath();
+    ctx.arc(newHead.x, newHead.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = `hsla(33, 89%, 51%, ${0.9 * globalAlpha})`;
+    ctx.fill();
+
+    // Outer ring
+    ctx.beginPath();
+    ctx.arc(newHead.x, newHead.y, 12, 0, Math.PI * 2);
+    ctx.strokeStyle = `hsla(33, 89%, 51%, ${0.25 * globalAlpha})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
 
     rafRef.current = requestAnimationFrame(draw);
-  }, [spawnParticle]);
+  }, []);
 
   useEffect(() => {
     if ("ontouchstart" in window) return;
@@ -188,7 +162,7 @@ const BrushCursor = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 99998, willChange: "transform" }}
+      style={{ zIndex: 99999, willChange: "transform" }}
     />
   );
 };
