@@ -4792,6 +4792,7 @@ function handleRoute(){
   const page=PAGE_ROUTES[hash];
   if(page){S.page=page;}
   else{S.page='browse';}
+  document.title=ROUTE_TITLES[S.page]||ROUTE_TITLES['browse'];
 }
 window.addEventListener('hashchange',()=>{
   if(window._routeInternal){window._routeInternal=false;return;}
