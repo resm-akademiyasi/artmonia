@@ -13,9 +13,21 @@
 <meta property="og:url" content="https://online.artmoniya.com">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Artmonia — Online Rəssamlıq Akademiyası">
+<meta name="twitter:description" content="Professional rəssamlıq kursları. İstənilən vaxt, istənilən yerdən öyrənin.">
+<meta name="twitter:image" content="https://online.artmoniya.com/og-image.jpg">
+<meta property="og:locale" content="az_AZ">
+<meta property="og:site_name" content="Artmonia Academy">
+<meta name="theme-color" content="#070614">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://online.artmoniya.com">
+<link rel="alternate" hreflang="az" href="https://online.artmoniya.com">
+<link rel="alternate" hreflang="ru" href="https://online.artmoniya.com?lang=ru">
+<link rel="alternate" hreflang="en" href="https://online.artmoniya.com?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://online.artmoniya.com">
 <meta name="google-site-verification" content="kx6NfaXRSk6eySOtpgZYcICOosDwWQ3swNCqsQH-WRc" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070614'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='40' font-weight='bold' fill='%23F28E14' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070614'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='40' font-weight='bold' fill='%23F28E14' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <style>
@@ -91,6 +103,9 @@ body{font-family:"Nunito Sans",sans-serif;background:var(--bg);color:var(--text)
 .slider-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);color:white;width:50px;height:50px;border-radius:50%;cursor:pointer;font-size:20px;transition:all .2s;display:flex;align-items:center;justify-content:center}
 .slider-arrow:hover{background:rgba(242,142,20,.2);border-color:var(--orange)}
 .arrow-l{left:28px}.arrow-r{right:28px}
+/* DEMO BANNER */
+.demo-banner{background:linear-gradient(135deg,var(--orange) 0%,var(--orange2) 100%);color:white;text-align:center;padding:18px 24px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;font-family:"Nunito Sans",sans-serif}
+@media(max-width:600px){.demo-banner{flex-direction:column;padding:16px 18px;gap:12px}.demo-banner span{font-size:15px!important}.demo-banner .btn{width:100%;justify-content:center}}
 /* BROWSE */
 .browse{padding:52px 0 0}
 .cat-row{margin-bottom:52px;padding:0 44px}
@@ -552,6 +567,16 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:36px 44
 .lt-result-icon{font-size:56px;margin-bottom:12px}
 .lt-result-title{font-size:22px;font-weight:900;margin-bottom:8px}
 .lt-result-sub{font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.65;font-weight:600}
+/* WELCOME QUIZ */
+.quiz-overlay{position:fixed;inset:0;z-index:500;background:rgba(4,2,18,.95);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;padding:20px;animation:wOverlayIn .4s ease}
+.quiz-box{background:var(--card);border:1.5px solid var(--border2);border-top:3px solid var(--orange);border-radius:20px;padding:40px;max-width:480px;width:100%;animation:wBoxIn .5s cubic-bezier(.22,1,.36,1)}
+.quiz-progress{display:flex;gap:6px;margin-bottom:28px}
+.quiz-dot{height:4px;border-radius:2px;flex:1;background:var(--border2);transition:background .3s}
+.quiz-dot.done{background:var(--orange)}
+.quiz-question{font-size:18px;font-weight:900;color:var(--text);margin-bottom:20px;line-height:1.4}
+.quiz-option{display:block;width:100%;padding:13px 18px;background:rgba(255,255,255,.04);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:"Nunito Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;text-align:left;transition:all .2s}
+.quiz-option:hover{border-color:var(--orange);background:rgba(242,142,20,.08);color:white}
+.quiz-skip{background:none;border:none;color:var(--text3);font-size:12px;font-weight:700;cursor:pointer;margin-top:12px;padding:4px 8px}
 @media(max-width:768px){
   .slide-bg{transform:none!important;transition:none!important}
   .nav{padding:0 12px;height:56px}
@@ -641,8 +666,46 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:36px 44
   .cert-promo{padding:36px 16px}
   /* Scroll buttons inside on mobile */
   .sb-l{left:4px}.sb-r{right:4px}
+  /* Minimum touch targets */
+  .btn,.auth-btn,.mnav-item,.slider-arrow,.dot,.comment-del,.faq-q,.part-card,.scroll-btn{min-height:44px;min-width:44px}
+  .btn-sm{min-height:44px;padding:10px 16px}
+  .slide-actions .btn{padding:12px 20px;font-size:13px}
+  /* Prevent iOS zoom on input focus */
+  input,select,textarea,.f-input{font-size:16px!important}
+  /* Auth modal mobile fixes */
+  .modal{max-height:90vh;overflow-y:auto;padding:24px 16px}
+  .f-input{padding:14px}
+  .auth-btn{padding:16px 24px}
+  /* Mobile navbar touch targets */
+  .mnav-item{padding:10px 4px;min-height:52px}
+  .mnav-icon{font-size:22px}
+  /* Hero CTA buttons */
+  .slide-actions{flex-wrap:wrap;gap:10px}
+  .slide-actions .btn-lg{padding:12px 22px;font-size:13px;width:auto}
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "Artmonia Academy",
+  "url": "https://online.artmoniya.com",
+  "description": "Azərbaycanın ilk professional online rəssamlıq akademiyası",
+  "logo": "https://online.artmoniya.com/logo.png",
+  "sameAs": ["https://instagram.com/artmonia.az"],
+  "areaServed": "AZ",
+  "teaches": ["Yağlı boya", "Akril boya", "Suluboya", "Rəssamlıq"],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Rəssamlıq Kursları",
+    "itemListElement": [
+      {"@type": "Offer", "itemOffered": {"@type": "Course", "name": "Yağlı Boya Kursları"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Course", "name": "Akril Boya Kursları"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Course", "name": "Suluboya Kursları"}}
+    ]
+  }
+}
+</script>
 </head>
 <body>
 <div id="app"></div>
@@ -654,7 +717,7 @@ const TRANSLATIONS = {
   az: {
     // Navbar
     nav_watch:'İzlə', nav_about:'Haqqımızda', nav_courses:'Kurslar', nav_info:'Məlumat',
-    nav_community:'🎨 İcma', nav_profile:'Profilim', nav_login:'Daxil ol', nav_subscribe:'Abunə ol',
+    nav_community:'🎨 İcma', nav_profile:'Profilim', nav_login:'Daxil ol', nav_subscribe:'Hesab Yarat',
     nav_logout:'Çıxış', nav_search:'Kurs axtar...',
     nav_academy:'Akademiya haqqında', nav_online:'Online dərslər', nav_cert:'Sertifikat proqramı',
     nav_results:'Tələbə nəticələri', nav_teachers:'Müəllimlər',
@@ -675,8 +738,11 @@ const TRANSLATIONS = {
     auth_step1:'Emailinizi açın', auth_step2:'"Emaili Təsdiq Et" linkə basın',
     auth_step3:'Sayta qayıdın və daxil olun', auth_resend:'📤 Təsdiq linkini yenidən göndər',
     auth_already_confirmed:'Artıq təsdiq etdim → Daxil ol', auth_spam:'Email gəlməyibsə spam/junk qovluğunu yoxlayın',
+    auth_spam_tip:'💡 Spam/Junk qovluğunu mütləq yoxlayın! noreply@artmoniya.com ünvanını kontaktlara əlavə edin ki, email itməsin.',
+    auth_try_login:'✅ Emaili təsdiq etdim, daxil et',
+    auth_not_confirmed_yet:'Email hələ təsdiq olunmayıb',
     // Hero/Home
-    hero_subscribe:'Abunə ol', hero_watch:'▶ İzlə',
+    hero_subscribe:'Hesab Yarat', hero_watch:'▶ İzlə',
     continue_label:'Davam et',
     // Courses
     free_badge:'PULSUZ', parts_label:'hissə',
@@ -714,7 +780,7 @@ const TRANSLATIONS = {
   ru: {
     // Navbar
     nav_watch:'Смотреть', nav_about:'О нас', nav_courses:'Курсы', nav_info:'Информация',
-    nav_community:'🎨 Сообщество', nav_profile:'Профиль', nav_login:'Войти', nav_subscribe:'Подписаться',
+    nav_community:'🎨 Сообщество', nav_profile:'Профиль', nav_login:'Войти', nav_subscribe:'Создать аккаунт',
     nav_logout:'Выйти', nav_search:'Поиск курса...',
     nav_academy:'Об академии', nav_online:'Онлайн уроки', nav_cert:'Сертификаты',
     nav_results:'Результаты учеников', nav_teachers:'Преподаватели',
@@ -735,8 +801,11 @@ const TRANSLATIONS = {
     auth_step1:'Откройте email', auth_step2:'Нажмите "Подтвердить email"',
     auth_step3:'Вернитесь на сайт и войдите', auth_resend:'📤 Отправить ссылку повторно',
     auth_already_confirmed:'Уже подтвердил → Войти', auth_spam:'Если письмо не пришло, проверьте папку спам',
+    auth_spam_tip:'💡 Обязательно проверьте папку Спам/Нежелательная почта! Добавьте noreply@artmoniya.com в контакты, чтобы письма не терялись.',
+    auth_try_login:'✅ Я подтвердил email, войти',
+    auth_not_confirmed_yet:'Email ещё не подтверждён',
     // Hero/Home
-    hero_subscribe:'Подписаться', hero_watch:'▶ Смотреть',
+    hero_subscribe:'Создать аккаунт', hero_watch:'▶ Смотреть',
     continue_label:'Продолжить',
     // Courses
     free_badge:'БЕСПЛАТНО', parts_label:'урок',
@@ -770,6 +839,69 @@ const TRANSLATIONS = {
     welcome_guide_title:'🎨 Как ты будешь учиться?',
     // Parts
     parts_title:'Урок', parts_free:'БЕСПЛАТНО', parts_watched:'✓ ПРОСМОТРЕНО',
+  },
+  en: {
+    // Navbar
+    nav_watch:'Watch', nav_about:'About Us', nav_courses:'Courses', nav_info:'Info',
+    nav_community:'🎨 Community', nav_profile:'My Profile', nav_login:'Sign In', nav_subscribe:'Create Account',
+    nav_logout:'Log Out', nav_search:'Search courses...',
+    nav_academy:'About Academy', nav_online:'Online Lessons', nav_cert:'Certificate Program',
+    nav_results:'Student Results', nav_teachers:'Teachers',
+    nav_all_courses:'All Courses', nav_free:'Free Lessons', nav_beginner:'Beginner',
+    nav_mid:'Intermediate', nav_adv:'Advanced',
+    nav_blog:'Blog & Articles', nav_faq:'FAQ', nav_forum:'Forum', nav_help:'Help',
+    // Auth
+    auth_welcome:'Welcome! 👋', auth_create:'Create Account 🎨',
+    auth_login_sub:'Sign in to your account', auth_reg_sub:'Free registration · No card required',
+    auth_name:'Full Name', auth_phone:'Phone', auth_email:'Email address', auth_password:'Password',
+    auth_optional:'(optional)', auth_min8:'(min. 8 characters)',
+    auth_remember:'Remember me', auth_forgot:'Forgot password?',
+    auth_login_btn:'Sign In →', auth_reg_btn:'Create Account →',
+    auth_terms:'Terms of Use', auth_privacy:'Privacy Policy',
+    auth_have_acc:'Already have an account?', auth_no_acc:'Don\'t have an account?',
+    auth_free_reg:'Free Registration', auth_signin:'Sign In',
+    auth_confirm_title:'Confirm your email', auth_confirm_sent:'A confirmation link was sent to',
+    auth_step1:'Open your email', auth_step2:'Click "Confirm Email" link',
+    auth_step3:'Return to the site and sign in', auth_resend:'📤 Resend confirmation link',
+    auth_already_confirmed:'Already confirmed → Sign In', auth_spam:'If you didn\'t receive the email, check your spam/junk folder',
+    auth_spam_tip:'💡 Be sure to check your Spam/Junk folder! Add noreply@artmoniya.com to your contacts so emails don\'t get lost.',
+    auth_try_login:'✅ I confirmed my email, sign in',
+    auth_not_confirmed_yet:'Email not yet confirmed',
+    // Hero/Home
+    hero_subscribe:'Create Account', hero_watch:'▶ Watch',
+    continue_label:'Continue',
+    // Courses
+    free_badge:'FREE', parts_label:'parts',
+    course_for:'This course is for:', course_materials:'Required materials',
+    course_download:'⬇ Download reference photo + sketch guide',
+    fomo_text:'In the last 24 hours', fomo_suffix:'people watched',
+    // Subscription
+    sub_title:'These Lessons Require Subscription', sub_desc:'Subscribe for unlimited access to all courses.',
+    sub_price:'₼29', sub_price_sub:'monthly · cancel anytime',
+    money_back:'30-day money-back guarantee', money_back_desc:'If you\'re not satisfied after watching a full course, we\'ll refund your money — no questions asked.',
+    sub_btn:'Subscribe',
+    // Footer
+    footer_forum:'Forum', footer_help:'Help', footer_terms:'Terms', footer_privacy:'Privacy',
+    // Level test
+    lt_title:'Find Your Level', lt_q1:'How much experience do you have with painting?',
+    lt_q1_a:['Never tried','Sometimes for fun','Been learning for a while','Want to go professional'],
+    lt_q2:'Which technique interests you most?',
+    lt_q2_a:['Oil painting','Acrylic','Watercolor','Not sure yet'],
+    lt_q3:'What is your goal?',
+    lt_q3_a:['Learn as a hobby','Get a certificate','Professional career','Just curious'],
+    lt_result_btn:'🎨 Start with this course →', lt_all_courses:'View all courses',
+    // Streak
+    streak_days:'days', streak_label:'Streak', week_label:'min this week',
+    // Toast
+    toast_welcome:'Welcome', toast_logout:'Logged out',
+    // Mobile navbar
+    mnav_home:'Home', mnav_courses:'Courses', mnav_profile:'Profile', mnav_community:'Community',
+    // Welcome
+    welcome_greeting:'Good luck,', welcome_desc:'You\'ll discover your talent.',
+    welcome_next:'Next →', welcome_skip:'Skip',
+    welcome_guide_title:'🎨 How will you learn painting?',
+    // Parts
+    parts_title:'Part', parts_free:'FREE', parts_watched:'✓ WATCHED',
   }
 };
 function t(key){ return (TRANSLATIONS[S.lang||'az']||TRANSLATIONS.az)[key]||TRANSLATIONS.az[key]||key; }
@@ -799,11 +931,12 @@ let S={
   page:'browse', user:null, courses:JSON.parse(JSON.stringify(INIT_COURSES)),
   selectedCourse:null, activePart:null,
   authMode:null, adminLogin:false, adminSection:'stats',
+  adminSessionStart:0, adminLog:JSON.parse(localStorage.getItem('admin_log')||'[]'),
   editingCourseId:null, mobileMenu:false,
   searchQuery:'', searchResults:[],
   progress:{}, comments:{}, certificates:[],
   subscription:null,
-  activeEmbedUrl:null, videoLoading:false, pendingEmail:null, _commentsLoading:false,
+  activeEmbedUrl:null, videoLoading:false, pendingEmail:null, pendingPassword:null, _commentsLoading:false,
   siteStats:{
     students:{manual:1200,real:0,useReal:false},
     certificates:{manual:340,real:0,useReal:false},
@@ -811,6 +944,9 @@ let S={
     courses:{manual:0,real:0,useReal:true},
   },
   realStatsLoaded:false,
+  adminCustomers:[],
+  adminCustomersLoading:false,
+  adminCustomerSearch:'',
   siteTexts:{
     heroTitle1:'Payız Ağacı ilə Başla',
     heroDesc1:'Yağlı boya texnikasını pulsuz öyrən — rəssamlığın ilk addımları burada başlayır.',
@@ -893,9 +1029,19 @@ let S={
   viewerCounts:{},
   levelTestDone:false,
   showLevelTest:false,
+  showSubOffer:false,
   levelTestStep:0,
   levelTestAnswers:[],
   levelTestResult:null,
+  showQuiz:!localStorage.getItem('artmonia_quiz_done')&&!localStorage.getItem('artmonia_user'),
+  quizStep:0,
+  quizAnswers:{},
+  quizQuestions:[
+    {q:'Rəssamlıq təcrübəniz nə səviyyədədir?',opts:['Heç çəkməmişəm','Hobbi olaraq çəkirəm','Orta səviyyə','Peşəkar səviyyə']},
+    {q:'Yaş qrupunuz?',opts:['14 yaşdan kiçik','14-18','19-25','26-35','36+']},
+    {q:'Hansı texnika sizi daha çox maraqlandırır?',opts:['Yağlı boya','Akril boya','Suluboya','Rəqəmsal rəsm','Hamısı']},
+    {q:'Artmonia-dan nə gözləyirsiniz?',opts:['Hobbi kimi öyrənmək','Peşəkar olmaq','Uşağıma öyrətmək','Terapiya / relaksasiya']}
+  ],
 }; 
 let slideIdx=0, slideTimer=null, sb=null;
 
@@ -1351,7 +1497,16 @@ function navHTML(){
       <input placeholder="Kurs axtar..." onkeydown="if(event.key==='Enter')doSearch(this.value)" value="${esc(S.searchQuery)}">
     </div>
     <div class="nav-right">
-      <button onclick="toggleLang()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;color:var(--text2);font-size:12px;font-weight:800;padding:5px 10px;cursor:pointer;transition:all .2s" title="Dil seç">${S.lang==='ru'?'🇷🇺 RU':'🇦🇿 AZ'}</button>
+      <div class="lang-selector" style="position:relative">
+        <button class="btn btn-outline btn-sm" onclick="toggleLangMenu()" id="lang-btn">
+          ${S.lang==='az'?'🇦🇿 AZ':S.lang==='ru'?'🇷🇺 RU':'🇬🇧 EN'}
+        </button>
+        <div class="lang-menu" id="lang-menu" style="display:none;position:absolute;top:100%;right:0;margin-top:6px;background:rgba(10,9,25,0.98);border:1.5px solid var(--border);border-radius:10px;padding:6px;z-index:999;min-width:160px;backdrop-filter:blur(20px)">
+          <div onclick="setLang('az')" style="padding:10px 14px;cursor:pointer;border-radius:6px;font-size:13px;font-weight:700;color:${S.lang==='az'?'var(--orange)':'var(--text2)'};display:flex;align-items:center;gap:10px;transition:all .2s" onmouseover="this.style.background='rgba(242,142,20,.1)'" onmouseout="this.style.background='transparent'">🇦🇿 Azərbaycan</div>
+          <div onclick="setLang('ru')" style="padding:10px 14px;cursor:pointer;border-radius:6px;font-size:13px;font-weight:700;color:${S.lang==='ru'?'var(--orange)':'var(--text2)'};display:flex;align-items:center;gap:10px;transition:all .2s" onmouseover="this.style.background='rgba(242,142,20,.1)'" onmouseout="this.style.background='transparent'">🇷🇺 Русский</div>
+          <div onclick="setLang('en')" style="padding:10px 14px;cursor:pointer;border-radius:6px;font-size:13px;font-weight:700;color:${S.lang==='en'?'var(--orange)':'var(--text2)'};display:flex;align-items:center;gap:10px;transition:all .2s" onmouseover="this.style.background='rgba(242,142,20,.1)'" onmouseout="this.style.background='transparent'">🇬🇧 English</div>
+        </div>
+      </div>
       ${S.user
         ? `<span style="font-size:13px;color:var(--text3);font-weight:700">👤 ${esc(S.user.name)}</span>
            <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px" onclick="signOut()">${t('nav_logout')}</button>`
@@ -1374,7 +1529,7 @@ function navHTML(){
     <a onclick="goPage('forum');closeMobile()">💬 Forum</a>
     ${S.user
       ? `<a onclick="goPage('profile');closeMobile()">👤 Profilim</a><a onclick="signOut();closeMobile()">Çıxış</a>`
-      : `<a onclick="openAuth('login');closeMobile()">Daxil ol</a><a onclick="openAuth('register');closeMobile()">Abunə ol</a>`}
+      : `<a onclick="openAuth('login');closeMobile()">Daxil ol</a><a onclick="openAuth('register');closeMobile()">Hesab Yarat</a>`}
   </div>`;
 }
 function heroHTML(){
@@ -1604,16 +1759,21 @@ function authModalHTML(){
             <div class="confirm-step"><span class="confirm-step-num">2</span>${t('auth_step2')}</div>
             <div class="confirm-step"><span class="confirm-step-num">3</span>${t('auth_step3')}</div>
           </div>
+          <div style="background:rgba(242,142,20,.10);border:1.5px solid rgba(242,142,20,.3);border-radius:10px;padding:12px 14px;margin:12px 0 16px;text-align:left">
+            <p style="font-size:12.5px;color:var(--text1);font-weight:700;margin:0;line-height:1.5">
+              ${t('auth_spam_tip')}
+            </p>
+          </div>
           <div id="confirm-msg"></div>
-          <button class="auth-btn" style="margin-bottom:10px" onclick="resendConfirmation()">
+          <button class="auth-btn" onclick="trySignInAfterConfirm()" style="margin-bottom:8px">
+            ${t('auth_try_login')}
+          </button>
+          <button class="auth-btn" style="margin-bottom:8px;background:var(--bg3);color:var(--text2)" onclick="resendConfirmation()">
             ${t('auth_resend')}
           </button>
           <button class="btn btn-ghost full-btn" onclick="closeAuth()" style="margin-top:0">
             ← ${S.lang==='ru'?'Назад':'Geri qayıt'}
           </button>
-          <p style="font-size:11px;color:var(--text3);margin-top:14px;font-weight:600">
-            ${t('auth_spam')}
-          </p>
         </div>
       </div>
     </div>`;
@@ -1764,17 +1924,40 @@ function authModalHTML(){
 
 function adminLoginHTML(){
   if(!S.adminLogin)return '';
+  const att=getAdminAttempts();
+  const locked=att.lockUntil&&Date.now()<att.lockUntil;
+  const lockMsg=locked?(()=>{const r=att.lockUntil-Date.now(),m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);return 'Çox cəhd etdiniz. '+m+' dəqiqə '+s+' saniyə gözləyin';})():'';
   return `<div class="overlay open" onclick="if(event.target===this)closeAdminLogin()">
     <div class="modal">
       <button class="modal-close" onclick="closeAdminLogin()">✕</button>
       <div class="modal-logo"><img src="${LOGO}" alt="Artmonia"></div>
       <div style="font-size:18px;font-weight:900;margin-bottom:6px">Admin Girişi</div>
       <div class="modal-sub">Admin şifrəsini daxil edin</div>
-      <div id="admin-error" class="f-error"></div>
+      <div id="admin-error" class="f-error ${locked?'show':''}">${lockMsg}</div>
       <div class="f-group"><label class="f-label">Şifrə</label>
-        <input class="f-input" id="admin-pw-inp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')tryAdmin()">
+        <input class="f-input" id="admin-pw-inp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')tryAdmin()" ${locked?'disabled':''}>
       </div>
-      <button class="btn btn-orange btn-lg full-btn" onclick="tryAdmin()">Daxil ol</button>
+      <button class="btn btn-orange btn-lg full-btn" onclick="tryAdmin()" ${locked?'disabled':''}>Daxil ol</button>
+    </div>
+  </div>`;
+}
+function adminLogHTML(){
+  const logs=S.adminLog.slice().reverse();
+  return `<div class="a-card"><div class="a-card-title">📋 Admin Fəaliyyət Loqu</div>
+    <div style="display:flex;gap:10px;margin-bottom:16px">
+      <button class="btn btn-ghost" onclick="S.adminLog=[];localStorage.removeItem('admin_log');render();showToast('Log təmizləndi')">🗑️ Loqu Təmizlə</button>
+      <span style="color:var(--text3);font-size:13px;align-self:center">${logs.length} qeyd</span>
+    </div>
+    ${logs.length===0?'<div style="color:var(--text3);padding:24px;text-align:center">Hələ heç bir fəaliyyət qeyd olunmayıb</div>':''}
+    <div style="max-height:500px;overflow-y:auto">
+    ${logs.map(l=>{
+      const d=new Date(l.time);
+      const dt=d.toLocaleDateString('az-AZ')+' '+d.toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border2);font-size:13px">
+        <span style="color:var(--text)">${l.action}</span>
+        <span style="color:var(--text3);font-size:11px;white-space:nowrap;margin-left:12px">${dt}</span>
+      </div>`;
+    }).join('')}
     </div>
   </div>`;
 }
@@ -1853,7 +2036,7 @@ function profilePageHTML(){
 function adminPageHTML(){
   const courses=S.courses,freeCnt=courses.filter(c=>c.free).length;
   const totalP=courses.reduce((s,c)=>s+c.parts.length,0);
-  const navItems=[{id:'stats',icon:'📊',l:'Statistika'},{id:'site-numbers',icon:'🔢',l:'Sayt Rəqəmləri'},{id:'texts',icon:'✏️',l:'Mətn Redaktoru'},{id:'hero-images',icon:'🖼️',l:'Hero Şəkilləri'},{id:'promo',icon:'🎁',l:'Promo Təklif'},{id:'courses',icon:'🎬',l:'Kurslar'},{id:'add',icon:'➕',l:'Kurs Əlavə Et'},{id:'reviews',icon:'⭐',l:'Tələbə Rəyləri'},{id:'questions-admin',icon:'❓',l:'Tələbə Sualları'},{id:'works-admin',icon:'🖼️',l:'Paylaşılan İşlər'},{id:'teachers',icon:'👨‍🎨',l:'Müəllimlər'},{id:'settings',icon:'⚙️',l:'Parametrlər'}];
+  const navItems=[{id:'stats',icon:'📊',l:'Statistika'},{id:'site-numbers',icon:'🔢',l:'Sayt Rəqəmləri'},{id:'texts',icon:'✏️',l:'Mətn Redaktoru'},{id:'hero-images',icon:'🖼️',l:'Hero Şəkilləri'},{id:'promo',icon:'🎁',l:'Promo Təklif'},{id:'courses',icon:'🎬',l:'Kurslar'},{id:'add',icon:'➕',l:'Kurs Əlavə Et'},{id:'reviews',icon:'⭐',l:'Tələbə Rəyləri'},{id:'questions-admin',icon:'❓',l:'Tələbə Sualları'},{id:'works-admin',icon:'🖼️',l:'Paylaşılan İşlər'},{id:'teachers',icon:'👨‍🎨',l:'Müəllimlər'},{id:'quiz-results',icon:'📊',l:'Sorğu'},{id:'admin-log',icon:'📋',l:'Log'},{id:'customers',icon:'👥',l:'Müştərilər'},{id:'settings',icon:'⚙️',l:'Parametrlər'}];
   let content='';
   if(S.adminSection==='stats'){
     const withLink=courses.reduce((s,c)=>s+c.parts.filter(p=>p.vimeo).length,0);
@@ -2409,6 +2592,15 @@ function adminPageHTML(){
       <button class="btn btn-orange" onclick="adminGrantSub()">✅ Abunəlik Ver</button>
     </div>`;
   }
+  if(S.adminSection==='customers'){
+    content=adminCustomersHTML();
+  }
+  if(S.adminSection==='quiz-results'){
+    content=adminQuizHTML();
+  }
+  if(S.adminSection==='admin-log'){
+    content=adminLogHTML();
+  }
   return `<div class="admin-page">
     <div class="admin-header">
       <div style="display:flex;align-items:center;gap:16px">
@@ -2772,6 +2964,110 @@ function searchPageHTML(){
   </div>`;
 }
 
+// ── SUB OFFER MODAL ────────────────────────────────────────
+function subOfferModalHTML(){
+  if(!S.showSubOffer) return '';
+  return `<div style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this){S.showSubOffer=false;render();}">
+    <div style="background:var(--card);border:1.5px solid var(--border);border-radius:16px;max-width:440px;width:100%;padding:36px 32px;text-align:center;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.6)">
+      <button onclick="S.showSubOffer=false;render()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer">✕</button>
+      <div style="font-size:48px;margin-bottom:12px">🎨</div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;margin-bottom:8px;color:var(--text)">Xoş gəldiniz! Xüsusi Təklif</h2>
+      <p style="color:var(--text3);font-size:14px;margin-bottom:24px">Premium abunəliklə bütün imkanlardan yararlanın</p>
+      <div style="text-align:left;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:18px 20px;margin-bottom:24px">
+        <div style="color:var(--green);font-size:14px;font-weight:700;margin-bottom:8px">✓ Bütün kurslara sınırsız giriş</div>
+        <div style="color:var(--green);font-size:14px;font-weight:700;margin-bottom:8px">✓ Yeni kurslar hər ay əlavə olunur</div>
+        <div style="color:var(--green);font-size:14px;font-weight:700;margin-bottom:8px">✓ Sertifikat proqramı</div>
+        <div style="color:var(--green);font-size:14px;font-weight:700;margin-bottom:8px">✓ Müəllim dəstəyi</div>
+        <div style="color:var(--green);font-size:14px;font-weight:700">✓ İstənilən vaxt ləğv edin</div>
+      </div>
+      <div style="font-size:36px;font-weight:900;color:var(--orange);margin-bottom:4px">₼29<span style="font-size:16px;font-weight:600;color:var(--text3)">/ay</span></div>
+      <p style="color:var(--text3);font-size:12px;margin-bottom:20px">30 gün ərzində məmnun qalmasanız pulu geri qaytarırıq</p>
+      <button class="btn btn-orange btn-lg" style="width:100%;justify-content:center;font-size:15px;padding:14px 28px;margin-bottom:12px" onclick="S.showSubOffer=false;S.page='subscribe';render()">Abunə Ol →</button>
+      <button style="background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:8px;font-family:'Nunito Sans',sans-serif;font-weight:600" onclick="S.showSubOffer=false;render()">Sonra baxaram</button>
+    </div>
+  </div>`;
+}
+
+// ── DEMO BANNER ────────────────────────────────────────────
+function demoBannerHTML(){
+  if(S.user) return '';
+  return `<div class="demo-banner">
+    <span style="font-size:18px;font-weight:800">🎁 Qeydiyyatdan keçin, 2 pulsuz demo dərsə giriş əldə edin!</span>
+    <button class="btn btn-orange" style="background:white;color:#e67e00;font-weight:900;margin-left:16px;border-radius:20px;padding:9px 24px" onclick="openAuth('register')">Hesab Yarat →</button>
+  </div>`;
+}
+
+// ── WELCOME QUIZ ────────────────────────────────────────────
+function quizPopupHTML(){
+  if(!S.showQuiz||S.user) return '';
+  const qs=S.quizQuestions;
+  const step=S.quizStep;
+  if(step===-1){
+    return `<div class="quiz-overlay">
+      <div class="quiz-box" style="text-align:center">
+        <div style="font-size:52px;margin-bottom:16px">🎨</div>
+        <div style="font-size:22px;font-weight:900;margin-bottom:10px">Təşəkkürlər!</div>
+        <div style="font-size:14px;color:var(--text2);line-height:1.65;font-weight:600;margin-bottom:28px">Cavablarınız qeydə alındı. İndi Artmonia dünyasını kəşf edin!</div>
+        <button class="btn btn-orange btn-lg" style="width:100%;justify-content:center;font-size:15px;padding:14px 28px" onclick="closeQuiz()">Başla →</button>
+      </div>
+    </div>`;
+  }
+  if(step>=0&&step<qs.length){
+    const q=qs[step];
+    return `<div class="quiz-overlay">
+      <div class="quiz-box">
+        <div style="font-size:12px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px">Sorğu — ${step+1}/${qs.length}</div>
+        <div class="quiz-progress">
+          ${qs.map((_,i)=>`<div class="quiz-dot ${i<=step?'done':''}"></div>`).join('')}
+        </div>
+        <div class="quiz-question">${q.q}</div>
+        ${q.opts.map((opt,i)=>`<button class="quiz-option" onclick="selectQuizAnswer(${step},'${opt.replace(/'/g,"\\'")}')">${opt}</button>`).join('')}
+        <button class="quiz-skip" onclick="closeQuiz()">Keç →</button>
+      </div>
+    </div>`;
+  }
+  return '';
+}
+
+function selectQuizAnswer(step,answer){
+  S.quizAnswers[step]=answer;
+  if(step<S.quizQuestions.length-1){
+    S.quizStep=step+1;
+    render();
+  } else {
+    S.quizStep=-1;
+    localStorage.setItem('artmonia_quiz_done','1');
+    localStorage.setItem('artmonia_quiz_answers',JSON.stringify(S.quizAnswers));
+    render();
+  }
+}
+
+function closeQuiz(){
+  S.showQuiz=false;
+  localStorage.setItem('artmonia_quiz_done','1');
+  render();
+}
+
+function adminQuizHTML(){
+  const qs=S.quizQuestions;
+  let savedAnswers=null;
+  try{ savedAnswers=JSON.parse(localStorage.getItem('artmonia_quiz_answers')||'null'); }catch(e){}
+  return `<div class="a-card"><div class="a-card-title">📊 Sorğu Sualları</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:20px;font-weight:600">İlk dəfə daxil olan istifadəçilərə göstərilən sorğu sualları.</p>
+    ${qs.map((q,i)=>`<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:16px;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:900;color:var(--text);margin-bottom:10px">${i+1}. ${q.q}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">${q.opts.map(o=>`<span style="display:inline-block;padding:5px 12px;background:rgba(242,142,20,.08);border:1px solid rgba(242,142,20,.2);border-radius:6px;font-size:12px;font-weight:700;color:var(--orange)">${o}</span>`).join('')}</div>
+    </div>`).join('')}
+  </div>
+  ${savedAnswers?`<div class="a-card" style="margin-top:20px"><div class="a-card-title">📋 Son Sorğu Cavabları</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;font-weight:600">localStorage-dən oxunan son cavablar:</p>
+    ${Object.entries(savedAnswers).map(([k,v])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg2);border-radius:8px;margin-bottom:8px">
+      <span style="font-size:13px;font-weight:700;color:var(--text2)">Sual ${parseInt(k)+1}</span>
+      <span style="font-size:13px;font-weight:800;color:var(--orange)">${v}</span>
+    </div>`).join('')}
+  </div>`:''}`;
+}
+
 // ── MAIN RENDER ─────────────────────────────────────────────
 function render(){
   const app=document.getElementById('app');
@@ -2792,43 +3088,57 @@ function render(){
     ltEl.innerHTML=levelTestHTML();
     document.body.appendChild(ltEl);
   }
+  // Welcome quiz overlay
+  const qzOld=document.getElementById('quiz-wrap');
+  if(qzOld) qzOld.remove();
+  if(S.showQuiz&&!S.user){
+    const qzEl=document.createElement('div');
+    qzEl.id='quiz-wrap';
+    qzEl.innerHTML=quizPopupHTML();
+    document.body.appendChild(qzEl);
+  }
   if(S.page==='admin'){
-    app.innerHTML=navHTML()+adminPageHTML()+authModalHTML()+adminLoginHTML();
+    if(S.adminSessionStart&&Date.now()-S.adminSessionStart>1800000){
+      S.user&&(S.user.admin=false);S.adminSessionStart=0;S.page='browse';
+      if(window._adminSessionInterval){clearInterval(window._adminSessionInterval);window._adminSessionInterval=null;}
+      showToast('Admin sessiya vaxtı bitdi','error');render();return;
+    }
+    app.innerHTML=navHTML()+adminPageHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(S.page==='video'){
-    app.innerHTML=navHTML()+videoPageHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+videoPageHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
     if(S.selectedCourse && !S._commentsLoading){
       S._commentsLoading=true;
       loadComments(S.selectedCourse.id).finally(()=>{S._commentsLoading=false;});
     }
   } else if(S.page==='profile'){
-    app.innerHTML=navHTML()+profilePageHTML()+footerHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+profilePageHTML()+footerHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(S.page==='community'){
-    app.innerHTML=navHTML()+communityPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+communityPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
     setTimeout(()=>{
       if(S.communityTab==='works') loadStudentWorks();
       else if(S.communityTab==='questions'&&S.user) loadMyQuestions();
     },150);
   } else if(S.page==='search'){
-    app.innerHTML=navHTML()+searchPageHTML()+footerHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+searchPageHTML()+footerHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(['forum','help','terms','privacy'].includes(S.page)){
-    app.innerHTML=navHTML()+staticPageHTML(S.page)+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+staticPageHTML(S.page)+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(S.page==='about'){
-    app.innerHTML=navHTML()+aboutPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+aboutPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(S.page==='online-lessons'){
-    app.innerHTML=navHTML()+onlineLessonsPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+onlineLessonsPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(S.page==='results'){
-    app.innerHTML=navHTML()+resultsPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+resultsPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(S.page==='teachers'){
-    app.innerHTML=navHTML()+teachersPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+teachersPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(S.page==='certificates-page'){
-    app.innerHTML=navHTML()+certPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+certPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(S.page==='blog'){
-    app.innerHTML=navHTML()+blogPageHTML()+waButtonHTML()+footerHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+blogPageHTML()+waButtonHTML()+footerHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(S.page==='faq-page'){
-    app.innerHTML=navHTML()+faqStandalonePage()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+faqStandalonePage()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else {
     if(S.sessionKicked){app.innerHTML=kickedScreenHTML();return;}
-    app.innerHTML=navHTML()+continueCardHTML()+streakWidgetHTML()+heroHTML()+`<div class="browse">${CATEGORIES.map(catRowHTML).join('')}</div>`+statsSectionHTML()+testimonialsHTML()+certPromoHTML()+faqHTML()+blogSectionHTML()+footerHTML()+waButtonHTML()+promoHTML()+authModalHTML()+adminLoginHTML();
+    app.innerHTML=navHTML()+continueCardHTML()+streakWidgetHTML()+heroHTML()+demoBannerHTML()+`<div class="browse">${CATEGORIES.map(catRowHTML).join('')}</div>`+statsSectionHTML()+testimonialsHTML()+certPromoHTML()+faqHTML()+blogSectionHTML()+footerHTML()+waButtonHTML()+promoHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
     startSlider();
     animateCounters();
     if(S.promo.active && S.promo.expiresAt) setTimeout(startPromoTimer, 300);
@@ -2853,15 +3163,24 @@ function goHome(){
   render();window.scrollTo(0,0);
 }
 function goPage(p){S.page=p;S.mobileMenu=false;render();window.scrollTo(0,0);}
-function toggleLang(){
-  S.lang=S.lang==='ru'?'az':'ru';
+function toggleLangMenu(){
+  const m=document.getElementById('lang-menu');
+  if(m) m.style.display=m.style.display==='none'?'block':'none';
+}
+document.addEventListener('click',e=>{
+  const m=document.getElementById('lang-menu');
+  const b=document.getElementById('lang-btn');
+  if(m&&b&&!b.contains(e.target)&&!m.contains(e.target)) m.style.display='none';
+});
+function setLang(lang){
+  S.lang=lang;
   localStorage.setItem('artmonia_lang',S.lang);
   render();
 }
 function toggleMobile(){S.mobileMenu=!S.mobileMenu;render();}
 function closeMobile(){S.mobileMenu=false;}
 function openAuth(m){S.authMode=m;render();setTimeout(()=>document.getElementById('f-email')?.focus(),100);}
-function closeAuth(){S.authMode=null;render();}
+function closeAuth(){S.authMode=null;S.pendingPassword=null;render();}
 function closeAuthIfBg(e){if(e.target===document.getElementById('auth-overlay'))closeAuth();}
 function openAdminLogin(){S.adminLogin=true;render();}
 function closeAdminLogin(){S.adminLogin=false;render();}
@@ -2952,6 +3271,7 @@ async function submitAuth(){
   }
 
   if(btn){btn.innerHTML='<div class="spinner" style="width:18px;height:18px;border-width:2px;display:inline-block"></div> Gözləyin...';btn.disabled=true;}
+  const _btnResetTimer=setTimeout(()=>{if(btn&&btn.disabled){btn.innerHTML=mode==='login'?'Daxil ol →':'Hesab Yarat →';btn.disabled=false;}},5000);
   document.getElementById('auth-error')?.classList.remove('show');
 
   try{
@@ -2969,10 +3289,12 @@ async function submitAuth(){
       } else if(data?.user){
         S.authMode='confirm';
         S.pendingEmail=email;
+        S.pendingPassword=pw;
         render();
       } else {
         S.authMode='confirm';
         S.pendingEmail=email;
+        S.pendingPassword=pw;
         render();
       }
       return;
@@ -2982,6 +3304,11 @@ async function submitAuth(){
       await setUser(data.user);
       closeAuth();
       showToast('Xoş gəldiniz, '+(S.user?.name||'')+'! 👋');
+      if(!S.subscription && !localStorage.getItem('artmonia_sub_offer_shown')){
+        S.showSubOffer=true;
+        localStorage.setItem('artmonia_sub_offer_shown','1');
+        render();
+      }
       return;
     }
   }catch(e){
@@ -2998,6 +3325,7 @@ async function submitAuth(){
     const msg=msgs[e.message]||msgs[e.error_description]||('Xəta: '+e.message);
     showAuthError(msg);
   }
+  clearTimeout(_btnResetTimer);
   if(btn){btn.innerHTML=mode==='login'?'Daxil ol →':'Hesab Yarat →';btn.disabled=false;}
 }
 
@@ -3108,6 +3436,24 @@ async function resendConfirmation(){
   }catch(e){showToast('Xəta: '+e.message,'error');}
 }
 
+async function trySignInAfterConfirm(){
+  if(!sb||!S.pendingEmail||!S.pendingPassword) return;
+  try{
+    const {data,error}=await sb.auth.signInWithPassword({email:S.pendingEmail,password:S.pendingPassword});
+    if(error) throw error;
+    S.pendingPassword=null;
+    await setUser(data.user);
+    closeAuth();
+    showToast('Xoş gəldiniz, '+(S.user?.name||'')+'! 👋');
+  }catch(e){
+    if(e.message==='Email not confirmed'){
+      showToast(t('auth_not_confirmed_yet'),'error');
+    } else {
+      showToast('Xəta: '+e.message,'error');
+    }
+  }
+}
+
 // resetPassword köçürüldü sendResetLink-ə
 async function signOut(){
   clearInterval(window._sessionCheck);
@@ -3141,19 +3487,160 @@ async function adminGrantSub(){
   }catch(e){showToast('Xəta: '+e.message,'error');}
 }
 
+function logAdminAction(action){
+  const entry={action,time:new Date().toISOString()};
+  S.adminLog.push(entry);
+  if(S.adminLog.length>200) S.adminLog=S.adminLog.slice(-200);
+  localStorage.setItem('admin_log',JSON.stringify(S.adminLog));
+}
+function getAdminAttempts(){
+  try{return JSON.parse(localStorage.getItem('admin_attempts')||'{"count":0,"lockUntil":0}');}
+  catch(e){return {count:0,lockUntil:0};}
+}
+function setAdminAttempts(obj){localStorage.setItem('admin_attempts',JSON.stringify(obj));}
 function tryAdmin(){
   const inp=document.getElementById('admin-pw-inp');
   if(!inp)return;
-  if(inp.value===ADMIN_PASSWORD){S.page='admin';S.adminSection='stats';S.adminLogin=false;if(S.user)S.user.admin=true;render();}
-  else{const e=document.getElementById('admin-error');if(e){e.textContent='Şifrə səhvdir';e.className='f-error show';}}
+  const att=getAdminAttempts();
+  if(att.lockUntil&&Date.now()<att.lockUntil){
+    const remain=att.lockUntil-Date.now();
+    const m=Math.floor(remain/60000),s=Math.floor((remain%60000)/1000);
+    const e=document.getElementById('admin-error');
+    if(e){e.textContent='Çox cəhd etdiniz. '+m+' dəqiqə '+s+' saniyə gözləyin';e.className='f-error show';}
+    return;
+  }
+  if(att.lockUntil&&Date.now()>=att.lockUntil){att.count=0;att.lockUntil=0;setAdminAttempts(att);}
+  if(inp.value===ADMIN_PASSWORD){
+    setAdminAttempts({count:0,lockUntil:0});
+    S.page='admin';S.adminSection='stats';S.adminLogin=false;
+    if(S.user)S.user.admin=true;
+    S.adminSessionStart=Date.now();
+    const token=localStorage.getItem('admin_token')||Math.random().toString(36).slice(2,10);
+    localStorage.setItem('admin_token',token);
+    logAdminAction('Admin girişi');
+    if(window._adminSessionInterval) clearInterval(window._adminSessionInterval);
+    window._adminSessionInterval=setInterval(()=>{
+      if(S.page==='admin'&&S.adminSessionStart&&Date.now()-S.adminSessionStart>1800000){
+        S.user&&(S.user.admin=false);S.adminSessionStart=0;S.page='browse';
+        clearInterval(window._adminSessionInterval);window._adminSessionInterval=null;
+        showToast('Admin sessiya vaxtı bitdi','error');render();
+      }
+    },60000);
+    render();
+  } else {
+    att.count++;
+    if(att.count>=3){att.lockUntil=Date.now()+300000;}
+    setAdminAttempts(att);
+    const e=document.getElementById('admin-error');
+    if(e){
+      if(att.count>=3){
+        e.textContent='Çox cəhd etdiniz. 5 dəqiqə 0 saniyə gözləyin';e.className='f-error show';
+        if(window._adminLockTimer) clearInterval(window._adminLockTimer);
+        window._adminLockTimer=setInterval(()=>{
+          const rem=att.lockUntil-Date.now();
+          if(rem<=0){clearInterval(window._adminLockTimer);window._adminLockTimer=null;if(e){e.textContent='';e.className='f-error';}return;}
+          const m=Math.floor(rem/60000),s=Math.floor((rem%60000)/1000);
+          if(e) e.textContent='Çox cəhd etdiniz. '+m+' dəqiqə '+s+' saniyə gözləyin';
+        },1000);
+      } else {
+        e.textContent='Şifrə səhvdir ('+att.count+'/3)';e.className='f-error show';
+      }
+    }
+  }
 }
-function adminGo(sec){S.adminSection=sec;render();}
+async function adminLoadCustomers(){
+  if(!sb) return;
+  S.adminCustomersLoading=true;
+  render();
+  try{
+    const {data}=await sb.from('profiles').select('*').order('created_at',{ascending:false});
+    const {data:subs}=await sb.from('subscriptions').select('*').eq('status','active');
+    const subMap={};
+    (subs||[]).forEach(s=>subMap[s.user_id]=true);
+    S.adminCustomers=(data||[]).map(p=>({
+      ...p,
+      subscribed:!!subMap[p.id]
+    }));
+  }catch(e){console.error('Artmonia error:',e)}
+  S.adminCustomersLoading=false;
+  render();
+}
+function adminCustomersHTML(){
+  if(S.adminCustomersLoading) return '<div class="loading-screen"><div class="spinner"></div></div>';
+  if(!S.adminCustomers.length && !S.adminCustomerSearch) {
+    adminLoadCustomers();
+    return '<div class="loading-screen"><div class="spinner"></div><p>Müştərilər yüklənir...</p></div>';
+  }
+  const search=S.adminCustomerSearch.toLowerCase();
+  const filtered=search ? S.adminCustomers.filter(c=>
+    (c.full_name||'').toLowerCase().includes(search)||
+    (c.email||'').toLowerCase().includes(search)||
+    (c.phone||'').toLowerCase().includes(search)
+  ) : S.adminCustomers;
+  return `<div class="a-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <h3 style="font-size:18px;font-weight:900">👥 Müştərilər (${S.adminCustomers.length})</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" class="f-input" placeholder="Axtar..." value="${S.adminCustomerSearch}"
+          oninput="S.adminCustomerSearch=this.value;render()"
+          style="width:200px;padding:8px 12px;font-size:13px">
+        <button class="btn btn-sm btn-orange" onclick="adminLoadCustomers()">🔄</button>
+        <button class="btn btn-sm btn-success" onclick="exportCustomersCSV()">📥 CSV</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border);text-align:left">
+            <th style="padding:10px 12px;font-weight:800;color:var(--text2)">#</th>
+            <th style="padding:10px 12px;font-weight:800;color:var(--text2)">Ad</th>
+            <th style="padding:10px 12px;font-weight:800;color:var(--text2)">Email</th>
+            <th style="padding:10px 12px;font-weight:800;color:var(--text2)">Telefon</th>
+            <th style="padding:10px 12px;font-weight:800;color:var(--text2)">Qeydiyyat</th>
+            <th style="padding:10px 12px;font-weight:800;color:var(--text2)">Abunəlik</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${filtered.map((c,i)=>`<tr style="border-bottom:1px solid var(--border2);transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.03)'" onmouseout="this.style.background='transparent'">
+            <td style="padding:10px 12px;color:var(--text3)">${i+1}</td>
+            <td style="padding:10px 12px;font-weight:700">${esc(c.full_name||'-')}</td>
+            <td style="padding:10px 12px;color:var(--text2)">${esc(c.email||'-')}</td>
+            <td style="padding:10px 12px;color:var(--text2)">${esc(c.phone||'-')}</td>
+            <td style="padding:10px 12px;color:var(--text3);font-size:12px">${c.created_at?new Date(c.created_at).toLocaleDateString('az-AZ'):'-'}</td>
+            <td style="padding:10px 12px">${c.subscribed?'<span style="color:var(--green);font-weight:800">✓ Aktiv</span>':'<span style="color:var(--text3)">—</span>'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    ${filtered.length===0?'<div style="text-align:center;padding:32px;color:var(--text3);font-weight:700">Nəticə tapılmadı</div>':''}
+  </div>`;
+}
+function exportCustomersCSV(){
+  const rows=[['Ad','Email','Telefon','Qeydiyyat tarixi','Abunəlik']];
+  S.adminCustomers.forEach(c=>{
+    rows.push([
+      c.full_name||'',
+      c.email||'',
+      c.phone||'',
+      c.created_at?new Date(c.created_at).toLocaleDateString('az-AZ'):'',
+      c.subscribed?'Aktiv':'Yox'
+    ]);
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='artmonia_customers_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();URL.revokeObjectURL(url);
+  showToast('CSV yükləndi');
+}
+function adminGo(sec){S.adminSection=sec;if(sec==='customers')adminLoadCustomers();render();}
 function editParts(id){S.editingCourseId=id;S.adminSection='edit-parts';render();}
 function addCourse(){
   const title=document.getElementById('nc-title')?.value?.trim()||'';
   if(!title){showToast('Kurs adı daxil edin','error');return;}
   S.courses.push({id:Date.now(),title,category:document.getElementById('nc-cat')?.value||'Başlanğıc',level:document.getElementById('nc-lv')?.value||'Başlanğıc',thumb:document.getElementById('nc-thumb')?.value||'',desc:document.getElementById('nc-desc')?.value||'',free:document.getElementById('nc-free')?.checked||false,parts:[]});
-  showToast('Kurs əlavə edildi!');render();
+  logAdminAction('Kurs əlavə edildi: '+title);showToast('Kurs əlavə edildi!');render();
 }
 function editCourseInfo(id){S.editingCourseId=id;S.adminSection='edit-course-info';render();}
 function saveCourseInfo(id){
@@ -3163,18 +3650,18 @@ function saveCourseInfo(id){
   c.materials=document.getElementById('ci-materials')?.value||'';
   c.downloadUrl=document.getElementById('ci-download')?.value||'';
   c.viewerCount=parseInt(document.getElementById('ci-viewers')?.value)||0;
-  showToast('Kurs məlumatları saxlanıldı ✅');
+  logAdminAction('Kurs redaktə edildi: '+(c.title||id));showToast('Kurs məlumatları saxlanıldı ✅');
   adminGo('courses');
 }
-function deleteCourse(id){if(!confirm('Kursu silmək istədiyinizdən əminsiniz?'))return;S.courses=S.courses.filter(c=>c.id!==id);showToast('Kurs silindi');render();}
+function deleteCourse(id){if(!confirm('Kursu silmək istədiyinizdən əminsiniz?'))return;const cn=S.courses.find(c=>c.id===id);logAdminAction('Kurs silindi: '+(cn?cn.title:id));S.courses=S.courses.filter(c=>c.id!==id);showToast('Kurs silindi');render();}
 function addPart(courseId){
   const name=document.getElementById('np-name')?.value?.trim()||'';
   if(!name){showToast('Hissə adı daxil edin','error');return;}
   const c=S.courses.find(x=>x.id===courseId);
   if(c)c.parts.push({id:'p'+Date.now(),name,duration:document.getElementById('np-dur')?.value||'',vimeo:document.getElementById('np-vimeo')?.value||'',free:document.getElementById('np-free')?.checked||false});
-  showToast('Hissə əlavə edildi!');render();
+  logAdminAction('Hissə əlavə edildi: '+name);showToast('Hissə əlavə edildi!');render();
 }
-function deletePart(courseId,partId){const c=S.courses.find(x=>x.id===courseId);if(c)c.parts=c.parts.filter(p=>p.id!==partId);showToast('Hissə silindi');render();}
+function deletePart(courseId,partId){const c=S.courses.find(x=>x.id===courseId);const pn=c&&c.parts.find(p=>p.id===partId);logAdminAction('Hissə silindi: '+(pn?pn.name:partId));if(c)c.parts=c.parts.filter(p=>p.id!==partId);showToast('Hissə silindi');render();}
 function updatePartVimeo(courseId,partId,url){const c=S.courses.find(x=>x.id===courseId);if(c){const p=c.parts.find(x=>x.id===partId);if(p)p.vimeo=url;}}
 function submitComment(courseId){const inp=document.getElementById(`comment-input-${courseId}`);if(!inp)return;postComment(courseId,inp.value);inp.value='';}
 // ── SESSION GUARD ────────────────────────────────────────
@@ -4203,7 +4690,7 @@ function saveAllTexts(){
   if(HERO_SLIDES[0]){HERO_SLIDES[0].title=S.siteTexts.heroTitle1;HERO_SLIDES[0].desc=S.siteTexts.heroDesc1;}
   if(HERO_SLIDES[1]){HERO_SLIDES[1].title=S.siteTexts.heroTitle2;HERO_SLIDES[1].desc=S.siteTexts.heroDesc2;}
   if(HERO_SLIDES[2]){HERO_SLIDES[2].title=S.siteTexts.heroTitle3;HERO_SLIDES[2].desc=S.siteTexts.heroDesc3;}
-  showToast('Bütün mətnlər saxlanıldı! ✅');
+  logAdminAction('Sayt mətnləri dəyişdirildi');showToast('Bütün mətnlər saxlanıldı! ✅');
   adminGo('texts');
 }
 function saveHeroSlides(){
@@ -4245,7 +4732,20 @@ function animateCounters(){
     },20);
   });
 }
-function checkUrlAdmin(){const params=new URLSearchParams(window.location.search);if(params.has('admin')){S.adminLogin=true;const url=new URL(window.location.href);url.searchParams.delete('admin');window.history.replaceState({},'',url.toString());}}
+function checkUrlAdmin(){
+  const params=new URLSearchParams(window.location.search);
+  const hash=window.location.hash.replace('#','');
+  const storedToken=localStorage.getItem('admin_token');
+  // Support legacy ?admin param and token-based hash access
+  if(params.has('admin')){
+    S.adminLogin=true;
+    const url=new URL(window.location.href);url.searchParams.delete('admin');
+    window.history.replaceState({},'',url.toString());
+  } else if(hash && storedToken && hash===storedToken){
+    S.adminLogin=true;
+    window.history.replaceState({},'',window.location.pathname+window.location.search);
+  }
+}
 
 // ── BOOT ─────────────────────────────────────────────────────
 function boot(){
