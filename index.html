@@ -1455,22 +1455,22 @@ function navHTML(){
     <div style="display:flex;align-items:center;gap:20px">
       <div class="nav-logo" onclick="goHome()"><img src="${LOGO}" alt="Artmonia"></div>
       <ul class="nav-links">
-        <li><a class="${S.page==='browse'?'active':''}" onclick="goHome()">${t('nav_watch')}</a></li>
+        <li><a href="#/" class="${S.page==='browse'?'active':''}" onclick="goHome();return false">${t('nav_watch')}</a></li>
         <li>
           <a style="cursor:pointer">Haqqımızda <span class="nav-arrow">▾</span></a>
           <div class="nav-dropdown">
-            <a onclick="goPage('about')">🎨 Akademiya haqqında</a>
-            <a onclick="goPage('online-lessons')">🎥 Online dərslər</a>
-            <a onclick="goPage('certificates-page')">🏆 Sertifikat proqramı</a>
+            <a href="#/about" onclick="goPage('about');return false">🎨 Akademiya haqqında</a>
+            <a href="#/online-lessons" onclick="goPage('online-lessons');return false">🎥 Online dərslər</a>
+            <a href="#/certificates" onclick="goPage('certificates-page');return false">🏆 Sertifikat proqramı</a>
             <div class="nd-divider"></div>
-            <a onclick="goPage('results')">⭐ Tələbə nəticələri</a>
-            <a onclick="goPage('teachers')">👨‍🎨 Müəllimlər</a>
+            <a href="#/results" onclick="goPage('results');return false">⭐ Tələbə nəticələri</a>
+            <a href="#/teachers" onclick="goPage('teachers');return false">👨‍🎨 Müəllimlər</a>
           </div>
         </li>
         <li>
           <a style="cursor:pointer">Kurslar <span class="nav-arrow">▾</span></a>
           <div class="nav-dropdown">
-            <a onclick="goHome()">📚 Bütün kurslar</a>
+            <a href="#/" onclick="goHome();return false">📚 Bütün kurslar</a>
             <div class="nd-divider"></div>
             <a onclick="doSearch('Pulsuz')">🆓 Pulsuz dərslər</a>
             <a onclick="doSearch('Başlanğıc')">🌱 Başlanğıc</a>
@@ -1481,15 +1481,15 @@ function navHTML(){
         <li>
           <a style="cursor:pointer">Məlumat <span class="nav-arrow">▾</span></a>
           <div class="nav-dropdown">
-            <a onclick="goPage('blog')">📝 Bloq & məqələlər</a>
-            <a onclick="goPage('faq-page')">❓ Tez-tez suallar</a>
+            <a href="#/blog" onclick="goPage('blog');return false">📝 Bloq & məqələlər</a>
+            <a href="#/faq" onclick="goPage('faq-page');return false">❓ Tez-tez suallar</a>
             <div class="nd-divider"></div>
-            <a onclick="goPage('forum')">💬 Forum</a>
-            <a onclick="goPage('help')">🆘 Kömək mərkəzi</a>
+            <a href="#/forum" onclick="goPage('forum');return false">💬 Forum</a>
+            <a href="#/help" onclick="goPage('help');return false">🆘 Kömək mərkəzi</a>
           </div>
         </li>
-        <li><a class="${S.page==='community'?'active':''}" onclick="goPage('community')" style="color:var(--orange)">🎨 İcma</a></li>
-        <li><a class="${S.page==='profile'?'active':''}" onclick="${S.user?'goPage(\'profile\')':'openAuth(\'login\')'}">${t('nav_profile')}</a></li>
+        <li><a href="#/community" class="${S.page==='community'?'active':''}" onclick="goPage('community');return false" style="color:var(--orange)">🎨 İcma</a></li>
+        <li><a href="${S.user?'#/profile':'#'}" class="${S.page==='profile'?'active':''}" onclick="${S.user?'goPage(\'profile\');return false':'openAuth(\'login\');return false'}">${t('nav_profile')}</a></li>
       </ul>
     </div>
     <div class="nav-search">
@@ -1516,19 +1516,19 @@ function navHTML(){
     <button class="burger" onclick="toggleMobile()"><span></span><span></span><span></span></button>
   </nav>
   <div class="mobile-menu ${S.mobileMenu?'open':''}" id="mobile-menu">
-    <a onclick="goHome();closeMobile()">🏠 İzlə</a>
+    <a href="#/" onclick="goHome();closeMobile();return false">🏠 İzlə</a>
     <div style="padding:12px 0"><input class="f-input" placeholder="Kurs axtar..." onkeydown="if(event.key==='Enter'){doSearch(this.value);closeMobile()}"></div>
-    <a onclick="goPage('about');closeMobile()">🎨 Akademiya haqqında</a>
-    <a onclick="goPage('online-lessons');closeMobile()">🎥 Online dərslər</a>
-    <a onclick="goPage('results');closeMobile()">⭐ Tələbə nəticələri</a>
-    <a onclick="goPage('certificates-page');closeMobile()">🏆 Sertifikat proqramı</a>
-    <a onclick="goPage('teachers');closeMobile()">👨‍🎨 Müəllimlər</a>
-    <a onclick="goPage('community');closeMobile()" style="color:var(--orange)">🎨 Tələbə İcması</a>
-    <a onclick="goPage('blog');closeMobile()">📝 Bloq</a>
-    <a onclick="goPage('faq-page');closeMobile()">❓ FAQ</a>
-    <a onclick="goPage('forum');closeMobile()">💬 Forum</a>
+    <a href="#/about" onclick="goPage('about');closeMobile();return false">🎨 Akademiya haqqında</a>
+    <a href="#/online-lessons" onclick="goPage('online-lessons');closeMobile();return false">🎥 Online dərslər</a>
+    <a href="#/results" onclick="goPage('results');closeMobile();return false">⭐ Tələbə nəticələri</a>
+    <a href="#/certificates" onclick="goPage('certificates-page');closeMobile();return false">🏆 Sertifikat proqramı</a>
+    <a href="#/teachers" onclick="goPage('teachers');closeMobile();return false">👨‍🎨 Müəllimlər</a>
+    <a href="#/community" onclick="goPage('community');closeMobile();return false" style="color:var(--orange)">🎨 Tələbə İcması</a>
+    <a href="#/blog" onclick="goPage('blog');closeMobile();return false">📝 Bloq</a>
+    <a href="#/faq" onclick="goPage('faq-page');closeMobile();return false">❓ FAQ</a>
+    <a href="#/forum" onclick="goPage('forum');closeMobile();return false">💬 Forum</a>
     ${S.user
-      ? `<a onclick="goPage('profile');closeMobile()">👤 Profilim</a><a onclick="signOut();closeMobile()">Çıxış</a>`
+      ? `<a href="#/profile" onclick="goPage('profile');closeMobile();return false">👤 Profilim</a><a onclick="signOut();closeMobile()">Çıxış</a>`
       : `<a onclick="openAuth('login');closeMobile()">Daxil ol</a><a onclick="openAuth('register');closeMobile()">Hesab Yarat</a>`}
   </div>`;
 }
@@ -1555,7 +1555,7 @@ function heroHTML(){
 function courseCardHTML(c){
   const pct=getCourseProgress(c.id);
   const hasCert=S.certificates.includes(c.id);
-  return `<div class="c-card" onclick="openCourse(${c.id})">
+  return `<a href="#/course/${c.id}" class="c-card" onclick="openCourse(${c.id});return false" style="text-decoration:none;color:inherit;display:block">
     <div class="c-thumb">
       <img src="${c.thumb}" alt="${esc(c.title)}" loading="lazy" onerror="this.style.display='none'">
       ${c.free?`<div class="c-free">${t('free_badge')}</div>`:'<div class="c-lock">🔒</div>'}
@@ -1567,7 +1567,7 @@ function courseCardHTML(c){
       <div class="c-meta"><span>${c.parts.length} hissə</span><span class="c-dot"></span><span>${c.level}</span>${pct>0?`<span class="c-dot"></span><span style="color:var(--orange)">${pct}%</span>`:''}
       </div>
     </div>
-  </div>`;
+  </a>`;
 }
 function catRowHTML(cat){
   const cs=S.courses.filter(c=>c.category===cat);
@@ -2764,10 +2764,10 @@ function footerHTML(){
   return `<footer><div class="footer-inner">
     <img src="${LOGO}" style="height:38px;width:auto;filter:brightness(0) invert(1)">
     <ul class="footer-links">
-      <li><a onclick="goPage('forum')" style="cursor:pointer">Forum</a></li>
-      <li><a onclick="goPage('help')" style="cursor:pointer">Kömək</a></li>
-      <li><a onclick="goPage('terms')" style="cursor:pointer">Şərtlər</a></li>
-      <li><a onclick="goPage('privacy')" style="cursor:pointer">Məxfilik</a></li>
+      <li><a href="#/forum" onclick="goPage('forum');return false">Forum</a></li>
+      <li><a href="#/help" onclick="goPage('help');return false">Kömək</a></li>
+      <li><a href="#/terms" onclick="goPage('terms');return false">Şərtlər</a></li>
+      <li><a href="#/privacy" onclick="goPage('privacy');return false">Məxfilik</a></li>
     </ul>
     <div class="footer-copy">${S.siteTexts.footerCopy||'© '+new Date().getFullYear()+' Artmonia · 🇦🇿'}</div>
   </div></footer>`;
@@ -3160,9 +3160,10 @@ function goHome(){
   S.searchQuery='';
   S.mobileMenu=false;
   if(window._watchTimer){clearTimeout(window._watchTimer);window._watchTimer=null;}
+  pushRoute('/');
   render();window.scrollTo(0,0);
 }
-function goPage(p){S.page=p;S.mobileMenu=false;render();window.scrollTo(0,0);}
+function goPage(p){S.page=p;S.mobileMenu=false;pushRoute('/'+p);render();window.scrollTo(0,0);}
 function toggleLangMenu(){
   const m=document.getElementById('lang-menu');
   if(m) m.style.display=m.style.display==='none'?'block':'none';
@@ -3192,7 +3193,9 @@ function openCourse(id){
     S.activeEmbedUrl=null;
     S._commentsLoading=false;
     if(window._watchTimer){clearTimeout(window._watchTimer);window._watchTimer=null;}
-    S.page='video';render();window.scrollTo(0,0);
+    S.page='video';
+    pushRoute('/course/'+c.id);
+    render();window.scrollTo(0,0);
   }
 }
 async function selectPart(courseId,partId){
@@ -4732,6 +4735,72 @@ function animateCounters(){
     },20);
   });
 }
+// ── HASH ROUTING ─────────────────────────────────────────────
+const PAGE_ROUTES={
+  '':'browse','/':'browse',
+  '/about':'about','/online-lessons':'online-lessons',
+  '/results':'results','/teachers':'teachers',
+  '/certificates':'certificates-page','/blog':'blog',
+  '/faq':'faq-page','/community':'community',
+  '/profile':'profile','/forum':'forum',
+  '/help':'help','/terms':'terms','/privacy':'privacy',
+  '/search':'search','/subscribe':'subscribe'
+};
+const ROUTE_TITLES={
+  'browse':'Artmonia — Online Rəssamlıq Akademiyası',
+  'about':'Haqqımızda — Artmonia',
+  'online-lessons':'Online Dərslər — Artmonia',
+  'results':'Tələbə Nəticələri — Artmonia',
+  'teachers':'Müəllimlər — Artmonia',
+  'certificates-page':'Sertifikat Proqramı — Artmonia',
+  'blog':'Bloq — Artmonia',
+  'faq-page':'Tez-tez Soruşulan Suallar — Artmonia',
+  'community':'Tələbə İcması — Artmonia',
+  'profile':'Profilim — Artmonia',
+  'forum':'Forum — Artmonia',
+  'help':'Kömək — Artmonia',
+  'terms':'İstifadə Şərtləri — Artmonia',
+  'privacy':'Məxfilik Siyasəti — Artmonia',
+  'video':'Dərs İzlə — Artmonia',
+  'search':'Axtarış — Artmonia',
+  'admin':'Admin — Artmonia',
+  'subscribe':'Abunəlik — Artmonia'
+};
+function pushRoute(path){
+  const hash='#'+path;
+  if(window.location.hash!==hash){
+    window._routeInternal=true;
+    window.location.hash=hash;
+  }
+  document.title=ROUTE_TITLES[S.page]||ROUTE_TITLES['browse'];
+}
+function handleRoute(){
+  const hash=(window.location.hash||'#/').replace('#','');
+  // Admin token check
+  const storedToken=localStorage.getItem('admin_token');
+  if(storedToken && hash===storedToken){S.adminLogin=true;return;}
+  // Course route: /course/123
+  const courseMatch=hash.match(/^\/course\/(\d+)$/);
+  if(courseMatch){
+    const cid=parseInt(courseMatch[1]);
+    const c=S.courses.find(x=>x.id===cid);
+    if(c){S.selectedCourse=c;S.activePart=null;S.activeEmbedUrl=null;S.page='video';}
+    else{S.page='browse';}
+    return;
+  }
+  // Standard page routes
+  const page=PAGE_ROUTES[hash];
+  if(page){S.page=page;}
+  else{S.page='browse';}
+}
+window.addEventListener('hashchange',()=>{
+  if(window._routeInternal){window._routeInternal=false;return;}
+  handleRoute();
+  S.mobileMenu=false;
+  render();
+  window.scrollTo(0,0);
+});
+
 function checkUrlAdmin(){
   const params=new URLSearchParams(window.location.search);
   const hash=window.location.hash.replace('#','');
@@ -4750,6 +4819,10 @@ function checkUrlAdmin(){
 // ── BOOT ─────────────────────────────────────────────────────
 function boot(){
   checkUrlAdmin();
+  // Hash routing — URL-dən səhifəni oxu
+  if(window.location.hash && window.location.hash!=='#/'){
+    handleRoute();
+  }
   // Dili yüklə
   const savedLang=localStorage.getItem('artmonia_lang');
   if(savedLang) S.lang=savedLang;
