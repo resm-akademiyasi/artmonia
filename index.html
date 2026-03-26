@@ -104,8 +104,17 @@ body{font-family:"Nunito Sans",sans-serif;background:var(--bg);color:var(--text)
 .slider-arrow:hover{background:rgba(242,142,20,.2);border-color:var(--orange)}
 .arrow-l{left:28px}.arrow-r{right:28px}
 /* DEMO BANNER */
-.demo-banner{background:linear-gradient(135deg,var(--orange) 0%,var(--orange2) 100%);color:white;text-align:center;padding:18px 24px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;font-family:"Nunito Sans",sans-serif}
-@media(max-width:600px){.demo-banner{flex-direction:column;padding:16px 18px;gap:12px}.demo-banner span{font-size:15px!important}.demo-banner .btn{width:100%;justify-content:center}}
+.promo-top-banner{position:fixed;top:0;left:0;right:0;z-index:250;height:40px;background:linear-gradient(90deg,var(--orange),var(--orange2));display:flex;align-items:center;justify-content:center;gap:12px;font-size:13px;font-weight:800;color:white;letter-spacing:.3px;animation:promoSlideDown .4s ease}
+.promo-top-banner .ptb-close{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:16px;position:absolute;right:16px;top:50%;transform:translateY(-50%)}
+.promo-top-banner .ptb-close:hover{color:white}
+@keyframes promoSlideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+body.has-promo-banner .nav{top:40px}
+body.has-promo-banner .hero{padding-top:104px}
+body.has-promo-banner .v-page{padding-top:104px}
+body.has-promo-banner .admin-page{padding-top:104px}
+body.has-promo-banner .static-page{padding-top:140px}
+@keyframes subSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes demoPulse{0%,100%{box-shadow:0 4px 16px rgba(242,142,20,.35)}50%{box-shadow:0 4px 24px rgba(242,142,20,.55)}}
 /* BROWSE */
 .browse{padding:52px 0 0}
 .cat-row{margin-bottom:52px;padding:0 44px}
@@ -440,6 +449,8 @@ body{font-family:"Nunito Sans",sans-serif;background:var(--bg);color:var(--text)
 .wa-btn{position:fixed;bottom:28px;right:28px;z-index:301;background:#25D366;color:white;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;box-shadow:0 6px 24px rgba(37,211,102,.4);border:none;transition:all .3s;animation:waPulse 2.5s infinite}
 @keyframes waPulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.5)}70%{box-shadow:0 0 0 16px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
 .wa-btn:hover{transform:scale(1.1)}
+@keyframes waSlideIn{from{transform:translateY(80px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes waBubbleIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
 /* STATIC PAGES */
 .static-page{padding:100px 44px 60px;max-width:820px;margin:0 auto}
 .static-page h1{font-family:"Cormorant Garamond",serif;font-size:clamp(32px,5vw,52px);font-weight:700;margin-bottom:12px}
@@ -721,19 +732,19 @@ const TRANSLATIONS = {
     nav_logout:'Çıxış', nav_search:'Kurs axtar...',
     nav_academy:'Akademiya haqqında', nav_online:'Online dərslər', nav_cert:'Sertifikat proqramı',
     nav_results:'Tələbə nəticələri', nav_teachers:'Müəllimlər',
-    nav_all_courses:'Bütün kurslar', nav_free:'Pulsuz dərslər', nav_beginner:'Başlanğıc',
+    nav_all_courses:'Bütün kurslar', nav_free:'Ödənişsiz dərslər', nav_beginner:'Başlanğıc',
     nav_mid:'Orta səviyyə', nav_adv:'İrəli səviyyə',
     nav_blog:'Bloq & məqələlər', nav_faq:'Tez-tez suallar', nav_forum:'Forum', nav_help:'Kömək',
     // Auth
     auth_welcome:'Xoş gəldiniz! 👋', auth_create:'Hesab Yarat 🎨',
-    auth_login_sub:'Hesabınıza daxil olun', auth_reg_sub:'Pulsuz qeydiyyat · Kart tələb olunmur',
+    auth_login_sub:'Hesabınıza daxil olun', auth_reg_sub:'Ödənişsiz qeydiyyat · Kart tələb olunmur',
     auth_name:'Ad Soyad', auth_phone:'Telefon', auth_email:'Email ünvanı', auth_password:'Şifrə',
     auth_optional:'(istəyə bağlı)', auth_min8:'(min. 8 simvol)',
     auth_remember:'Məni xatırla', auth_forgot:'Şifrəni unutdum?',
     auth_login_btn:'Daxil ol →', auth_reg_btn:'Hesab Yarat →',
     auth_terms:'İstifadə Şərtlərini', auth_privacy:'Məxfilik Siyasətini',
     auth_have_acc:'Artıq hesabınız var?', auth_no_acc:'Hesabınız yoxdur?',
-    auth_free_reg:'Pulsuz Qeydiyyat', auth_signin:'Daxil olun',
+    auth_free_reg:'Ödənişsiz Qeydiyyat', auth_signin:'Daxil olun',
     auth_confirm_title:'Emailinizi təsdiq edin', auth_confirm_sent:'ünvanına təsdiq linki göndərildi',
     auth_step1:'Emailinizi açın', auth_step2:'"Emaili Təsdiq Et" linkə basın',
     auth_step3:'Sayta qayıdın və daxil olun', auth_resend:'📤 Təsdiq linkini yenidən göndər',
@@ -745,7 +756,7 @@ const TRANSLATIONS = {
     hero_subscribe:'Hesab Yarat', hero_watch:'▶ İzlə',
     continue_label:'Davam et',
     // Courses
-    free_badge:'PULSUZ', parts_label:'hissə',
+    free_badge:'ÖDƏNİŞSİZ', parts_label:'hissə',
     course_for:'Bu kurs nə üçündür:', course_materials:'Lazım olan materiallar',
     course_download:'⬇ Referans foto + eskiz bələdçisini yüklə',
     fomo_text:'Son 24 saatda', fomo_suffix:'nəfər izlədi',
@@ -775,7 +786,7 @@ const TRANSLATIONS = {
     welcome_next:'Növbəti →', welcome_skip:'Keç',
     welcome_guide_title:'🎨 Rəssamlığı necə öyrənəcəksən?',
     // Parts
-    parts_title:'Hissə', parts_free:'PULSUZ', parts_watched:'✓ İZLƏNDİ',
+    parts_title:'Hissə', parts_free:'ÖDƏNİŞSİZ', parts_watched:'✓ İZLƏNDİ',
   },
   ru: {
     // Navbar
@@ -910,14 +921,14 @@ const SUPABASE_URL='https://rugigxxhwbykcmbwcisk.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1Z2lneHhod2J5a2NtYndjaXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzOTEzNTUsImV4cCI6MjA4ODk2NzM1NX0.whigBlF0_YG2jnXf-dRgQ-O9M6R87V0zMg3DXpzYXZ0';
 const ADMIN_PASSWORD='Artmonia@2025!';
 const LOGO='data:image/png;base64,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';
-const CATEGORIES=['Pulsuz Dərslər','Başlanğıc','Orta Səviyyə','İrəli Səviyyə'];
+const CATEGORIES=['Ödənişsiz Dərslər','Başlanğıc','Orta Səviyyə','İrəli Səviyyə'];
 let HERO_SLIDES=[
-  {id:'s1',title:'Payız Ağacı ilə Başla',desc:'Yağlı boya texnikasını pulsuz öyrən — rəssamlığın ilk addımları burada başlayır.',cat:'Pulsuz Dərs',bg:'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1600&q=80',courseId:1},
+  {id:'s1',title:'Payız Ağacı ilə Başla',desc:'Yağlı boya texnikasını ödənişsiz öyrən — rəssamlığın ilk addımları burada başlayır.',cat:'Ödənişsiz Dərs',bg:'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1600&q=80',courseId:1},
   {id:'s2',title:'Dağların Sehri — Akril ilə Mənzərə',desc:'Professional texnikalarla dramatik dağ mənzərəsi yaratmağı öyrənin.',cat:'Başlanğıc',bg:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80',courseId:2},
   {id:'s3',title:'Qış Gecəsinin Mistikası',desc:'Ay işığı altında qış mənzərəsini kətan üzərindəki yağlı boya ilə yaradın.',cat:'İrəli Səviyyə',bg:'https://images.unsplash.com/photo-1478827217976-7214a0556393?w=1600&q=80',courseId:6},
 ];
 const INIT_COURSES=[
-  {id:1,title:'Payız Ağacı — Başlanğıc',category:'Pulsuz Dərslər',level:'Başlanğıc',thumb:'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=600&q=80',desc:'Yağlı boya ilə payız ağacını cızmağı öyrənin. Bu pulsuz dərsdə əsas texnikalar öyrədilir.',purpose:'Bu kurs rəssamlığa yeni başlayanlara ağac texnikasını öyrədir. Heç bir əvvəlki bilik tələb olunmur.',totalDuration:'63 dəqiqə',materials:'Yağlı boya (sarı, qırmızı, yaşıl, qəhvəyi), fırça №4 və №8, kətan 30x40',downloadUrl:'',viewerCount:47,free:true,parts:[{id:'p1-1',name:'Hissə 1 — Skis və əsas formalar',duration:'28:14',vimeo:'',free:true},{id:'p1-2',name:'Hissə 2 — Rəng qatları',duration:'34:50',vimeo:'',free:false}]},
+  {id:1,title:'Payız Ağacı — Başlanğıc',category:'Ödənişsiz Dərslər',level:'Başlanğıc',thumb:'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=600&q=80',desc:'Yağlı boya ilə payız ağacını cızmağı öyrənin. Bu ödənişsiz dərsdə əsas texnikalar öyrədilir.',purpose:'Bu kurs rəssamlığa yeni başlayanlara ağac texnikasını öyrədir. Heç bir əvvəlki bilik tələb olunmur.',totalDuration:'63 dəqiqə',materials:'Yağlı boya (sarı, qırmızı, yaşıl, qəhvəyi), fırça №4 və №8, kətan 30x40',downloadUrl:'',viewerCount:47,free:true,parts:[{id:'p1-1',name:'Hissə 1 — Skis və əsas formalar',duration:'28:14',vimeo:'',free:true},{id:'p1-2',name:'Hissə 2 — Rəng qatları',duration:'34:50',vimeo:'',free:false}]},
   {id:2,title:'Dağ Mənzərəsi — Başlanğıc Sev.1',category:'Başlanğıc',level:'Başlanğıc',thumb:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',desc:'Dramatik dağ mənzərəsini akril boya ilə yaradın. Perspektiv, işıq-kölgə əsasları.',purpose:'Dağların siluetini, perspektiv qaydalarını və mənzərə kompozisiyasını öyrənir.',totalDuration:'102 dəqiqə',materials:'Akril boya (mavi, ağ, boz, yaşıl), fırça №6 və №12, kətan 40x50',downloadUrl:'',viewerCount:63,free:false,parts:[{id:'p2-1',name:'Hissə 1 — Kompozisiya',duration:'22:30',vimeo:'',free:false},{id:'p2-2',name:'Hissə 2 — Göy fon',duration:'41:15',vimeo:'',free:false},{id:'p2-3',name:'Hissə 3 — Dağların rəngləri',duration:'38:45',vimeo:'',free:false}]},
   {id:3,title:'Çəmənlik — Başlanğıc Sev.2',category:'Başlanğıc',level:'Başlanğıc',thumb:'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80',desc:'Yaz çəmənliyini suluboya ilə boyamağı öyrənin.',purpose:'Suluboya ilə yaz mövzusunu, rəng şəffaflığını və nəm texnikasını öyrənir.',totalDuration:'47 dəqiqə',materials:'Suluboya (yaşıl, sarı, qəhvəyi), suluboya kağızı, fırça №3 və №7',downloadUrl:'',viewerCount:28,free:false,parts:[{id:'p3-1',name:'Hissə 1 — Rəng qarışdırma',duration:'19:40',vimeo:'',free:false},{id:'p3-2',name:'Hissə 2 — Ot doku texnikası',duration:'27:20',vimeo:'',free:false}]},
   {id:4,title:'Dəniz Limanı — Orta Sev.3',category:'Orta Səviyyə',level:'Orta',thumb:'https://images.unsplash.com/photo-1518803194621-27188ba362c9?w=600&q=80',desc:'Dumanlı sabah atmosferini, su refleksiyalarını və gəmilərin siluetini çəkin.',purpose:'Su refleksiyaları, liman atmosferi və perspektiv texnikasını öyrənir.',totalDuration:'139 dəqiqə',materials:'Yağlı boya (mavi, boz, ağ), fırça №6 və №10, kətan 50x60',downloadUrl:'',viewerCount:19,free:false,parts:[{id:'p4-1',name:'Hissə 1 — Perspektiv',duration:'31:10',vimeo:'',free:false},{id:'p4-2',name:'Hissə 2 — Su refleksiyası',duration:'44:22',vimeo:'',free:false},{id:'p4-3',name:'Hissə 3 — Gəmilər',duration:'38:55',vimeo:'',free:false},{id:'p4-4',name:'Hissə 4 — Final',duration:'25:18',vimeo:'',free:false}]},
@@ -949,7 +960,7 @@ let S={
   adminCustomerSearch:'',
   siteTexts:{
     heroTitle1:'Payız Ağacı ilə Başla',
-    heroDesc1:'Yağlı boya texnikasını pulsuz öyrən — rəssamlığın ilk addımları burada başlayır.',
+    heroDesc1:'Yağlı boya texnikasını ödənişsiz öyrən — rəssamlığın ilk addımları burada başlayır.',
     heroTitle2:'Dağların Sehri — Akril ilə Mənzərə',
     heroDesc2:'Professional texnikalarla dramatik dağ mənzərəsi yaratmağı öyrənin.',
     heroTitle3:'Qış Gecəsinin Mistikası',
@@ -1030,6 +1041,7 @@ let S={
   levelTestDone:false,
   showLevelTest:false,
   showSubOffer:false,
+  showSubModal:false,
   levelTestStep:0,
   levelTestAnswers:[],
   levelTestResult:null,
@@ -1085,6 +1097,8 @@ function initSB(){
       return;
     }
 
+    // Load admin settings from Supabase
+    loadSettings();
     sb.auth.getSession().then(({data:{session}})=>{
       if(session?.user) setUser(session.user);
     });
@@ -1324,7 +1338,7 @@ function getYoutubeId(url){
   return yt ? yt[1] : null;
 }
 
-// Sadə embed URL (pulsuz və ya YouTube)
+// Sadə embed URL (ödənişsiz və ya YouTube)
 function getEmbedUrl(url){
   if(!url) return null;
   const vm = getVimeoId(url);
@@ -1348,7 +1362,7 @@ async function getSecureEmbedUrl(part, courseId){
   const cached = videoTokenCache[cacheKey];
   if(cached && new Date(cached.expires_at) > new Date()) return cached.embed_url;
 
-  // Pulsuz hissə
+  // Ödənişsiz hissə
   if(part.free){
     const url = getEmbedUrl(part.vimeo);
     videoTokenCache[cacheKey] = {embed_url: url, expires_at: new Date(Date.now()+3600000).toISOString()};
@@ -1472,7 +1486,7 @@ function navHTML(){
           <div class="nav-dropdown">
             <a href="#/" onclick="goHome();return false">📚 Bütün kurslar</a>
             <div class="nd-divider"></div>
-            <a onclick="doSearch('Pulsuz')">🆓 Pulsuz dərslər</a>
+            <a onclick="doSearch('Ödənişsiz')">🆓 Ödənişsiz dərslər</a>
             <a onclick="doSearch('Başlanğıc')">🌱 Başlanğıc</a>
             <a onclick="doSearch('Orta')">📈 Orta səviyyə</a>
             <a onclick="doSearch('İrəli')">🚀 İrəli səviyyə</a>
@@ -1484,7 +1498,6 @@ function navHTML(){
             <a href="#/blog" onclick="goPage('blog');return false">📝 Bloq & məqələlər</a>
             <a href="#/faq" onclick="goPage('faq-page');return false">❓ Tez-tez suallar</a>
             <div class="nd-divider"></div>
-            <a href="#/forum" onclick="goPage('forum');return false">💬 Forum</a>
             <a href="#/help" onclick="goPage('help');return false">🆘 Kömək mərkəzi</a>
           </div>
         </li>
@@ -1508,8 +1521,9 @@ function navHTML(){
         </div>
       </div>
       ${S.user
-        ? `<span style="font-size:13px;color:var(--text3);font-weight:700">👤 ${esc(S.user.name)}</span>
-           <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px" onclick="signOut()">${t('nav_logout')}</button>`
+        ? `<button class="btn btn-ghost btn-sm" onclick="goHome()">${t('nav_watch')}</button>
+           <button class="btn btn-orange btn-sm" onclick="doSearch('Ödənişsiz')">Ödənişsiz Test Et</button>
+           <button class="btn btn-outline btn-sm" onclick="signOut()" style="font-size:11px">${t('nav_logout')}</button>`
         : `<button class="btn btn-outline" onclick="openAuth('login')">${t('nav_login')}</button>
            <button class="btn btn-orange" onclick="openAuth('register')">${t('nav_subscribe')}</button>`}
     </div>
@@ -1526,7 +1540,6 @@ function navHTML(){
     <a href="#/community" onclick="goPage('community');closeMobile();return false" style="color:var(--orange)">🎨 Tələbə İcması</a>
     <a href="#/blog" onclick="goPage('blog');closeMobile();return false">📝 Bloq</a>
     <a href="#/faq" onclick="goPage('faq-page');closeMobile();return false">❓ FAQ</a>
-    <a href="#/forum" onclick="goPage('forum');closeMobile();return false">💬 Forum</a>
     ${S.user
       ? `<a href="#/profile" onclick="goPage('profile');closeMobile();return false">👤 Profilim</a><a onclick="signOut();closeMobile()">Çıxış</a>`
       : `<a onclick="openAuth('login');closeMobile()">Daxil ol</a><a onclick="openAuth('register');closeMobile()">Hesab Yarat</a>`}
@@ -2044,7 +2057,7 @@ function adminPageHTML(){
     content=`<div class="stats-grid">
       <div class="stat-box hl"><div class="stat-val">${courses.length}</div><div class="stat-label">Ümumi Kurs</div></div>
       <div class="stat-box"><div class="stat-val">${totalP}</div><div class="stat-label">Ümumi Hissə</div></div>
-      <div class="stat-box"><div class="stat-val">${freeCnt}</div><div class="stat-label">Pulsuz Kurs</div></div>
+      <div class="stat-box"><div class="stat-val">${freeCnt}</div><div class="stat-label">Ödənişsiz Kurs</div></div>
       <div class="stat-box"><div class="stat-val">${courses.length-freeCnt}</div><div class="stat-label">Ödənişli</div></div>
     </div>
     <div class="a-card"><div class="a-card-title">Kateqoriya Bölgüsü</div>
@@ -2060,7 +2073,7 @@ function adminPageHTML(){
   if(S.adminSection==='courses'){
     content=`<div class="a-card"><div class="a-card-title">Mövcud Kurslar (${courses.length})</div>
       <table class="a-table"><thead><tr><th>Kurs</th><th>Kateqoriya</th><th>Hissə</th><th>Status</th><th>Əməliyyat</th></tr></thead>
-      <tbody>${courses.map(c=>{const lb=c.level==='Başlanğıc'?'badge-b':c.level==='Orta'?'badge-m':'badge-a';return `<tr><td><div style="display:flex;align-items:center;gap:10px"><img src="${c.thumb}" style="width:48px;height:32px;object-fit:cover;border-radius:4px" onerror="this.style.display='none'"><span style="font-weight:700;color:var(--text)">${esc(c.title)}</span></div></td><td><span class="badge ${lb}">${c.category}</span></td><td style="font-weight:900;color:var(--orange)">${c.parts.length}</td><td><span class="badge ${c.free?'badge-free':'badge-paid'}">${c.free?'Pulsuz':'Ödənişli'}</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-success btn-sm" onclick="editParts(${c.id})">✏️ Hissələr</button>
+      <tbody>${courses.map(c=>{const lb=c.level==='Başlanğıc'?'badge-b':c.level==='Orta'?'badge-m':'badge-a';return `<tr><td><div style="display:flex;align-items:center;gap:10px"><img src="${c.thumb}" style="width:48px;height:32px;object-fit:cover;border-radius:4px" onerror="this.style.display='none'"><span style="font-weight:700;color:var(--text)">${esc(c.title)}</span></div></td><td><span class="badge ${lb}">${c.category}</span></td><td style="font-weight:900;color:var(--orange)">${c.parts.length}</td><td><span class="badge ${c.free?'badge-free':'badge-paid'}">${c.free?'Ödənişsiz':'Ödənişli'}</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-success btn-sm" onclick="editParts(${c.id})">✏️ Hissələr</button>
 <button class="btn btn-ghost btn-sm" onclick="editCourseInfo(${c.id})">ℹ️ Məlumat</button><button class="btn btn-danger btn-sm" onclick="deleteCourse(${c.id})">🗑 Sil</button></div></td></tr>`;}).join('')}
       </tbody></table></div>`;
   }
@@ -2098,7 +2111,7 @@ function adminPageHTML(){
           <div class="f-group"><label class="f-label">Müddət</label><input class="f-input" id="np-dur" placeholder="28:14"></div>
         </div>
         <div class="f-group"><label class="f-label">Vimeo / YouTube linki</label><input class="f-input" id="np-vimeo" placeholder="https://vimeo.com/123456789"></div>
-        <div class="checkbox-row"><input type="checkbox" id="np-free"><label for="np-free">Pulsuz hissədir</label></div>
+        <div class="checkbox-row"><input type="checkbox" id="np-free"><label for="np-free">Ödənişsiz hissədir</label></div>
         <button class="btn btn-orange" onclick="addPart(${c.id})">+ Hissə Əlavə Et</button></div>
       </div>`;}
   }
@@ -2413,7 +2426,7 @@ function adminPageHTML(){
         </div>
         <div class="f-group"><label class="f-label">Thumbnail URL</label><input class="f-input" id="nc-thumb" placeholder="https://images.unsplash.com/..."></div>
         <div class="f-group"><label class="f-label">Təsvir</label><textarea class="a-textarea" id="nc-desc" placeholder="Kurs haqqında..."></textarea></div>
-        <div class="checkbox-row"><input type="checkbox" id="nc-free"><label for="nc-free">Pulsuz kurs</label></div>
+        <div class="checkbox-row"><input type="checkbox" id="nc-free"><label for="nc-free">Ödənişsiz kurs</label></div>
         <button class="btn btn-orange btn-lg" onclick="addCourse()">+ Kurs Əlavə Et</button>
       </div></div>`;
   }
@@ -2750,7 +2763,7 @@ function getLevelTestResult(){
   const tech=ans[1]||0; // 0=yağlı, 1=akril, 2=suluboya, 3=bilmir
   // Nəticəni müəyyən et
   if(exp<=1){
-    return {title:'Başlanğıc Rəssam 🌱',icon:'🌱',desc:'Sıfırdan başlamaq üçün doğru kurs seçdik. Pulsuz dərsimizdən başlayın!',courseId:1};
+    return {title:'Başlanğıc Rəssam 🌱',icon:'🌱',desc:'Sıfırdan başlamaq üçün doğru kurs seçdik. Ödənişsiz dərsimizdən başlayın!',courseId:1};
   } else if(exp===2){
     if(tech===1) return {title:'Akril Sevdalısı 🎨',icon:'🎨',desc:'Akril texnikasını dərinləşdirmək üçün bu kurs sizin üçündür.',courseId:2};
     if(tech===2) return {title:'Suluboya Ustası 💧',icon:'💧',desc:'Suluboya texnikasını öyrənmək üçün mükəmməl başlanğıc.',courseId:3};
@@ -2764,7 +2777,6 @@ function footerHTML(){
   return `<footer><div class="footer-inner">
     <img src="${LOGO}" style="height:38px;width:auto;filter:brightness(0) invert(1)">
     <ul class="footer-links">
-      <li><a href="#/forum" onclick="goPage('forum');return false">Forum</a></li>
       <li><a href="#/help" onclick="goPage('help');return false">Kömək</a></li>
       <li><a href="#/terms" onclick="goPage('terms');return false">Şərtlər</a></li>
       <li><a href="#/privacy" onclick="goPage('privacy');return false">Məxfilik</a></li>
@@ -2812,7 +2824,7 @@ function testimonialsHTML(){
 }
 function faqHTML(){
   const faqs=[
-    {q:'Abunəlik nə qədər dəyər?',a:'Aylıq abunəlik ₼29, illik abunəlik isə ₼249-dur. İllik planda 2 ay pulsuz əldə edirsiniz. İstənilən vaxt ləğv edə bilərsiniz.'},
+    {q:'Abunəlik nə qədər dəyər?',a:'Aylıq abunəlik ₼29, illik abunəlik isə ₼249-dur. İllik planda 2 ay ödənişsiz əldə edirsiniz. İstənilən vaxt ləğv edə bilərsiniz.'},
     {q:'Kurslara sınırsız giriş varmı?',a:'Bəli! Abunəlik müddətində bütün kurslara, bütün hissələrə sınırsız daxil ola bilərsiniz. Yeni əlavə edilən kurslara da avtomatik giriş açılır.'},
     {q:'Sertifikat alacağammı?',a:'Hər kursun bütün hissələrini tamamladıqda avtomatik sertifikat qazanırsınız. Sertifikatı PDF formatında yükləyə bilərsiniz.'},
     {q:'Ödənişi necə edirəm?',a:'Hazırda ödənişlər birbaşa əlaqə vasitəsilə həyata keçirilir. WhatsApp üzərindən bizimlə əlaqə saxlayın, ödəniş üsullarını izah edərik.'},
@@ -2861,9 +2873,9 @@ function certPromoHTML(){
 }
 function blogSectionHTML(){
   const posts=[
-    {tag:'Məsləhət',title:'Yağlı Boyaya Başlamazdan Əvvəl Bilməli Olduğunuz 5 Şey',desc:'Yeni başlayanlar üçün lazımi materiallar, atelye qurulumu və ilk addımlar haqqında tam bələdçi.',img:'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600'},
-    {tag:'Texnika',title:'Suluboyada "Wet-on-Wet" Texnikası Necə Tətbiq Edilir?',desc:'Bu sürrealist texnika ilə möhtəşəm gradient effektlər yaradın. Addım-addım izah.',img:'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600'},
-    {tag:'İlham',title:'Azərbaycanlı Rəssamların 2025-ci İldəki Uğur Hekayələri',desc:'Artmonia tələbələrinin real həyat uğurları — birinci tablolarından peşəkar karyeralara.',img:'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600'},
+    {tag:'Online Dərs',title:'Niyə Online Rəssamlıq Dərsləri? 5 Əsas Səbəb',desc:'Evdə öyrənmənin üstünlükləri, vaxt qənaəti və peşəkar nəticələr haqqında.',img:'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600'},
+    {tag:'Bələdçi',title:'Yağlı Boya ilə Başlamaq: Tam Yeni Başlayanlar Üçün',desc:'Hansı materialları almalı, ilk rəsminizi necə çəkməli — hamısı burada.',img:'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600'},
+    {tag:'Hekayə',title:'Artmonia Tələbələri: Real Nəticələr, Real İnsanlar',desc:'Sıfırdan başlayıb ilk tablolarını satan tələbələrimizin hekayələri.',img:'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600'},
   ];
   return `<section class="blog-section">
     <div class="section-head">
@@ -2953,7 +2965,18 @@ function staticPageHTML(page){
   </div>`;
 }
 function waButtonHTML(){
-  return `<button class="wa-btn" onclick="window.open('https://wa.me/'+S.siteTexts.waNumber+'?text='+S.siteTexts.waMessage,'_blank')" title="WhatsApp ilə əlaqə">💬</button>`;
+  return `<div class="wa-wrap" id="wa-wrap" style="display:none;position:fixed;bottom:28px;right:28px;z-index:301;animation:waSlideIn .5s ease">
+    <div class="wa-bubble" id="wa-bubble" style="position:absolute;bottom:68px;right:0;background:white;color:#333;padding:12px 16px;border-radius:14px 14px 4px 14px;font-size:13px;font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,.2);white-space:nowrap;animation:waBubbleIn .6s ease .3s both">Köməyə ehtiyacınız var? 7/24 buradayıq! 💬</div>
+    <button class="wa-btn" onclick="window.open('https://wa.me/'+S.siteTexts.waNumber+'?text='+S.siteTexts.waMessage,'_blank')" title="WhatsApp">💬</button>
+  </div>`;
+}
+function showWaButton(){
+  if(sessionStorage.getItem('wa_shown')) return;
+  const w=document.getElementById('wa-wrap');
+  if(w){w.style.display='block';sessionStorage.setItem('wa_shown','1');
+    // Hide bubble after 8s
+    setTimeout(()=>{const b=document.getElementById('wa-bubble');if(b)b.style.display='none';},8000);
+  }
 }
 function searchPageHTML(){
   return `<div class="search-results">
@@ -2989,12 +3012,38 @@ function subOfferModalHTML(){
 }
 
 // ── DEMO BANNER ────────────────────────────────────────────
+function subModalHTML(){
+  if(!S.showSubModal) return '';
+  return `<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this){S.showSubModal=false;render();}">
+    <div style="background:var(--card);border-top:3px solid var(--orange);border-radius:20px 20px 0 0;max-width:480px;width:100%;padding:32px 28px 40px;animation:subSlideUp .35s ease;box-shadow:0 -16px 60px rgba(0,0,0,.6)">
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:700;color:var(--orange)">₼29<span style="font-size:16px;color:var(--text3)">/ay</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text);font-weight:700"><span style="color:var(--green)">✓</span> Bütün kurslara sınırsız giriş</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text);font-weight:700"><span style="color:var(--green)">✓</span> Sertifikat proqramı</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text);font-weight:700"><span style="color:var(--green)">✓</span> Tələbə İcması</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:10px;padding:10px 14px;margin-bottom:20px;font-size:13px;color:var(--green);font-weight:700">💰 30 gün qarantiya — məmnun qalmasanız pulu geri alın</div>
+      <button class="btn btn-orange btn-lg" style="width:100%;justify-content:center;font-size:15px;padding:14px" onclick="S.showSubModal=false;S.page='subscribe';render()">Abunə Ol →</button>
+      <button style="width:100%;background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:12px;font-weight:700" onclick="S.showSubModal=false;render()">Sonra baxaram</button>
+    </div>
+  </div>`;
+}
+function promoBannerHTML(){
+  if(!S.promo.active||S._promoBannerDismissed) return '';
+  if(S.promo.expiresAt&&new Date(S.promo.expiresAt)<new Date()) return '';
+  document.body.classList.add('has-promo-banner');
+  return `<div class="promo-top-banner" id="promo-top-banner">
+    <span>${S.promo.badge||'🎁'}</span>
+    <span>${S.promo.subtitle||''} — ${S.promo.title||''}</span>
+    ${S.promo.expiresAt?`<span id="ptb-countdown" style="background:rgba(0,0,0,.2);padding:2px 8px;border-radius:4px;font-size:11px"></span>`:''}
+    <button class="ptb-close" onclick="S._promoBannerDismissed=true;document.body.classList.remove('has-promo-banner');document.getElementById('promo-top-banner')?.remove()">✕</button>
+  </div>`;
+}
 function demoBannerHTML(){
   if(S.user) return '';
-  return `<div class="demo-banner">
-    <span style="font-size:18px;font-weight:800">🎁 Qeydiyyatdan keçin, 2 pulsuz demo dərsə giriş əldə edin!</span>
-    <button class="btn btn-orange" style="background:white;color:#e67e00;font-weight:900;margin-left:16px;border-radius:20px;padding:9px 24px" onclick="openAuth('register')">Hesab Yarat →</button>
-  </div>`;
+  return `<div onclick="openAuth('register')" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--orange),var(--orange2));color:white;padding:10px 22px;border-radius:22px;font-size:13px;font-weight:800;cursor:pointer;margin:0 44px 20px;max-height:44px;animation:demoPulse 3s infinite;box-shadow:0 4px 16px rgba(242,142,20,.35);transition:transform .2s" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">🎁 Qeydiyyat ilə 2 ödənişsiz dərs!</div>`;
 }
 
 // ── WELCOME QUIZ ────────────────────────────────────────────
@@ -3097,6 +3146,8 @@ function render(){
     qzEl.innerHTML=quizPopupHTML();
     document.body.appendChild(qzEl);
   }
+  // WA button visibility
+  setTimeout(()=>{const w=document.getElementById('wa-wrap');if(w)w.style.display=S.page==='video'?'none':'block';},100);
   if(S.page==='admin'){
     if(S.adminSessionStart&&Date.now()-S.adminSessionStart>1800000){
       S.user&&(S.user.admin=false);S.adminSessionStart=0;S.page='browse';
@@ -3105,7 +3156,7 @@ function render(){
     }
     app.innerHTML=navHTML()+adminPageHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(S.page==='video'){
-    app.innerHTML=navHTML()+videoPageHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
+    app.innerHTML=navHTML()+videoPageHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML()+subModalHTML();
     if(S.selectedCourse && !S._commentsLoading){
       S._commentsLoading=true;
       loadComments(S.selectedCourse.id).finally(()=>{S._commentsLoading=false;});
@@ -3120,7 +3171,7 @@ function render(){
     },150);
   } else if(S.page==='search'){
     app.innerHTML=navHTML()+searchPageHTML()+footerHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
-  } else if(['forum','help','terms','privacy'].includes(S.page)){
+  } else if(['help','terms','privacy'].includes(S.page)){
     app.innerHTML=navHTML()+staticPageHTML(S.page)+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else if(S.page==='about'){
     app.innerHTML=navHTML()+aboutPageHTML()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
@@ -3138,7 +3189,8 @@ function render(){
     app.innerHTML=navHTML()+faqStandalonePage()+footerHTML()+waButtonHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
   } else {
     if(S.sessionKicked){app.innerHTML=kickedScreenHTML();return;}
-    app.innerHTML=navHTML()+continueCardHTML()+streakWidgetHTML()+heroHTML()+demoBannerHTML()+`<div class="browse">${CATEGORIES.map(catRowHTML).join('')}</div>`+statsSectionHTML()+testimonialsHTML()+certPromoHTML()+faqHTML()+blogSectionHTML()+footerHTML()+waButtonHTML()+promoHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
+    document.body.classList.remove('has-promo-banner');
+    app.innerHTML=promoBannerHTML()+navHTML()+continueCardHTML()+streakWidgetHTML()+heroHTML()+demoBannerHTML()+`<div class="browse">${CATEGORIES.map(catRowHTML).join('')}</div>`+statsSectionHTML()+testimonialsHTML()+certPromoHTML()+faqHTML()+blogSectionHTML()+footerHTML()+waButtonHTML()+promoHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
     startSlider();
     animateCounters();
     if(S.promo.active && S.promo.expiresAt) setTimeout(startPromoTimer, 300);
@@ -3203,14 +3255,14 @@ async function selectPart(courseId,partId){
   const p=c.parts.find(x=>x.id===partId);if(!p)return;
   if(!p.free){
     if(!S.user){ openAuth('register'); return; } // login deyilsə → qeydiyyat
-    if(!S.user.subscribed && !S.user.admin){ 
-      showToast(S.lang==='ru'?'Этот урок требует подписки. ₼29/мес — доступ ко всем курсам.':'Bu video abunəlik tələb edir. ₼29/ay ilə bütün kurslara giriş əldə edin.','error');
+    if(!S.user.subscribed && !S.user.admin){
+      S.showSubModal=true;render();
       return;
     }
   } else {
-    // Pulsuz video — mail toplamaq üçün hesab tələb et
+    // Ödənişsiz video — mail toplamaq üçün hesab tələb et
     if(!S.user){
-      // Pulsuz video üçün qeydiyyat tələb et - lead magnet
+      // Ödənişsiz video üçün qeydiyyat tələb et - lead magnet
       S._pendingFreePart={courseId,partId};
       openAuth('register');
       return;
@@ -3673,45 +3725,58 @@ function generateToken(){
 }
 async function initSessionGuard(){
   if(!sb||!S.user) return;
-  // Artıq aktiv sessiya varsa yenidən başlatma
   if(S.sessionToken && window._sessionCheck) return;
   try{
     const token=generateToken();
     S.sessionToken=token;
     localStorage.setItem('artmonia_session_'+S.user.id, token);
-    // Upsert — insert or update
+    // Get existing sessions for this user
+    const {data:existing}=await sb.from('active_sessions')
+      .select('session_tokens,device_infos').eq('user_id',S.user.id).single();
+    let tokens=[];let devices=[];
+    if(existing&&existing.session_tokens){
+      try{tokens=JSON.parse(existing.session_tokens);devices=JSON.parse(existing.device_infos||'[]');}catch(e){tokens=[];devices=[];}
+    }
+    // Add new token, keep max 3
+    tokens.push(token);devices.push(navigator.userAgent.slice(0,100));
+    if(tokens.length>3){tokens=tokens.slice(-3);devices=devices.slice(-3);}
     await sb.from('active_sessions').upsert({
       user_id:S.user.id,
+      session_tokens:JSON.stringify(tokens),
+      device_infos:JSON.stringify(devices),
       session_token:token,
       device_info:navigator.userAgent.slice(0,100),
       last_seen:new Date().toISOString()
     },{onConflict:'user_id'});
-    // Hər 45 saniyədə bir yoxla (30s-dən artıq — daha az false positive)
     clearInterval(window._sessionCheck);
     window._sessionCheck=setInterval(()=>checkSession(),45000);
   }catch(e){console.warn('Session init:',e);}
 }
 async function checkSession(){
   if(!sb||!S.user||!S.sessionToken) return;
-  // Admin-i session guard-dan muaf tut
   if(S.user.admin) return;
   try{
     const {data,error}=await sb.from('active_sessions')
-      .select('session_token').eq('user_id',S.user.id).single();
-    if(error || !data) return; // Supabase xətasında kick etmə
-    if(data.session_token && data.session_token!==S.sessionToken){
+      .select('session_tokens,session_token').eq('user_id',S.user.id).single();
+    if(error || !data) return; // Network error — don't kick
+    let tokens=[];
+    if(data.session_tokens){
+      try{tokens=JSON.parse(data.session_tokens);}catch(e){tokens=[data.session_token];}
+    } else { tokens=[data.session_token]; }
+    // Check if our token is in the array (up to 3 devices allowed)
+    if(!tokens.includes(S.sessionToken)){
       clearInterval(window._sessionCheck);
       S.sessionKicked=true;
       S.user=null;
       if(sb) await sb.auth.signOut();
       render();
-    } else if(data){
+    } else {
       await sb.from('active_sessions')
         .update({last_seen:new Date().toISOString()})
         .eq('user_id',S.user?.id||'');
     }
   }catch(e){
-    // Şəbəkə xətasında kick etmə
+    // Network error — never kick
     console.warn('Session check error:',e);
   }
 }
@@ -3982,7 +4047,7 @@ function communityPageHTML(){
           <p style="font-size:15px;color:var(--text2);font-weight:600;max-width:500px">İşlərinizi paylaşın, digər tələbələrin əsərlərindən ilham alın, suallarınızı verin.</p>
         </div>
         ${S.user?`<button class="btn btn-orange btn-lg" onclick="document.getElementById('upload-form').scrollIntoView({behavior:'smooth'})">+ İşimi Paylaş</button>`
-          :`<button class="btn btn-orange btn-lg" onclick="openAuth('register')">Qoşulun — Pulsuz</button>`}
+          :`<button class="btn btn-orange btn-lg" onclick="openAuth('register')">Qoşulun — Ödənişsiz</button>`}
       </div>
       <div class="community-tabs">
         <button class="comm-tab ${S.communityTab==='works'?'active':''}" onclick="switchCommTab('works')">🖼️ İşlər</button>
@@ -4240,7 +4305,7 @@ function onlineLessonsPageHTML(){
     <h1>Online Dərslər Necə İşləyir?</h1>
     <p class="static-sub">Evdən çıxmadan, öz tempinizlə professional rəssamlıq öyrənin</p>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0">
-      ${[['1','Qeydiyyat Ol','30 saniyədə pulsuz hesab yarat. Kart tələb olunmur.'],['2','Kurs Seç','Səviyyənizə uyğun kursu seçin. Başlanğıcdan irəlisinə.'],['3','İzlə & Öyrən','Videolara baxın, praktika edin, sertifikat qazanın.']].map(([n,t,d])=>`
+      ${[['1','Qeydiyyat Ol','30 saniyədə ödənişsiz hesab yarat. Kart tələb olunmur.'],['2','Kurs Seç','Səviyyənizə uyğun kursu seçin. Başlanğıcdan irəlisinə.'],['3','İzlə & Öyrən','Videolara baxın, praktika edin, sertifikat qazanın.']].map(([n,t,d])=>`
       <div style="background:var(--card);border:1.5px solid var(--border2);border-radius:12px;padding:24px;text-align:center">
         <div style="width:44px;height:44px;border-radius:50%;background:var(--orange);color:white;font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">${n}</div>
         <div style="font-size:15px;font-weight:900;margin-bottom:8px">${t}</div>
@@ -4257,7 +4322,7 @@ function onlineLessonsPageHTML(){
     <h2>Texniki Tələblər</h2>
     <p>Yalnız internet bağlantısı olan hər hansı cihaz kifayətdir — telefon, tablet, laptop. Xüsusi proqram tələb olunmur.</p>
     <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
-      <button class="btn btn-orange btn-lg" onclick="openAuth('register')">Pulsuz Başla →</button>
+      <button class="btn btn-orange btn-lg" onclick="openAuth('register')">Ödənişsiz Başla →</button>
       <button class="btn btn-ghost btn-lg" onclick="goHome()">Kurslara Bax</button>
     </div>
   </div>`;
@@ -4345,12 +4410,12 @@ function certPageHTML(){
 }
 function blogPageHTML(){
   const posts=[
-    {tag:'Məsləhət',title:'Yağlı Boyaya Başlamazdan Əvvəl Bilməli Olduğunuz 5 Şey',desc:'Yeni başlayanlar üçün lazımi materiallar, atelye qurulumu və ilk addımlar haqqında tam bələdçi. Hansı fırçaları almalısınız? Boyalar haqqında nə bilmək lazımdır?',img:'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600',date:'15 Yanvar 2025'},
-    {tag:'Texnika',title:'Suluboyada "Wet-on-Wet" Texnikası Necə Tətbiq Edilir?',desc:'Bu sürrealist texnika ilə möhtəşəm gradient effektlər yaradın. Addım-addım izah, video nümunələrlə.',img:'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600',date:'8 Fevral 2025'},
-    {tag:'İlham',title:'Azərbaycanlı Rəssamların 2025-ci İldəki Uğur Hekayələri',desc:'Artmonia tələbələrinin real həyat uğurları — birinci tablolarından peşəkar karyeralara gedən yol.',img:'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600',date:'3 Mart 2025'},
-    {tag:'Rəng Nəzəriyyəsi',title:'Rəng Çarxını Anlayın: Uyğun Rəng Kombinasiyaları',desc:'Hansı rənglər bir-birini tamamlayır? Komplementar, analoq və triadik rəng sxemləri haqqında tam izah.',img:'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600',date:'20 Mart 2025'},
-    {tag:'Materiallar',title:'Ən Yaxşı Başlanğıc Akril Boyalar: 2025 Rəhbəri',desc:'Büdcəyə uyğun keyfiyyətli başlanğıc materiallar hansılardır? Müqayisəli test nəticələri.',img:'https://images.unsplash.com/photo-1561839561-b13bcfe95249?w=600',date:'5 Aprel 2025'},
-    {tag:'Motivasiya',title:'Rəssamlıqda "Yaradıcı Blok" — Necə Aşılır?',desc:'Hər rəssamın keçdiyi bu mərhələdən çıxmaq üçün 7 praktik üsul.',img:'https://images.unsplash.com/photo-1499892477393-f675706cbe6e?w=600',date:'18 Aprel 2025'},
+    {tag:'Online Dərs',title:'Niyə Online Rəssamlıq Dərsləri? 5 Əsas Səbəb',desc:'Evdə öyrənmənin üstünlükləri, vaxt qənaəti və peşəkar nəticələr haqqında. Dünyada milyonlar artıq bu yolu seçib — siz niyə geridə qalasınız?',img:'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600',date:'10 Yanvar 2026'},
+    {tag:'Uğur',title:'Evdən Çıxmadan Professional Rəssam Olmaq Mümkündür',desc:'İnternetin gücü ilə istənilən yerdən professional səviyyəyə çatmaq artıq reallıqdır. Artmonia tələbələri bunu sübut edir.',img:'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600',date:'22 Yanvar 2026'},
+    {tag:'Bələdçi',title:'Yağlı Boya ilə Başlamaq: Tam Yeni Başlayanlar Üçün Bələdçi',desc:'Hansı materialları almalı, haradan başlamalı, ilk rəsminizi necə çəkməli — hamısı bu məqalədə.',img:'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600',date:'5 Fevral 2026'},
+    {tag:'Məsləhət',title:'Azərbaycanda Rəssamlıq Kursu Seçərkən Nələrə Diqqət Etməli?',desc:'Keyfiyyətli kurs tanımaq üçün 7 meyar. Vaxtınızı və pulunuzu düzgün istifadə edin.',img:'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600',date:'18 Fevral 2026'},
+    {tag:'Karyera',title:'Sertifikalı Rəssam Olmaq Karyeranıza Necə Kömək Edir?',desc:'Sertifikat sadəcə kağız deyil — bu sizin bacarığınızın rəsmi sübutu. İşəgötürənlər və müştərilər üçün fərqi var.',img:'https://images.unsplash.com/photo-1561839561-b13bcfe95249?w=600',date:'1 Mart 2026'},
+    {tag:'Hekayə',title:'Artmonia Tələbələri: Real Nəticələr, Real İnsanlar',desc:'Sıfırdan başlayıb 6 ayda ilk tablolarını satan tələbələrimizin hekayələri. Onlar bacardısa, siz də bacara bilərsiniz.',img:'https://images.unsplash.com/photo-1499892477393-f675706cbe6e?w=600',date:'15 Mart 2026'},
   ];
   return `<div style="padding-top:80px;min-height:100vh">
     <div style="padding:40px 44px 20px;max-width:1100px;margin:0 auto">
@@ -4681,6 +4746,29 @@ function savePromo(){
   S.promo.showOnce=g('promo-showonce')?.value==='true';
   showToast('Promo saxlanıldı! ✅');
   adminGo('promo');
+  persistSettings();
+}
+async function persistSettings(){
+  if(!sb) return;
+  try{
+    const settings={siteTexts:S.siteTexts,promo:S.promo,reviews:S.reviews,teachers:S.teachers,heroSlides:HERO_SLIDES.map(s=>({id:s.id,title:s.title,desc:s.desc,cat:s.cat,bg:s.bg,courseId:s.courseId}))};
+    await sb.from('site_settings').upsert({id:'main',settings:JSON.stringify(settings),updated_at:new Date().toISOString()},{onConflict:'id'});
+  }catch(e){console.error('Persist settings:',e);}
+}
+async function loadSettings(){
+  if(!sb) return;
+  try{
+    const {data}=await sb.from('site_settings').select('settings').eq('id','main').single();
+    if(data&&data.settings){
+      const s=JSON.parse(data.settings);
+      if(s.siteTexts) Object.assign(S.siteTexts,s.siteTexts);
+      if(s.promo) Object.assign(S.promo,s.promo);
+      if(s.reviews) S.reviews=s.reviews;
+      if(s.teachers) S.teachers=s.teachers;
+      if(s.heroSlides) s.heroSlides.forEach((h,i)=>{if(HERO_SLIDES[i])Object.assign(HERO_SLIDES[i],h);});
+      render();
+    }
+  }catch(e){console.error('Load settings:',e);}
 }
 function saveAllTexts(){
   const g=id=>document.getElementById('txt-'+id);
@@ -4695,6 +4783,8 @@ function saveAllTexts(){
   if(HERO_SLIDES[2]){HERO_SLIDES[2].title=S.siteTexts.heroTitle3;HERO_SLIDES[2].desc=S.siteTexts.heroDesc3;}
   logAdminAction('Sayt mətnləri dəyişdirildi');showToast('Bütün mətnlər saxlanıldı! ✅');
   adminGo('texts');
+  // Supabase-ə saxla
+  persistSettings();
 }
 function saveHeroSlides(){
   HERO_SLIDES.forEach((s,i)=>{
@@ -4742,7 +4832,7 @@ const PAGE_ROUTES={
   '/results':'results','/teachers':'teachers',
   '/certificates':'certificates-page','/blog':'blog',
   '/faq':'faq-page','/community':'community',
-  '/profile':'profile','/forum':'forum',
+  '/profile':'profile',
   '/help':'help','/terms':'terms','/privacy':'privacy',
   '/search':'search','/subscribe':'subscribe'
 };
@@ -4757,7 +4847,6 @@ const ROUTE_TITLES={
   'faq-page':'Tez-tez Soruşulan Suallar — Artmonia',
   'community':'Tələbə İcması — Artmonia',
   'profile':'Profilim — Artmonia',
-  'forum':'Forum — Artmonia',
   'help':'Kömək — Artmonia',
   'terms':'İstifadə Şərtləri — Artmonia',
   'privacy':'Məxfilik Siyasəti — Artmonia',
@@ -4830,6 +4919,10 @@ function boot(){
   loadLocalStats();
   initSB();
   render();
+  // WhatsApp smart — 10 dəqiqə sonra göstər
+  if(!sessionStorage.getItem('wa_shown')){
+    setTimeout(()=>showWaButton(),600000);
+  } else { setTimeout(()=>{const w=document.getElementById('wa-wrap');if(w){w.style.display='block';const b=document.getElementById('wa-bubble');if(b)b.style.display='none';}},2000); }
   // Video download bloku
   document.addEventListener('contextmenu',(e)=>{
     if(e.target.tagName==='IFRAME'||e.target.closest('.v-embed')){
