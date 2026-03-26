@@ -104,7 +104,7 @@ body{font-family:"Nunito Sans",sans-serif;background:var(--bg);color:var(--text)
 .slide-desc{font-size:16px;color:rgba(255,255,255,.7);line-height:1.75;margin-bottom:32px;max-width:460px}
 .slide-actions{display:flex;gap:14px;align-items:center}
 .slider-dots{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
-.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all .3s;border:none}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all .3s;border:none;padding:0;outline:none;box-shadow:none;-webkit-appearance:none;appearance:none}
 .dot.active{background:var(--orange);width:26px;border-radius:4px}
 .slider-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);color:white;width:50px;height:50px;border-radius:50%;cursor:pointer;font-size:20px;transition:all .2s;display:flex;align-items:center;justify-content:center}
 .slider-arrow:hover{background:rgba(242,142,20,.2);border-color:var(--orange)}
@@ -598,134 +598,126 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:36px 44
 .quiz-option:hover{border-color:var(--orange);background:rgba(242,142,20,.08);color:white}
 .quiz-skip{background:none;border:none;color:var(--text3);font-size:12px;font-weight:700;cursor:pointer;margin-top:12px;padding:4px 8px}
 @media(max-width:768px){
-  .slide-bg{transform:none!important;transition:none!important}
+  /* GENERAL OVERFLOW FIX */
+  html,body{overflow-x:hidden;max-width:100vw}
+  body{padding-bottom:70px}
+  img{max-width:100%}
+
+  /* NAV */
   .nav{padding:0 12px;height:56px}
   .nav-links,.nav-right .btn-outline,.nav-search{display:none}
   .burger{display:flex}
-  
-  /* Hero - tam genişlik */
-  .hero{height:85vw;min-height:360px;max-height:520px}
-  .slide-content{left:16px;right:16px;bottom:70px;max-width:100%}
-  .slide-title{font-size:22px!important;line-height:1.25}
+
+  /* HERO — clean mobile */
+  .slide-bg{transform:none!important;transition:none!important}
+  .hero{height:75vw;min-height:320px;max-height:480px}
+  .slide-content{left:12px;right:12px;bottom:60px;max-width:100%}
+  .slide-title{font-size:20px!important;line-height:1.2}
   .slide-desc{display:none}
-  .slide-actions{gap:8px}
-  .slider-arrow{width:36px;height:36px;font-size:18px}
-  
-  /* Kurs kartları - tam genişlik */
-  .cat-row{padding:0 12px;margin-bottom:36px}
-  .row-scroll{padding-bottom:12px}
-  .c-card{flex:0 0 calc(50vw - 20px);min-width:140px;max-width:200px}
-  .c-thumb{height:110px}
-  .c-title{font-size:12px}
-  .c-meta{font-size:10px}
-  
-  /* Browse section */
+  .slide-cat{font-size:10px;padding:4px 10px;margin-bottom:10px}
+  .slide-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .slide-actions .btn,.slide-actions .btn-lg{padding:10px 18px;font-size:13px;height:auto;min-height:0}
+  .slider-arrow{width:32px;height:32px;font-size:16px;min-height:0!important;min-width:0!important}
+  .hero-academy-badge{font-size:11px;padding:6px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90vw}
+  .hero-particles{display:none}
+
+  /* SLIDER DOTS — critical fix: remove 44px min from dots */
+  .slider-dots{bottom:8px}
+  .dot{width:8px!important;height:8px!important;min-height:0!important;min-width:0!important;padding:0!important;border-radius:50%;box-shadow:none;outline:none}
+  .dot.active{width:24px!important;border-radius:4px}
+
+  /* COURSE CARDS — 2 per row */
   .browse{padding-top:8px}
-  
-  /* Video səhifəsi */
+  .cat-row{padding:0 12px;margin-bottom:24px}
+  .row-head{padding:0;margin-bottom:14px}
+  .row-title{font-size:16px}
+  .row-scroll{padding-bottom:12px}
+  .c-card{flex:0 0 calc(50vw - 24px);min-width:140px;max-width:200px}
+  .c-thumb{height:110px}
+  .c-thumb img{object-fit:cover}
+  .c-title{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .c-meta{font-size:10px}
+  .sb-l{left:4px}.sb-r{right:4px}
+
+  /* DEMO BANNER — pill centered */
+  .demo-banner-pill{font-size:12px!important;padding:8px 14px!important;margin:8px auto!important;display:inline-flex!important}
+
+  /* CONTINUE CARD */
+  .continue-card{margin:8px 12px;padding:12px 16px}
+  .continue-title{font-size:14px}
+  .continue-arrow{flex-shrink:0}
+
+  /* STREAK WIDGET */
+  .streak-widget{margin:8px 12px;padding:10px 14px}
+  .streak-num{font-size:20px}
+  .week-mins-num{font-size:16px}
+
+  /* VIDEO PAGE */
   .v-player-wrap,.v-info{padding:12px 14px}
-  .v-embed{height:52vw;min-height:200px}
+  .v-embed{height:56vw;min-height:200px}
   .parts-section,.comments-section,.cert-section{padding:0 12px 20px}
   .parts-grid{grid-template-columns:repeat(2,1fr);gap:8px}
   .part-card{min-height:90px}
-  
-  /* Admin */
+
+  /* ADMIN */
   .admin-header{padding:12px 16px}
   .a-form .f-row{grid-template-columns:1fr}
-  
-  /* Footer */
+  .admin-page .admin-body{display:block;padding:16px}
+  .admin-page .admin-nav{margin-bottom:16px}
+
+  /* FOOTER */
   footer{padding:20px 14px}
   .footer-inner{flex-direction:column;align-items:flex-start;gap:12px}
-  
-  /* Profile */
+
+  /* PROFILE */
   .profile-header{padding:20px 16px;flex-direction:column;align-items:flex-start}
   .profile-body{padding:12px 16px;grid-template-columns:1fr}
-  
-  /* Digər */
+
+  /* MODALS */
   .search-results{padding:70px 12px 24px}
-  .modal{padding:24px 16px;margin:8px}
+  .modal{padding:24px 16px;margin:8px;max-height:90vh;overflow-y:auto}
+  .overlay{padding:12px}
+  .overlay .modal,.level-test-box,.quiz-box{max-height:90vh;overflow-y:auto}
   .sub-wall{padding:24px 16px}
   .cert-card{flex-direction:column}
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  
-  /* Stats */
-  .stats-row{grid-template-columns:repeat(2,1fr);gap:16px}
-  
-  /* Testimonials */
+
+  /* GRIDS */
+  .stats-grid,.stats-row{grid-template-columns:repeat(2,1fr);gap:16px}
   .testi-grid{grid-template-columns:1fr}
-  
-  /* Blog */
   .blog-grid{grid-template-columns:1fr}
-  
-  /* Welcome modal */
+  .works-grid{grid-template-columns:repeat(2,1fr)!important}
+  .cert-promo-inner{grid-template-columns:1fr}
+  .cert-promo{padding:36px 16px}
+
+  /* WELCOME */
   .welcome-box{border-radius:16px}
   .welcome-inner{padding:36px 24px 32px}
   .welcome-stats{gap:16px}
   .welcome-stat-num{font-size:22px}
-  
-  /* Auth modal */
-  .overlay{padding:12px}
-  
-  /* Community */
-  .works-grid{grid-template-columns:repeat(2,1fr)!important}
-  
-  /* FAQ */
+
+  /* COMMUNITY */
+  .community-body{padding:0 12px}
   .faq-list{padding:0}
-  /* Mobile navbar */
-  .mobile-navbar{display:grid}
-  /* Continue card */
-  .continue-card{margin:0 12px 20px}
-  /* Streak */
-  .streak-widget{margin:0 12px 16px}
-  /* Body padding for navbar */
-  body{padding-bottom:70px}
-  /* WhatsApp button above mobile navbar */
-  .wa-btn{bottom:84px}
-  /* Cert promo single column */
-  .cert-promo-inner{grid-template-columns:1fr}
-  .cert-promo{padding:36px 16px}
-  /* Scroll buttons inside on mobile */
-  .sb-l{left:4px}.sb-r{right:4px}
-  /* Minimum touch targets */
-  .btn,.auth-btn,.mnav-item,.slider-arrow,.dot,.comment-del,.faq-q,.part-card,.scroll-btn{min-height:44px;min-width:44px}
+
+  /* TOUCH TARGETS — without dots */
+  .btn,.auth-btn,.mnav-item,.slider-arrow,.comment-del,.faq-q,.part-card,.scroll-btn{min-height:44px}
   .btn-sm{min-height:44px;padding:10px 16px}
-  .slide-actions .btn{padding:12px 20px;font-size:13px}
-  /* Prevent iOS zoom on input focus */
   input,select,textarea,.f-input{font-size:16px!important}
-  /* Auth modal mobile fixes */
-  .modal{max-height:90vh;overflow-y:auto;padding:24px 16px}
   .f-input{padding:14px}
   .auth-btn{padding:16px 24px}
-  /* Mobile navbar touch targets */
+
+  /* MOBILE NAVBAR */
+  .mobile-navbar{display:grid;height:60px;padding:6px 0 max(6px,env(safe-area-inset-bottom))}
   .mnav-item{padding:10px 4px;min-height:52px}
   .mnav-icon{font-size:22px}
-  /* Hero CTA buttons */
-  .slide-actions{flex-wrap:wrap;gap:10px}
-  .slide-actions .btn-lg{padding:12px 22px;font-size:13px;width:auto}
-  /* Hero academy badge mobile */
-  .hero-academy-badge{font-size:10px;padding:6px 12px}
-  .hero-particles{display:none}
-  /* Hero max height fix */
-  .hero{max-height:70vh}
-  /* Course cards: 2 per row */
-  .c-card{flex:0 0 calc(50vw - 24px)}
-  .c-thumb img{object-fit:cover}
-  /* Video embed min height */
-  .v-embed{min-height:56vw}
-  /* Admin warning on mobile */
-  .admin-page .admin-body{display:block;padding:16px}
-  .admin-page .admin-nav{margin-bottom:16px}
-  /* Community single column */
-  .community-body{padding:0 12px}
-  /* All popups */
-  .overlay .modal,.level-test-box,.quiz-box{max-height:90vh;overflow-y:auto}
-  /* WhatsApp positioning */
-  .wa-wrap{bottom:80px!important;right:16px!important}
-  /* Text overflow */
-  .c-title,.part-name,.work-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  /* Mobile navbar height */
-  .mobile-navbar{height:60px;padding:6px 0 max(6px,env(safe-area-inset-bottom))}
   .mnav-label{font-size:10px}
+
+  /* WHATSAPP — above navbar */
+  .wa-btn{bottom:80px!important;right:16px!important}
+  .wa-wrap{bottom:80px!important;right:16px!important}
+
+  /* TEXT OVERFLOW */
+  .c-title,.part-name,.work-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
 </style>
 <script type="application/ld+json">
