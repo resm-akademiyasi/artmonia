@@ -29,6 +29,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070614'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='40' font-weight='bold' fill='%23F28E14' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070614'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='40' font-weight='bold' fill='%23F28E14' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -1506,7 +1507,7 @@ function navHTML(){
       </ul>
     </div>
     <div class="nav-search">
-      <span class="si">🔍</span>
+      <span class="si"><i data-lucide="search" style="width:14px;height:14px"></i></span>
       <input placeholder="Kurs axtar..." onkeydown="if(event.key==='Enter')doSearch(this.value)" value="${esc(S.searchQuery)}">
     </div>
     <div class="nav-right">
@@ -1976,72 +1977,85 @@ function adminLogHTML(){
 }
 function profilePageHTML(){
   if(!S.user){
-    // Not logged in - redirect to home
     setTimeout(()=>{S.page='browse';render();},100);
     return '<div class="loading-screen"><div class="spinner"></div><p style="font-size:14px;color:var(--text3);font-weight:700;margin-top:16px">Yönləndirilir...</p></div>';
   }
   const myCourses=S.courses.filter(c=>getCourseProgress(c.id)>0||S.certificates.includes(c.id));
   const initial=(S.user.name||'U')[0].toUpperCase();
+  const watchedParts=Object.values(S.progress).reduce((s,c)=>s+Object.keys(c).length,0);
+  const notesKey='artmonia_notes_'+S.user.id;
+  const savedNotes=localStorage.getItem(notesKey)||'';
   return `<div class="profile-page">
-    <div class="profile-header">
-      <div class="profile-avatar">${initial}</div>
-      <div>
-        <div class="profile-name">${esc(S.user.name)}</div>
+    <!-- User Info Card -->
+    <div class="profile-header" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+      <div class="profile-avatar" style="width:72px;height:72px;font-size:28px">${initial}</div>
+      <div style="flex:1;min-width:200px">
+        <div class="profile-name" style="font-size:22px">${esc(S.user.name)}</div>
         <div class="profile-email">${esc(S.user.email)}</div>
-        <div style="margin-top:8px">
+        ${S.user.phone?`<div style="font-size:13px;color:var(--text3);font-weight:600;margin-top:2px">📞 ${esc(S.user.phone)}</div>`:''}
+        <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           ${S.user.subscribed
             ?`<span class="badge badge-free" style="font-size:12px;padding:5px 14px">✓ Aktiv Abunəlik${S.user.daysLeft&&S.user.daysLeft<=7?' · '+S.user.daysLeft+' gün':''}</span>`
             :'<span class="badge" style="background:rgba(239,68,68,.15);color:var(--red);font-size:12px;padding:5px 14px">Abunəlik Yoxdur</span>'}
+          ${S.badges.length?S.badges.slice(0,3).map(b=>`<span style="font-size:12px">${b}</span>`).join(''):''}
         </div>
       </div>
     </div>
     <div class="profile-body">
-      <div>
-        <div class="profile-card">
-          <div class="profile-card-title">📊 Statistika</div>
-          ${[
-            {l:'İzlənən kurs',v:myCourses.length},
-            {l:'Qazanılan sertifikat',v:S.certificates.length},
-            {l:'İzlənən hissə',v:Object.values(S.progress).reduce((s,c)=>s+Object.keys(c).length,0)},
-          ].map(s=>`<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border2)">
-            <span style="font-size:14px;color:var(--text2);font-weight:700">${s.l}</span>
-            <span style="font-size:18px;font-weight:900;color:var(--orange);font-family:'Cormorant Garamond',serif">${s.v}</span>
-          </div>`).join('')}
+      <!-- Stats Card -->
+      <div class="profile-card">
+        <div class="profile-card-title">📊 Statistika</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px">
+          ${[{l:'Kurs',v:myCourses.length,c:'var(--orange)'},{l:'Sertifikat',v:S.certificates.length,c:'var(--green)'},{l:'Hissə',v:watchedParts,c:'var(--blue)'}].map(s=>
+            `<div style="text-align:center;background:var(--bg2);border-radius:10px;padding:16px 8px">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:${s.c}">${s.v}</div>
+              <div style="font-size:11px;color:var(--text3);font-weight:700;margin-top:4px">${s.l}</div>
+            </div>`).join('')}
         </div>
-        ${!S.user.subscribed?`<div class="profile-card" style="margin-top:16px;border-color:var(--orange)">
-          <div class="profile-card-title">🔑 Abunəlik</div>
-          <p style="font-size:14px;color:var(--text2);line-height:1.65;margin-bottom:16px">Bütün kurslara sınırsız giriş əldə edin.</p>
-          <div class="price-big" style="font-size:40px">₼29 <span style="font-size:18px;color:var(--text3)">/ay</span></div>
-          <button class="btn btn-orange btn-lg" style="margin-top:16px;width:100%;justify-content:center" onclick="showToast('Ödəniş sistemi tezliklə!')">Abunə ol</button>
+        ${S.streak>0?`<div style="display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px;background:rgba(242,142,20,.06);border-radius:8px">
+          <span style="font-size:24px">🔥</span><span style="font-size:14px;font-weight:800;color:var(--orange)">${S.streak} günlük seriya!</span>
         </div>`:''}
       </div>
-      <div>
-        <div class="profile-card">
-          <div class="profile-card-title">🎓 Sertifikatlarım (${S.certificates.length})</div>
-          ${S.certificates.length?S.certificates.map(cid=>{
-            const c=S.courses.find(x=>x.id===cid);if(!c)return '';
-            return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border2)">
-              <div>
-                <div style="font-size:13px;font-weight:700;color:var(--text)">${esc(c.title)}</div>
-                <div style="font-size:11px;color:var(--text3);margin-top:2px;font-weight:700">${c.category}</div>
-              </div>
-              <button class="btn btn-success btn-sm" onclick="downloadCertificate(${cid})">⬇ Yüklə</button>
-            </div>`;
-          }).join(''):'<div style="text-align:center;padding:24px;color:var(--text3);font-size:14px;font-weight:700">Hələ sertifikat yoxdur</div>'}
+      ${!S.user.subscribed?`<!-- Subscription Card -->
+      <div class="profile-card" style="border-color:var(--orange);margin-top:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div><div style="font-size:16px;font-weight:900;color:var(--text)">🔓 Premium Açın</div>
+          <div style="font-size:13px;color:var(--text3);margin-top:4px">Bütün kurslara sınırsız giriş</div></div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:var(--orange)">₼29</div>
         </div>
-        <div class="profile-card" style="margin-top:16px">
-          <div class="profile-card-title">📚 Kurslarda Proqresim</div>
-          ${myCourses.length?myCourses.map(c=>{
-            const pct=getCourseProgress(c.id);
-            return `<div style="margin-bottom:16px;cursor:pointer" onclick="openCourse(${c.id})">
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-                <span style="font-size:13px;font-weight:700;color:var(--text2)">${esc(c.title)}</span>
-                <span style="font-size:13px;font-weight:900;color:var(--orange)">${pct}%</span>
-              </div>
-              <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-            </div>`;
-          }).join(''):'<div style="text-align:center;padding:24px;color:var(--text3);font-size:14px;font-weight:700">Hələ heç bir kurs izlənməyib</div>'}
-        </div>
+        <button class="btn btn-orange" style="width:100%;justify-content:center;margin-top:14px" onclick="S.page='subscribe';render()">Abunə ol →</button>
+      </div>`:''}
+      <!-- Certificates Card -->
+      <div class="profile-card" style="margin-top:16px">
+        <div class="profile-card-title">🎓 Sertifikatlarım (${S.certificates.length})</div>
+        ${S.certificates.length?S.certificates.map(cid=>{
+          const c=S.courses.find(x=>x.id===cid);if(!c)return '';
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border2)">
+            <div><div style="font-size:13px;font-weight:700;color:var(--text)">${esc(c.title)}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;font-weight:700">${c.category}</div></div>
+            <button class="btn btn-success btn-sm" onclick="downloadCertificate(${cid})">⬇ Yüklə</button>
+          </div>`;
+        }).join(''):'<div style="text-align:center;padding:24px;color:var(--text3);font-size:14px;font-weight:700">Hələ sertifikat yoxdur</div>'}
+      </div>
+      <!-- Course Progress Card -->
+      <div class="profile-card" style="margin-top:16px">
+        <div class="profile-card-title">📚 Kurslarda Proqresim</div>
+        ${myCourses.length?myCourses.map(c=>{
+          const pct=getCourseProgress(c.id);
+          return `<div style="margin-bottom:14px;cursor:pointer" onclick="openCourse(${c.id})">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:13px;font-weight:700;color:var(--text2)">${esc(c.title)}</span>
+              <span style="font-size:13px;font-weight:900;color:var(--orange)">${pct}%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+          </div>`;
+        }).join(''):'<div style="text-align:center;padding:24px;color:var(--text3);font-size:14px;font-weight:700">Hələ heç bir kurs izlənməyib</div>'}
+      </div>
+      <!-- Personal Notes Card -->
+      <div class="profile-card" style="margin-top:16px">
+        <div class="profile-card-title">📝 Şəxsi Qeydlər</div>
+        <textarea id="profile-notes" style="width:100%;min-height:120px;background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:'Nunito Sans',sans-serif;font-size:14px;resize:vertical;outline:none;font-weight:600" placeholder="Qeydlərinizi buraya yazın..." oninput="localStorage.setItem('${notesKey}',this.value)">${esc(savedNotes)}</textarea>
+        <div style="font-size:11px;color:var(--text3);margin-top:8px;font-weight:600">🔒 Bu qeydlər yalnız sizə görünür</div>
       </div>
     </div>
   </div>`;
@@ -3193,6 +3207,8 @@ function render(){
     app.innerHTML=promoBannerHTML()+navHTML()+continueCardHTML()+streakWidgetHTML()+heroHTML()+demoBannerHTML()+`<div class="browse">${CATEGORIES.map(catRowHTML).join('')}</div>`+statsSectionHTML()+testimonialsHTML()+certPromoHTML()+faqHTML()+blogSectionHTML()+footerHTML()+waButtonHTML()+promoHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
     startSlider();
     animateCounters();
+    // Initialize Lucide icons
+    if(window.lucide) setTimeout(()=>lucide.createIcons(),100);
     if(S.promo.active && S.promo.expiresAt) setTimeout(startPromoTimer, 300);
     if(S.showWelcome) setTimeout(()=>{
       if(!document.getElementById('welcome-overlay')){
