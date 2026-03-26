@@ -94,6 +94,11 @@ body{font-family:"Nunito Sans",sans-serif;background:var(--bg);color:var(--text)
 .slide.active .slide-bg{transform:scale(1)}
 .slide-grad{position:absolute;inset:0;background:linear-gradient(105deg,rgba(7,6,20,.97) 30%,rgba(7,6,20,.5) 65%,transparent 100%),linear-gradient(to top,rgba(7,6,20,.85) 0%,transparent 45%)}
 .slide-content{position:absolute;bottom:14%;left:80px;max-width:580px}
+.hero-academy-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);backdrop-filter:blur(12px);border:1px solid rgba(242,142,20,.4);color:white;font-size:12px;font-weight:800;letter-spacing:1px;padding:8px 18px;border-radius:24px;margin-bottom:16px;animation:heroBreathe 3s ease-in-out infinite}
+@keyframes heroBreathe{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.02)}}
+.hero-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hero-particle{position:absolute;bottom:-10px;width:6px;height:6px;border-radius:50%;background:rgba(242,142,20,.5);animation:heroFloat 8s linear infinite}
+@keyframes heroFloat{0%{transform:translateY(0);opacity:0}10%{opacity:.6}90%{opacity:.3}100%{transform:translateY(-100vh);opacity:0}}
 .slide-cat{display:inline-flex;align-items:center;gap:8px;background:rgba(242,142,20,.15);border:1.5px solid rgba(242,142,20,.4);color:var(--orange);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:20px}
 .slide-title{font-family:"Cormorant Garamond",serif;font-size:clamp(38px,5.5vw,68px);font-weight:700;line-height:1.03;margin-bottom:16px}
 .slide-desc{font-size:16px;color:rgba(255,255,255,.7);line-height:1.75;margin-bottom:32px;max-width:460px}
@@ -697,6 +702,30 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:36px 44
   /* Hero CTA buttons */
   .slide-actions{flex-wrap:wrap;gap:10px}
   .slide-actions .btn-lg{padding:12px 22px;font-size:13px;width:auto}
+  /* Hero academy badge mobile */
+  .hero-academy-badge{font-size:10px;padding:6px 12px}
+  .hero-particles{display:none}
+  /* Hero max height fix */
+  .hero{max-height:70vh}
+  /* Course cards: 2 per row */
+  .c-card{flex:0 0 calc(50vw - 24px)}
+  .c-thumb img{object-fit:cover}
+  /* Video embed min height */
+  .v-embed{min-height:56vw}
+  /* Admin warning on mobile */
+  .admin-page .admin-body{display:block;padding:16px}
+  .admin-page .admin-nav{margin-bottom:16px}
+  /* Community single column */
+  .community-body{padding:0 12px}
+  /* All popups */
+  .overlay .modal,.level-test-box,.quiz-box{max-height:90vh;overflow-y:auto}
+  /* WhatsApp positioning */
+  .wa-wrap{bottom:80px!important;right:16px!important}
+  /* Text overflow */
+  .c-title,.part-name,.work-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* Mobile navbar height */
+  .mobile-navbar{height:60px;padding:6px 0 max(6px,env(safe-area-inset-bottom))}
+  .mnav-label{font-size:10px}
 }
 </style>
 <script type="application/ld+json">
@@ -1080,18 +1109,18 @@ const CAT_TRANSLATIONS={
 };
 function tCat(cat){const tr=CAT_TRANSLATIONS[cat];return tr&&S.lang!=='az'?tr[S.lang]||cat:cat;}
 let HERO_SLIDES=[
-  {id:'s1',title:'Payız Ağacı ilə Başla',desc:'Yağlı boya texnikasını ödənişsiz öyrən — rəssamlığın ilk addımları burada başlayır.',cat:'Ödənişsiz Dərs',bg:'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1600&q=80',courseId:1},
-  {id:'s2',title:'Dağların Sehri — Akril ilə Mənzərə',desc:'Professional texnikalarla dramatik dağ mənzərəsi yaratmağı öyrənin.',cat:'Başlanğıc',bg:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80',courseId:2},
-  {id:'s3',title:'Qış Gecəsinin Mistikası',desc:'Ay işığı altında qış mənzərəsini kətan üzərindəki yağlı boya ilə yaradın.',cat:'İrəli Səviyyə',bg:'https://images.unsplash.com/photo-1478827217976-7214a0556393?w=1600&q=80',courseId:6},
+  {id:'s1',title:'Payız Ağacı ilə Başla',desc:'Yağlı boya texnikasını ödənişsiz öyrən — rəssamlığın ilk addımları burada başlayır.',cat:'Ödənişsiz Dərs',bg:'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1600&q=80',courseId:1},
+  {id:'s2',title:'Dağların Sehri — Akril ilə Mənzərə',desc:'Professional texnikalarla dramatik dağ mənzərəsi yaratmağı öyrənin.',cat:'Başlanğıc',bg:'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=1600&q=80',courseId:2},
+  {id:'s3',title:'Qış Gecəsinin Mistikası',desc:'Ay işığı altında qış mənzərəsini kətan üzərindəki yağlı boya ilə yaradın.',cat:'İrəli Səviyyə',bg:'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=1600&q=80',courseId:6},
 ];
 const INIT_COURSES=[
-  {id:1,title:'Payız Ağacı — Başlanğıc',category:'Ödənişsiz Dərslər',level:'Başlanğıc',thumb:'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=600&q=80',desc:'Yağlı boya ilə payız ağacını cızmağı öyrənin. Bu ödənişsiz dərsdə əsas texnikalar öyrədilir.',purpose:'Bu kurs rəssamlığa yeni başlayanlara ağac texnikasını öyrədir. Heç bir əvvəlki bilik tələb olunmur.',totalDuration:'63 dəqiqə',materials:'Yağlı boya (sarı, qırmızı, yaşıl, qəhvəyi), fırça №4 və №8, kətan 30x40',downloadUrl:'',viewerCount:47,free:true,parts:[{id:'p1-1',name:'Hissə 1 — Skis və əsas formalar',duration:'28:14',vimeo:'',free:true},{id:'p1-2',name:'Hissə 2 — Rəng qatları',duration:'34:50',vimeo:'',free:false}]},
-  {id:2,title:'Dağ Mənzərəsi — Başlanğıc Sev.1',category:'Başlanğıc',level:'Başlanğıc',thumb:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',desc:'Dramatik dağ mənzərəsini akril boya ilə yaradın. Perspektiv, işıq-kölgə əsasları.',purpose:'Dağların siluetini, perspektiv qaydalarını və mənzərə kompozisiyasını öyrənir.',totalDuration:'102 dəqiqə',materials:'Akril boya (mavi, ağ, boz, yaşıl), fırça №6 və №12, kətan 40x50',downloadUrl:'',viewerCount:63,free:false,parts:[{id:'p2-1',name:'Hissə 1 — Kompozisiya',duration:'22:30',vimeo:'',free:false},{id:'p2-2',name:'Hissə 2 — Göy fon',duration:'41:15',vimeo:'',free:false},{id:'p2-3',name:'Hissə 3 — Dağların rəngləri',duration:'38:45',vimeo:'',free:false}]},
-  {id:3,title:'Çəmənlik — Başlanğıc Sev.2',category:'Başlanğıc',level:'Başlanğıc',thumb:'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80',desc:'Yaz çəmənliyini suluboya ilə boyamağı öyrənin.',purpose:'Suluboya ilə yaz mövzusunu, rəng şəffaflığını və nəm texnikasını öyrənir.',totalDuration:'47 dəqiqə',materials:'Suluboya (yaşıl, sarı, qəhvəyi), suluboya kağızı, fırça №3 və №7',downloadUrl:'',viewerCount:28,free:false,parts:[{id:'p3-1',name:'Hissə 1 — Rəng qarışdırma',duration:'19:40',vimeo:'',free:false},{id:'p3-2',name:'Hissə 2 — Ot doku texnikası',duration:'27:20',vimeo:'',free:false}]},
-  {id:4,title:'Dəniz Limanı — Orta Sev.3',category:'Orta Səviyyə',level:'Orta',thumb:'https://images.unsplash.com/photo-1518803194621-27188ba362c9?w=600&q=80',desc:'Dumanlı sabah atmosferini, su refleksiyalarını və gəmilərin siluetini çəkin.',purpose:'Su refleksiyaları, liman atmosferi və perspektiv texnikasını öyrənir.',totalDuration:'139 dəqiqə',materials:'Yağlı boya (mavi, boz, ağ), fırça №6 və №10, kətan 50x60',downloadUrl:'',viewerCount:19,free:false,parts:[{id:'p4-1',name:'Hissə 1 — Perspektiv',duration:'31:10',vimeo:'',free:false},{id:'p4-2',name:'Hissə 2 — Su refleksiyası',duration:'44:22',vimeo:'',free:false},{id:'p4-3',name:'Hissə 3 — Gəmilər',duration:'38:55',vimeo:'',free:false},{id:'p4-4',name:'Hissə 4 — Final',duration:'25:18',vimeo:'',free:false}]},
-  {id:5,title:'Klassik Portret — Orta Sev.2',category:'Orta Səviyyə',level:'Orta',thumb:'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80',desc:'Üz proporsiyaları, kölgə-işıq oyunu və ifadəli baxışın sirləri.',purpose:'Üz proporsiyaları, kölgə-işıq oyunu və ifadəli portret texnikasını öyrənir.',totalDuration:'107 dəqiqə',materials:'Yağlı boya (dərisi, qırmızı, qəhvəyi, ağ), fırça №4, kətan 30x40',downloadUrl:'',viewerCount:34,free:false,parts:[{id:'p5-1',name:'Hissə 1 — Proporsiyalar',duration:'35:40',vimeo:'',free:false},{id:'p5-2',name:'Hissə 2 — Gözlər',duration:'29:15',vimeo:'',free:false},{id:'p5-3',name:'Hissə 3 — İşıq-kölgə',duration:'42:30',vimeo:'',free:false}]},
-  {id:6,title:'Qış Gecəsi — İrəli Sev.1',category:'İrəli Səviyyə',level:'İrəli',thumb:'https://images.unsplash.com/photo-1478827217976-7214a0556393?w=600&q=80',desc:'Ay işığı altında qış gecəsinin mistik atmosferini kətan üzərindəki yağlı boya ilə yaradın.',purpose:'Gecə tonları, ay işığı effektləri və qış mənzərəsi texnikasını öyrənir.',totalDuration:'162 dəqiqə',materials:'Yağlı boya (tünd mavi, ağ, gümüşü), fırça №8 və №12, kətan 50x60',downloadUrl:'',viewerCount:22,free:false,parts:[{id:'p6-1',name:'Hissə 1 — Gecə tonları',duration:'26:40',vimeo:'',free:false},{id:'p6-2',name:'Hissə 2 — Ay işığı',duration:'33:25',vimeo:'',free:false},{id:'p6-3',name:'Hissə 3 — Ağaclar',duration:'38:10',vimeo:'',free:false},{id:'p6-4',name:'Hissə 4 — Qar teksturu',duration:'41:55',vimeo:'',free:false},{id:'p6-5',name:'Hissə 5 — Final',duration:'22:30',vimeo:'',free:false}]},
-  {id:7,title:'Narınc Still Life — İrəli Sev.3',category:'İrəli Səviyyə',level:'İrəli',thumb:'https://images.unsplash.com/photo-1547514701-42782101795e?w=600&q=80',desc:'Natürmortu həyata keçirmək — işıq, rəng temperaturu və tekstur detayları.',purpose:'Natürmort işığı, rəng temperaturu və tekstur detaylarını öyrənir.',totalDuration:'100 dəqiqə',materials:'Yağlı boya (narıncı, qırmızı, sarı, ağ), fırça №4 və №8, kətan 30x40',downloadUrl:'',viewerCount:15,free:false,parts:[{id:'p7-1',name:'Hissə 1 — Kompozisiya',duration:'20:15',vimeo:'',free:false},{id:'p7-2',name:'Hissə 2 — Əsas rənglər',duration:'35:40',vimeo:'',free:false},{id:'p7-3',name:'Hissə 3 — Parlaqlıq',duration:'44:10',vimeo:'',free:false}]},
+  {id:1,title:'Payız Ağacı — Sıfırdan Sehrin Doğuşu',category:'Ödənişsiz Dərslər',level:'Başlanğıc',thumb:'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&q=80',desc:'Yağlı boya ilə payız ağacını cızmağı öyrənin. Bu ödənişsiz dərsdə əsas texnikalar öyrədilir.',purpose:'Bu kurs rəssamlığa yeni başlayanlara ağac texnikasını öyrədir. Heç bir əvvəlki bilik tələb olunmur.',totalDuration:'63 dəqiqə',materials:'Yağlı boya (sarı, qırmızı, yaşıl, qəhvəyi), fırça №4 və №8, kətan 30x40',downloadUrl:'',viewerCount:47,free:true,parts:[{id:'p1-1',name:'Hissə 1 — Skis və əsas formalar',duration:'28:14',vimeo:'',free:true},{id:'p1-2',name:'Hissə 2 — Rəng qatları',duration:'34:50',vimeo:'',free:false}]},
+  {id:2,title:'Dağların Ruhu — Akril ilə Epik Mənzərə',category:'Başlanğıc',level:'Başlanğıc',thumb:'https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=600&q=80',desc:'Dramatik dağ mənzərəsini akril boya ilə yaradın. Perspektiv, işıq-kölgə əsasları.',purpose:'Dağların siluetini, perspektiv qaydalarını və mənzərə kompozisiyasını öyrənir.',totalDuration:'102 dəqiqə',materials:'Akril boya (mavi, ağ, boz, yaşıl), fırça №6 və №12, kətan 40x50',downloadUrl:'',viewerCount:63,free:false,parts:[{id:'p2-1',name:'Hissə 1 — Kompozisiya',duration:'22:30',vimeo:'',free:false},{id:'p2-2',name:'Hissə 2 — Göy fon',duration:'41:15',vimeo:'',free:false},{id:'p2-3',name:'Hissə 3 — Dağların rəngləri',duration:'38:45',vimeo:'',free:false}]},
+  {id:3,title:'Yaşıl Xəyal — Suluboya Çəmənliyi',category:'Başlanğıc',level:'Başlanğıc',thumb:'https://images.unsplash.com/photo-1574182245530-967d9b3831af?w=600&q=80',desc:'Yaz çəmənliyini suluboya ilə boyamağı öyrənin.',purpose:'Suluboya ilə yaz mövzusunu, rəng şəffaflığını və nəm texnikasını öyrənir.',totalDuration:'47 dəqiqə',materials:'Suluboya (yaşıl, sarı, qəhvəyi), suluboya kağızı, fırça №3 və №7',downloadUrl:'',viewerCount:28,free:false,parts:[{id:'p3-1',name:'Hissə 1 — Rəng qarışdırma',duration:'19:40',vimeo:'',free:false},{id:'p3-2',name:'Hissə 2 — Ot doku texnikası',duration:'27:20',vimeo:'',free:false}]},
+  {id:4,title:'Dənizin Sirri — Dumanlı Liman Atmosferi',category:'Orta Səviyyə',level:'Orta',thumb:'https://images.unsplash.com/photo-1580136579312-94651dfd596d?w=600&q=80',desc:'Dumanlı sabah atmosferini, su refleksiyalarını və gəmilərin siluetini çəkin.',purpose:'Su refleksiyaları, liman atmosferi və perspektiv texnikasını öyrənir.',totalDuration:'139 dəqiqə',materials:'Yağlı boya (mavi, boz, ağ), fırça №6 və №10, kətan 50x60',downloadUrl:'',viewerCount:19,free:false,parts:[{id:'p4-1',name:'Hissə 1 — Perspektiv',duration:'31:10',vimeo:'',free:false},{id:'p4-2',name:'Hissə 2 — Su refleksiyası',duration:'44:22',vimeo:'',free:false},{id:'p4-3',name:'Hissə 3 — Gəmilər',duration:'38:55',vimeo:'',free:false},{id:'p4-4',name:'Hissə 4 — Final',duration:'25:18',vimeo:'',free:false}]},
+  {id:5,title:'Ruhun Aynası — Klassik Portret Sənəti',category:'Orta Səviyyə',level:'Orta',thumb:'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=600&q=80',desc:'Üz proporsiyaları, kölgə-işıq oyunu və ifadəli baxışın sirləri.',purpose:'Üz proporsiyaları, kölgə-işıq oyunu və ifadəli portret texnikasını öyrənir.',totalDuration:'107 dəqiqə',materials:'Yağlı boya (dərisi, qırmızı, qəhvəyi, ağ), fırça №4, kətan 30x40',downloadUrl:'',viewerCount:34,free:false,parts:[{id:'p5-1',name:'Hissə 1 — Proporsiyalar',duration:'35:40',vimeo:'',free:false},{id:'p5-2',name:'Hissə 2 — Gözlər',duration:'29:15',vimeo:'',free:false},{id:'p5-3',name:'Hissə 3 — İşıq-kölgə',duration:'42:30',vimeo:'',free:false}]},
+  {id:6,title:'Ay İşığı — Qış Gecəsinin Mistik Cazibəsi',category:'İrəli Səviyyə',level:'İrəli',thumb:'https://images.unsplash.com/photo-1579541591970-e5cf6b8ead26?w=600&q=80',desc:'Ay işığı altında qış gecəsinin mistik atmosferini kətan üzərindəki yağlı boya ilə yaradın.',purpose:'Gecə tonları, ay işığı effektləri və qış mənzərəsi texnikasını öyrənir.',totalDuration:'162 dəqiqə',materials:'Yağlı boya (tünd mavi, ağ, gümüşü), fırça №8 və №12, kətan 50x60',downloadUrl:'',viewerCount:22,free:false,parts:[{id:'p6-1',name:'Hissə 1 — Gecə tonları',duration:'26:40',vimeo:'',free:false},{id:'p6-2',name:'Hissə 2 — Ay işığı',duration:'33:25',vimeo:'',free:false},{id:'p6-3',name:'Hissə 3 — Ağaclar',duration:'38:10',vimeo:'',free:false},{id:'p6-4',name:'Hissə 4 — Qar teksturu',duration:'41:55',vimeo:'',free:false},{id:'p6-5',name:'Hissə 5 — Final',duration:'22:30',vimeo:'',free:false}]},
+  {id:7,title:'Rəng Simfoniyası — Narıncı Natürmort',category:'İrəli Səviyyə',level:'İrəli',thumb:'https://images.unsplash.com/photo-1547514701-42782101795e?w=600&q=80',desc:'Natürmortu həyata keçirmək — işıq, rəng temperaturu və tekstur detayları.',purpose:'Natürmort işığı, rəng temperaturu və tekstur detaylarını öyrənir.',totalDuration:'100 dəqiqə',materials:'Yağlı boya (narıncı, qırmızı, sarı, ağ), fırça №4 və №8, kətan 30x40',downloadUrl:'',viewerCount:15,free:false,parts:[{id:'p7-1',name:'Hissə 1 — Kompozisiya',duration:'20:15',vimeo:'',free:false},{id:'p7-2',name:'Hissə 2 — Əsas rənglər',duration:'35:40',vimeo:'',free:false},{id:'p7-3',name:'Hissə 3 — Parlaqlıq',duration:'44:10',vimeo:'',free:false}]},
 ];
 
 // ── STATE ──────────────────────────────────────────────────
@@ -1200,6 +1229,7 @@ let S={
   showSubOffer:false,
   showSubModal:false,
   _uploadMode:false,
+  _profileTab:'courses',
   _uploadedWorkUrl:null,
   contestSettings:{
     weekly:{active:false,title:'Həftəlik Çempionat',prize:'1 aylıq ödənişsiz abunəlik',prizeType:'subscription',endDate:null,nominationType:'top_score',announced:false},
@@ -1719,7 +1749,9 @@ function heroHTML(){
     ${HERO_SLIDES.map((s,i)=>`<div class="slide ${i===slideIdx?'active':''}">
       <div class="slide-bg" style="background-image:url(${s.bg})"></div>
       <div class="slide-grad"></div>
+      <div class="hero-particles">${[1,2,3,4,5].map(n=>`<div class="hero-particle" style="left:${10+n*17}%;animation-delay:${n*1.2}s"></div>`).join('')}</div>
       <div class="slide-content">
+        <div class="hero-academy-badge">🎨 Azərbaycanın İlk Online Rəsm Akademiyası</div>
         <div class="slide-cat">${s.cat}</div>
         <h1 class="slide-title">${s.title}</h1>
         <p class="slide-desc">${s.desc}</p>
@@ -2146,85 +2178,98 @@ function adminLogHTML(){
 function profilePageHTML(){
   if(!S.user){
     setTimeout(()=>{S.page='browse';render();},100);
-    return '<div class="loading-screen"><div class="spinner"></div><p style="font-size:14px;color:var(--text3);font-weight:700;margin-top:16px">Yönləndirilir...</p></div>';
+    return '<div class="loading-screen"><div class="spinner"></div><p style="font-size:14px;color:var(--text3);font-weight:700;margin-top:16px">${t("redirecting")}</p></div>';
   }
   const myCourses=S.courses.filter(c=>getCourseProgress(c.id)>0||S.certificates.includes(c.id));
   const initial=(S.user.name||'U')[0].toUpperCase();
   const watchedParts=Object.values(S.progress).reduce((s,c)=>s+Object.keys(c).length,0);
   const notesKey='artmonia_notes_'+S.user.id;
   const savedNotes=localStorage.getItem(notesKey)||'';
+  const pt=S._profileTab||'courses';
   return `<div class="profile-page">
-    <!-- User Info Card -->
+    <!-- Header -->
     <div class="profile-header" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
-      <div class="profile-avatar" style="width:72px;height:72px;font-size:28px">${initial}</div>
+      <div class="profile-avatar" style="width:80px;height:80px;font-size:32px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--navy2));display:flex;align-items:center;justify-content:center;color:white;font-weight:900;flex-shrink:0;position:relative">
+        ${initial}
+      </div>
       <div style="flex:1;min-width:200px">
-        <div class="profile-name" style="font-size:22px">${esc(S.user.name)}</div>
-        <div class="profile-email">${esc(S.user.email)}</div>
+        <div style="font-size:20px;font-weight:900;color:var(--text)">${esc(S.user.name)}</div>
+        <div style="font-size:13px;color:var(--text3);font-weight:600">${esc(S.user.email)}</div>
         ${S.user.phone?`<div style="font-size:13px;color:var(--text3);font-weight:600;margin-top:2px">📞 ${esc(S.user.phone)}</div>`:''}
-        <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           ${S.user.subscribed
-            ?`<span class="badge badge-free" style="font-size:12px;padding:5px 14px">✓ Aktiv Abunəlik${S.user.daysLeft&&S.user.daysLeft<=7?' · '+S.user.daysLeft+' gün':''}</span>`
-            :'<span class="badge" style="background:rgba(239,68,68,.15);color:var(--red);font-size:12px;padding:5px 14px">Abunəlik Yoxdur</span>'}
-          ${S.badges.length?S.badges.slice(0,3).map(b=>`<span style="font-size:12px">${b}</span>`).join(''):''}
+            ?`<span style="background:rgba(74,222,128,.12);color:var(--green);font-size:12px;font-weight:800;padding:5px 14px;border-radius:20px;border:1px solid rgba(74,222,128,.3)">✓ ${t('active_sub')}</span>`
+            :`<span style="background:rgba(239,68,68,.1);color:var(--red);font-size:12px;font-weight:800;padding:5px 14px;border-radius:20px;border:1px solid rgba(239,68,68,.2)">${t('no_sub')}</span>`}
+          ${S.badges.length?S.badges.slice(0,3).map(b=>`<span style="font-size:13px">${b}</span>`).join(''):''}
         </div>
       </div>
     </div>
-    <div class="profile-body">
-      <!-- Stats Card -->
-      <div class="profile-card">
-        <div class="profile-card-title">📊 Statistika</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px">
-          ${[{l:'Kurs',v:myCourses.length,c:'var(--orange)'},{l:'Sertifikat',v:S.certificates.length,c:'var(--green)'},{l:'Hissə',v:watchedParts,c:'var(--blue)'}].map(s=>
-            `<div style="text-align:center;background:var(--bg2);border-radius:10px;padding:16px 8px">
-              <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:${s.c}">${s.v}</div>
-              <div style="font-size:11px;color:var(--text3);font-weight:700;margin-top:4px">${s.l}</div>
-            </div>`).join('')}
-        </div>
-        ${S.streak>0?`<div style="display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px;background:rgba(242,142,20,.06);border-radius:8px">
-          <span style="font-size:24px">🔥</span><span style="font-size:14px;font-weight:800;color:var(--orange)">${S.streak} günlük seriya!</span>
-        </div>`:''}
-      </div>
-      ${!S.user.subscribed?`<!-- Subscription Card -->
-      <div class="profile-card" style="border-color:var(--orange);margin-top:16px">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div><div style="font-size:16px;font-weight:900;color:var(--text)">🔓 Premium Açın</div>
-          <div style="font-size:13px;color:var(--text3);margin-top:4px">Bütün kurslara sınırsız giriş</div></div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:var(--orange)">₼29</div>
-        </div>
-        <button class="btn btn-orange" style="width:100%;justify-content:center;margin-top:14px" onclick="S.page='subscribe';render()">Abunə ol →</button>
-      </div>`:''}
-      <!-- Certificates Card -->
-      <div class="profile-card" style="margin-top:16px">
-        <div class="profile-card-title">🎓 Sertifikatlarım (${S.certificates.length})</div>
-        ${S.certificates.length?S.certificates.map(cid=>{
-          const c=S.courses.find(x=>x.id===cid);if(!c)return '';
-          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border2)">
-            <div><div style="font-size:13px;font-weight:700;color:var(--text)">${esc(c.title)}</div>
-            <div style="font-size:11px;color:var(--text3);margin-top:2px;font-weight:700">${c.category}</div></div>
-            <button class="btn btn-success btn-sm" onclick="downloadCertificate(${cid})">⬇ Yüklə</button>
-          </div>`;
-        }).join(''):'<div style="text-align:center;padding:24px;color:var(--text3);font-size:14px;font-weight:700">Hələ sertifikat yoxdur</div>'}
-      </div>
-      <!-- Course Progress Card -->
-      <div class="profile-card" style="margin-top:16px">
-        <div class="profile-card-title">📚 Kurslarda Proqresim</div>
+    <!-- Stats Row -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:0 24px;margin:-10px 0 20px">
+      ${[
+        {v:myCourses.length,l:t('stat_course'),c:'var(--orange)'},
+        {v:watchedParts,l:t('stat_parts'),c:'var(--blue)'},
+        {v:S.certificates.length,l:t('stat_cert'),c:'var(--green)'},
+        {v:S.streak||0,l:'🔥 Streak',c:'var(--orange)'}
+      ].map(s=>`<div style="text-align:center;background:var(--card);border:1.5px solid var(--border2);border-radius:12px;padding:16px 8px">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:${s.c}">${s.v}</div>
+        <div style="font-size:11px;color:var(--text3);font-weight:700;margin-top:4px">${s.l}</div>
+      </div>`).join('')}
+    </div>
+    ${!S.user.subscribed?`<!-- Sub CTA -->
+    <div style="margin:0 24px 20px;background:linear-gradient(135deg,rgba(242,142,20,.1),rgba(243,113,38,.06));border:1.5px solid rgba(242,142,20,.3);border-radius:12px;padding:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div><div style="font-size:16px;font-weight:900">${t('unlock_premium')}</div><div style="font-size:13px;color:var(--text3);margin-top:4px">${t('unlimited_access')}</div></div>
+      <button class="btn btn-orange" onclick="S.page='subscribe';render()">${t('sub_btn')} →</button>
+    </div>`:''}
+    <!-- Tab Navigation -->
+    <div style="display:flex;gap:4px;padding:0 24px;margin-bottom:20px;border-bottom:1px solid var(--border2);padding-bottom:0">
+      ${[{id:'courses',icon:'📚',l:t('my_progress')},{id:'certs',icon:'🏆',l:t('my_certs')},{id:'notes',icon:'📝',l:t('personal_notes')}].map(tab=>
+        `<button onclick="S._profileTab='${tab.id}';render()" style="background:none;border:none;border-bottom:2px solid ${pt===tab.id?'var(--orange)':'transparent'};color:${pt===tab.id?'var(--orange)':'var(--text3)'};padding:12px 16px;font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px">${tab.icon} ${tab.l}</button>`
+      ).join('')}
+    </div>
+    <!-- Tab Content -->
+    <div style="padding:0 24px 32px">
+      ${pt==='courses'?`
         ${myCourses.length?myCourses.map(c=>{
           const pct=getCourseProgress(c.id);
-          return `<div style="margin-bottom:14px;cursor:pointer" onclick="openCourse(${c.id})">
-            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-              <span style="font-size:13px;font-weight:700;color:var(--text2)">${esc(c.title)}</span>
-              <span style="font-size:13px;font-weight:900;color:var(--orange)">${pct}%</span>
+          return `<div style="display:flex;gap:14px;align-items:center;background:var(--card);border:1.5px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:12px;cursor:pointer;transition:all .2s" onclick="openCourse(${c.id})" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border2)'">
+            <div style="width:80px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--bg3)"><img src="${c.thumb}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14px;font-weight:800;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.title)}</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+                <div style="flex:1;height:6px;background:var(--border2);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--orange),var(--orange2));border-radius:3px"></div></div>
+                <span style="font-size:13px;font-weight:900;color:var(--orange);white-space:nowrap">${pct}%</span>
+              </div>
             </div>
-            <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
           </div>`;
-        }).join(''):'<div style="text-align:center;padding:24px;color:var(--text3);font-size:14px;font-weight:700">Hələ heç bir kurs izlənməyib</div>'}
-      </div>
-      <!-- Personal Notes Card -->
-      <div class="profile-card" style="margin-top:16px">
-        <div class="profile-card-title">📝 Şəxsi Qeydlər</div>
-        <textarea id="profile-notes" style="width:100%;min-height:120px;background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:'Nunito Sans',sans-serif;font-size:14px;resize:vertical;outline:none;font-weight:600" placeholder="Qeydlərinizi buraya yazın..." oninput="localStorage.setItem('${notesKey}',this.value)">${esc(savedNotes)}</textarea>
-        <div style="font-size:11px;color:var(--text3);margin-top:8px;font-weight:600">🔒 Bu qeydlər yalnız sizə görünür</div>
-      </div>
+        }).join(''):`<div style="text-align:center;padding:40px;color:var(--text3)">
+          <div style="font-size:36px;margin-bottom:12px">📚</div>
+          <div style="font-size:14px;font-weight:700">${t('no_courses_watched')}</div>
+          <button class="btn btn-orange" style="margin-top:16px" onclick="goHome()">${t('nav_watch')} →</button>
+        </div>`}
+      `:''}
+      ${pt==='certs'?`
+        ${S.certificates.length?S.certificates.map(cid=>{
+          const c=S.courses.find(x=>x.id===cid);if(!c)return '';
+          return `<div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1.5px solid var(--border2);border-radius:12px;padding:16px;margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="font-size:28px">🏆</span>
+              <div><div style="font-size:14px;font-weight:800">${esc(c.title)}</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px">${tCat(c.category)}</div></div>
+            </div>
+            <button class="btn btn-success btn-sm" onclick="downloadCertificate(${cid})">${t('download')}</button>
+          </div>`;
+        }).join(''):`<div style="text-align:center;padding:40px;color:var(--text3)">
+          <div style="font-size:36px;margin-bottom:12px">🎓</div>
+          <div style="font-size:14px;font-weight:700">${t('no_certs')}</div>
+        </div>`}
+      `:''}
+      ${pt==='notes'?`
+        <div style="background:var(--card);border:1.5px solid var(--border2);border-radius:12px;padding:20px">
+          <textarea id="profile-notes" style="width:100%;min-height:180px;background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;padding:14px;color:var(--text);font-family:'Nunito Sans',sans-serif;font-size:14px;resize:vertical;outline:none;font-weight:600;line-height:1.7" placeholder="${t('notes_placeholder')}" oninput="localStorage.setItem('${notesKey}',this.value)">${esc(savedNotes)}</textarea>
+          <div style="font-size:11px;color:var(--text3);margin-top:10px;font-weight:600">${t('notes_private')}</div>
+        </div>
+      `:''}
     </div>
   </div>`;
 }
