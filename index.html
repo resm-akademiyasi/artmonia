@@ -1043,6 +1043,10 @@ let S={
   showLevelTest:false,
   showSubOffer:false,
   showSubModal:false,
+  _uploadMode:false,
+  _uploadedWorkUrl:null,
+  contestSettings:{title:'Ən Yaxşı Payız Mənzərəsi 🍂',prize:'1 aylıq ödənişsiz abunəlik'},
+  _promoBannerDismissed:false,
   levelTestStep:0,
   levelTestAnswers:[],
   levelTestResult:null,
@@ -3939,12 +3943,32 @@ async function loadStudentWorks(){
     if(el) el.innerHTML=worksGridHTML();
   }catch(e){ S.studentWorks=[]; }
 }
+async function uploadToSupabase(file){
+  if(!sb) throw new Error('No Supabase');
+  const ext=file.name.split('.').pop();
+  const fname=`works/${S.user.id}_${Date.now()}.${ext}`;
+  const prog=document.getElementById('upload-progress');
+  if(prog){prog.style.display='block';prog.textContent='Yüklənir... 0%';}
+  const {data,error}=await sb.storage.from('artmonia-uploads').upload(fname,file,{upsert:true});
+  if(error) throw error;
+  if(prog) prog.textContent='Yüklənir... 100% ✓';
+  const {data:pub}=sb.storage.from('artmonia-uploads').getPublicUrl(fname);
+  return pub.publicUrl;
+}
+async function handleWorkUpload(input){
+  if(!input.files[0]) return;
+  try{
+    const url=await uploadToSupabase(input.files[0]);
+    S._uploadedWorkUrl=url;
+    showToast('Şəkil yükləndi! ✅');
+  }catch(e){showToast('Yükləmə xətası: '+e.message,'error');}
+}
 async function submitWork(){
   if(!S.user){openAuth('login');return;}
   const title=document.getElementById('work-title')?.value?.trim();
   const desc=document.getElementById('work-desc')?.value?.trim();
-  const imgUrl=document.getElementById('work-img-url')?.value?.trim();
-  if(!title||!imgUrl){showToast('Başlıq və şəkil URL tələb olunur','error');return;}
+  const imgUrl=S._uploadMode&&S._uploadedWorkUrl?S._uploadedWorkUrl:(document.getElementById('work-img-url')?.value?.trim());
+  if(!title||!imgUrl){showToast('Başlıq və şəkil tələb olunur','error');return;}
   try{
     const {data,error}=await sb.from('student_works').insert({
       user_id:S.user.id, title, description:desc||'', image_url:imgUrl
@@ -4052,6 +4076,45 @@ function questionsListHTML(){
   </div>`).join('');
 }
 
+function leaderboardHTML(){
+  // Calculate scores from available data
+  const userScores=[];
+  S.studentWorks.forEach(w=>{
+    const name=w.profiles?.full_name||'İstifadəçi';
+    let entry=userScores.find(u=>u.name===name);
+    if(!entry){entry={name,works:0,score:0};userScores.push(entry);}
+    entry.works++;
+    entry.score+=5; // 5 points per work shared
+  });
+  // Sort by score
+  userScores.sort((a,b)=>b.score-a.score);
+  const top5=userScores.slice(0,5);
+  const contest=S.contestSettings||{title:'Ən Yaxşı Payız Mənzərəsi 🍂',prize:'1 aylıq ödənişsiz abunəlik'};
+  return `<div>
+    <!-- This week's winner -->
+    ${top5.length?`<div style="background:linear-gradient(135deg,rgba(242,142,20,.15),rgba(243,113,38,.08));border:1.5px solid rgba(242,142,20,.3);border-radius:14px;padding:20px;text-align:center;margin-bottom:20px">
+      <div style="font-size:13px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Bu həftənin qalibi 👑</div>
+      <div style="font-size:28px;font-weight:900;font-family:'Cormorant Garamond',serif">${esc(top5[0].name)}</div>
+      <div style="font-size:14px;color:var(--text3);font-weight:700;margin-top:4px">${top5[0].score} xal</div>
+    </div>`:''}
+    <!-- Contest card -->
+    <div style="background:var(--card);border:1.5px solid var(--border2);border-radius:14px;padding:20px;margin-bottom:20px">
+      <div style="font-size:16px;font-weight:900;margin-bottom:6px">🏆 Həftəlik Müsabiqə</div>
+      <div style="font-size:14px;color:var(--text2);font-weight:700;margin-bottom:4px">${esc(contest.title)}</div>
+      <div style="font-size:13px;color:var(--orange);font-weight:800">🎁 Mükafat: ${esc(contest.prize)}</div>
+    </div>
+    <!-- Leaderboard -->
+    <div style="background:var(--card);border:1.5px solid var(--border2);border-radius:14px;overflow:hidden">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border2);font-size:15px;font-weight:900">🏅 Top 5 Tələbə</div>
+      ${top5.length?top5.map((u,i)=>`<div style="display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border2)">
+        <div style="width:28px;height:28px;border-radius:50%;background:${i===0?'var(--orange)':i===1?'var(--blue)':i===2?'var(--green)':'var(--border2)'};color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900">${i+1}</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--navy2));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:white">${(u.name[0]||'?').toUpperCase()}</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:800">${esc(u.name)}</div><div style="font-size:11px;color:var(--text3)">${u.works} iş paylaşıb</div></div>
+        <div style="font-size:16px;font-weight:900;color:var(--orange);font-family:'Cormorant Garamond',serif">${u.score}</div>
+      </div>`).join(''):'<div style="padding:40px;text-align:center;color:var(--text3);font-size:14px">Hələ iştiraçı yoxdur. İlk sən ol!</div>'}
+    </div>
+  </div>`;
+}
 // ── COMMUNITY PAGE HTML ───────────────────────────────────
 function communityPageHTML(){
   return `<div class="community-page">
@@ -4068,6 +4131,7 @@ function communityPageHTML(){
       <div class="community-tabs">
         <button class="comm-tab ${S.communityTab==='works'?'active':''}" onclick="switchCommTab('works')">🖼️ İşlər</button>
         <button class="comm-tab ${S.communityTab==='questions'?'active':''}" onclick="switchCommTab('questions')">❓ Suallarım</button>
+        <button class="comm-tab ${S.communityTab==='leaderboard'?'active':''}" onclick="switchCommTab('leaderboard')">🏆 Liderlik</button>
       </div>
     </div>
     <div class="community-body">
@@ -4076,7 +4140,17 @@ function communityPageHTML(){
           <div style="font-size:16px;font-weight:900;margin-bottom:16px">🎨 Öz İşini Paylaş</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
             <div class="f-group" style="margin:0"><label class="f-label">İşin Başlığı</label><input class="f-input" id="work-title" placeholder="Payız mənzərəsi, 2025"></div>
-            <div class="f-group" style="margin:0"><label class="f-label">Şəkil URL (Imgur, Google Drive...)</label><input class="f-input" id="work-img-url" placeholder="https://i.imgur.com/..."></div>
+            <div class="f-group" style="margin:0">
+              <label class="f-label">Şəkil</label>
+              <div style="display:flex;gap:6px;margin-bottom:6px">
+                <button class="btn btn-sm ${!S._uploadMode?'btn-orange':'btn-outline'}" onclick="S._uploadMode=false;render()" style="font-size:11px">URL ilə</button>
+                <button class="btn btn-sm ${S._uploadMode?'btn-orange':'btn-outline'}" onclick="S._uploadMode=true;render()" style="font-size:11px">Yüklə</button>
+              </div>
+              ${S._uploadMode
+                ?`<input type="file" accept="image/*" id="work-img-file" class="f-input" style="padding:8px" onchange="handleWorkUpload(this)">`
+                :`<input class="f-input" id="work-img-url" placeholder="https://i.imgur.com/...">`}
+              <div id="upload-progress" style="display:none;margin-top:6px;font-size:12px;color:var(--orange);font-weight:700"></div>
+            </div>
           </div>
           <div class="f-group" style="margin-bottom:14px"><label class="f-label">Qısa izahat (istəyə bağlı)</label><input class="f-input" id="work-desc" placeholder="Yağlı boya, 40x60 sm, 2 həftəlik iş..."></div>
           <button class="btn btn-orange" onclick="submitWork()">📤 Paylaş</button>
@@ -4099,6 +4173,7 @@ function communityPageHTML(){
           <button class="btn btn-orange" onclick="openAuth('login')">Daxil Ol</button>
         </div>`}
       `}
+      ${S.communityTab==='leaderboard'?leaderboardHTML():''}
     </div>
   </div>`;
 }
