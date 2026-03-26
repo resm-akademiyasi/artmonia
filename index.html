@@ -1659,7 +1659,7 @@ function navHTML(){
             <a href="#/help" onclick="goPage('help');return false">🆘 ${t('nav_help')}</a>
           </div>
         </li>
-        <li><a href="#/community" class="${S.page==='community'?'active':''}" onclick="goPage('community');return false" style="color:var(--orange)">🎨 İcma</a></li>
+        <li><a href="#/community" class="${S.page==='community'?'active':''}" onclick="goPage('community');return false" style="color:var(--orange)">${t('nav_community')}</a></li>
         <li><a href="${S.user?'#/profile':'#'}" class="${S.page==='profile'?'active':''}" onclick="${S.user?'goPage(\'profile\');return false':'openAuth(\'login\');return false'}">${t('nav_profile')}</a></li>
       </ul>
     </div>
@@ -1735,7 +1735,7 @@ function courseCardHTML(c){
     ${pct>0?`<div class="c-progress"><div class="c-progress-fill" style="width:${pct}%"></div></div>`:''}
     <div class="c-body">
       <div class="c-title">${esc(c.title)}</div>
-      <div class="c-meta"><span>${c.parts.length} ${t('parts_label')}</span><span class="c-dot"></span><span>${c.level}</span>${pct>0?`<span class="c-dot"></span><span style="color:var(--orange)">${pct}%</span>`:''}
+      <div class="c-meta"><span>${c.parts.length} ${t('parts_label')}</span><span class="c-dot"></span><span>${tCat(c.level)}</span>${pct>0?`<span class="c-dot"></span><span style="color:var(--orange)">${pct}%</span>`:''}
       </div>
     </div>
   </a>`;
@@ -1803,7 +1803,7 @@ function videoPageHTML(){
       <div class="v-meta-row">
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <span class="v-badge">🎨 ${esc(c.category)}</span>
-          <span class="v-badge" style="background:rgba(105,41,242,.12);color:var(--purple);border-color:rgba(105,41,242,.3)">${esc(c.level)}</span>
+          <span class="v-badge" style="background:rgba(105,41,242,.12);color:var(--purple);border-color:rgba(105,41,242,.3)">${esc(tCat(c.level))}</span>
         </div>
         <div style="display:flex;gap:8px">
           ${hasCert?`<button class="btn btn-success btn-sm" onclick="downloadCertificate(${c.id})">🏆 Sertifikat</button>`:''}
