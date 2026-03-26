@@ -114,6 +114,9 @@ body.has-promo-banner .hero{padding-top:104px}
 body.has-promo-banner .v-page{padding-top:104px}
 body.has-promo-banner .admin-page{padding-top:104px}
 body.has-promo-banner .static-page{padding-top:140px}
+.confetti-wrap{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.confetti-piece{position:absolute;top:-10px;width:8px;height:8px;border-radius:2px;animation:confettiFall 3s ease-in infinite}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(300px) rotate(720deg);opacity:0}}
 @keyframes subSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes demoPulse{0%,100%{box-shadow:0 4px 16px rgba(242,142,20,.35)}50%{box-shadow:0 4px 24px rgba(242,142,20,.55)}}
 /* BROWSE */
@@ -1198,7 +1201,13 @@ let S={
   showSubModal:false,
   _uploadMode:false,
   _uploadedWorkUrl:null,
-  contestSettings:{title:'Ən Yaxşı Payız Mənzərəsi 🍂',prize:'1 aylıq ödənişsiz abunəlik'},
+  contestSettings:{
+    weekly:{active:false,title:'Həftəlik Çempionat',prize:'1 aylıq ödənişsiz abunəlik',prizeType:'subscription',endDate:null,nominationType:'top_score',announced:false},
+    monthly:{active:false,title:'Aylıq Qrand Pri',prize:'₼50 pul mükafatı',prizeType:'cash',endDate:null,nominationType:'top_score',announced:false}
+  },
+  contestWinners:[],
+  leaderboardData:{weekly:null,monthly:null,_ts:0},
+  pendingNotifications:[],
   _promoBannerDismissed:false,
   levelTestStep:0,
   levelTestAnswers:[],
@@ -1293,6 +1302,8 @@ async function setUser(u){
     S._pendingFreePart=null;
     setTimeout(()=>selectPart(courseId,partId),500);
   }
+  // Check pending notifications (winner, badge)
+  checkPendingNotifications();
   // Yeni qeydiyyat üçün xoş gəldin ekranı göstər
   if(S._isNewUser){
     S._isNewUser=false;
@@ -2220,7 +2231,7 @@ function profilePageHTML(){
 function adminPageHTML(){
   const courses=S.courses,freeCnt=courses.filter(c=>c.free).length;
   const totalP=courses.reduce((s,c)=>s+c.parts.length,0);
-  const navItems=[{id:'stats',icon:'📊',l:'Statistika'},{id:'site-numbers',icon:'🔢',l:'Sayt Rəqəmləri'},{id:'texts',icon:'✏️',l:'Mətn Redaktoru'},{id:'hero-images',icon:'🖼️',l:'Hero Şəkilləri'},{id:'promo',icon:'🎁',l:'Promo Təklif'},{id:'courses',icon:'🎬',l:'Kurslar'},{id:'add',icon:'➕',l:'Kurs Əlavə Et'},{id:'reviews',icon:'⭐',l:'Tələbə Rəyləri'},{id:'questions-admin',icon:'❓',l:'Tələbə Sualları'},{id:'works-admin',icon:'🖼️',l:'Paylaşılan İşlər'},{id:'teachers',icon:'👨‍🎨',l:'Müəllimlər'},{id:'quiz-results',icon:'📊',l:'Sorğu'},{id:'admin-log',icon:'📋',l:'Log'},{id:'customers',icon:'👥',l:'Müştərilər'},{id:'settings',icon:'⚙️',l:'Parametrlər'}];
+  const navItems=[{id:'stats',icon:'📊',l:'Statistika'},{id:'site-numbers',icon:'🔢',l:'Sayt Rəqəmləri'},{id:'texts',icon:'✏️',l:'Mətn Redaktoru'},{id:'hero-images',icon:'🖼️',l:'Hero Şəkilləri'},{id:'promo',icon:'🎁',l:'Promo Təklif'},{id:'courses',icon:'🎬',l:'Kurslar'},{id:'add',icon:'➕',l:'Kurs Əlavə Et'},{id:'reviews',icon:'⭐',l:'Tələbə Rəyləri'},{id:'questions-admin',icon:'❓',l:'Tələbə Sualları'},{id:'works-admin',icon:'🖼️',l:'Paylaşılan İşlər'},{id:'teachers',icon:'👨‍🎨',l:'Müəllimlər'},{id:'quiz-results',icon:'📊',l:'Sorğu'},{id:'admin-log',icon:'📋',l:'Log'},{id:'customers',icon:'👥',l:'Müştərilər'},{id:'contest-admin',icon:'🏆',l:'Müsabiqə'},{id:'settings',icon:'⚙️',l:'Parametrlər'}];
   let content='';
   if(S.adminSection==='stats'){
     const withLink=courses.reduce((s,c)=>s+c.parts.filter(p=>p.vimeo).length,0);
@@ -2753,6 +2764,68 @@ function adminPageHTML(){
           </div>
         </div>`).join('')}
       </div>
+    </div>`;
+  }
+  if(S.adminSection==='contest-admin'){
+    const w=S.contestSettings.weekly;
+    const m=S.contestSettings.monthly;
+    content+=`<div class="a-card">
+      <h3 style="margin-bottom:20px">🏆 Müsabiqə İdarəetmə</h3>
+      ${['weekly','monthly'].map(p=>{
+        const c=S.contestSettings[p];
+        const label=p==='weekly'?'Həftəlik':'Aylıq';
+        return `<div style="background:var(--bg2);border:1.5px solid var(--border2);border-radius:12px;padding:20px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div style="font-size:16px;font-weight:900">${label} Müsabiqə</div>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+              <input type="checkbox" id="contest-${p}-active" ${c.active?'checked':''} onchange="S.contestSettings.${p}.active=this.checked">
+              <span style="font-size:13px;font-weight:700;color:${c.active?'var(--green)':'var(--text3)'}">${c.active?'Aktiv':'Deaktiv'}</span>
+            </label>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="f-group"><label class="f-label">Başlıq</label><input class="f-input" id="contest-${p}-title" value="${esc(c.title)}"></div>
+            <div class="f-group"><label class="f-label">Mükafat</label><input class="f-input" id="contest-${p}-prize" value="${esc(c.prize)}"></div>
+            <div class="f-group"><label class="f-label">Mükafat növü</label>
+              <select class="f-input" id="contest-${p}-prizeType">
+                <option value="subscription" ${c.prizeType==='subscription'?'selected':''}>Abunəlik</option>
+                <option value="cash" ${c.prizeType==='cash'?'selected':''}>Pul mükafatı</option>
+                <option value="gift" ${c.prizeType==='gift'?'selected':''}>Fiziki hədiyyə</option>
+                <option value="other" ${c.prizeType==='other'?'selected':''}>Digər</option>
+              </select>
+            </div>
+            <div class="f-group"><label class="f-label">Bitmə tarixi</label><input type="datetime-local" class="f-input" id="contest-${p}-endDate" value="${c.endDate?new Date(c.endDate).toISOString().slice(0,16):''}"></div>
+            <div class="f-group"><label class="f-label">Nominasiya növü</label>
+              <select class="f-input" id="contest-${p}-nomType">
+                <option value="top_score" ${c.nominationType==='top_score'?'selected':''}>Ən yüksək xal</option>
+                <option value="most_works" ${c.nominationType==='most_works'?'selected':''}>Ən çox iş paylaşan</option>
+                <option value="most_liked" ${c.nominationType==='most_liked'?'selected':''}>Ən çox bəyənilən</option>
+                <option value="admin_choice" ${c.nominationType==='admin_choice'?'selected':''}>Admin seçimi</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:14px">
+            <button class="btn btn-orange btn-sm" onclick="saveContestSettings('${p}')">💾 Saxla</button>
+            <button class="btn btn-success btn-sm" onclick="selectWinner('${p}')">🏆 Qalibi Elan Et</button>
+            <button class="btn btn-outline btn-sm" onclick="S.leaderboardData._ts=0;fetchLeaderboard('${p}').then(()=>{showToast('Cədvəl yeniləndi');render()})">🔄 Xal Cədvəlini Yenilə</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <!-- Winners history -->
+    <div class="a-card">
+      <h3 style="margin-bottom:16px">📜 Qalib Tarixçəsi</h3>
+      ${S.contestWinners.length?`<table style="width:100%;border-collapse:collapse">
+        <tr style="text-align:left;font-size:12px;color:var(--text3);font-weight:800;border-bottom:1px solid var(--border2)">
+          <th style="padding:10px">Qalib</th><th>Müsabiqə</th><th>Mükafat</th><th>Xal</th><th>Tarix</th>
+        </tr>
+        ${S.contestWinners.map(w=>`<tr style="border-bottom:1px solid var(--border2);font-size:13px">
+          <td style="padding:10px;font-weight:800">${esc(w.name)}</td>
+          <td>${esc(w.title)}</td>
+          <td style="color:var(--orange);font-weight:700">${esc(w.prize)}</td>
+          <td style="font-weight:900">${w.score}</td>
+          <td style="color:var(--text3)">${new Date(w.date).toLocaleDateString('az-AZ')}</td>
+        </tr>`).join('')}
+      </table>`:'<div style="text-align:center;padding:24px;color:var(--text3)">Hələ qalib elan edilməyib</div>'}
     </div>`;
   }
   if(S.adminSection==='settings'){
@@ -4229,6 +4302,153 @@ function questionsListHTML(){
   </div>`).join('');
 }
 
+// ── CONTEST SYSTEM ──────────────────────────────────────────
+function calcLocalScores(){
+  const scores={};
+  // Works shared = 5 pts each
+  S.studentWorks.forEach(w=>{
+    const uid=w.user_id||'unknown';
+    const name=w.profiles?.full_name||'İstifadəçi';
+    if(!scores[uid]) scores[uid]={uid,name,works:0,comments:0,likes:0,score:0};
+    scores[uid].works++;
+    scores[uid].score+=5;
+  });
+  // Comments = 2 pts each (from S.comments)
+  Object.values(S.comments||{}).forEach(arr=>{
+    (arr||[]).forEach(c=>{
+      const uid=c.user_id||'unknown';
+      const name=c.profiles?.full_name||'İstifadəçi';
+      if(!scores[uid]) scores[uid]={uid,name,works:0,comments:0,likes:0,score:0};
+      scores[uid].comments++;
+      scores[uid].score+=2;
+    });
+  });
+  return Object.values(scores).sort((a,b)=>b.score-a.score);
+}
+
+async function fetchLeaderboard(period){
+  // Cache for 5 minutes
+  const now=Date.now();
+  if(S.leaderboardData[period]&&now-S.leaderboardData._ts<300000) return S.leaderboardData[period];
+  // Try Supabase first
+  if(sb){
+    try{
+      const {data:works}=await sb.from('student_works').select('user_id,profiles(full_name),created_at').eq('approved',true).order('created_at',{ascending:false}).limit(200);
+      const {data:comments}=await sb.from('comments').select('user_id,profiles(full_name),created_at').order('created_at',{ascending:false}).limit(500);
+      const scores={};
+      (works||[]).forEach(w=>{
+        const uid=w.user_id;const name=w.profiles?.full_name||'?';
+        if(!scores[uid]) scores[uid]={uid,name,works:0,comments:0,score:0};
+        scores[uid].works++;scores[uid].score+=5;
+      });
+      (comments||[]).forEach(c=>{
+        const uid=c.user_id;const name=c.profiles?.full_name||'?';
+        if(!scores[uid]) scores[uid]={uid,name,works:0,comments:0,score:0};
+        scores[uid].comments++;scores[uid].score+=2;
+      });
+      const sorted=Object.values(scores).sort((a,b)=>b.score-a.score).slice(0,10);
+      S.leaderboardData[period]=sorted;
+      S.leaderboardData._ts=now;
+      return sorted;
+    }catch(e){console.error('Leaderboard fetch:',e);}
+  }
+  // Fallback to local data
+  const local=calcLocalScores().slice(0,10);
+  S.leaderboardData[period]=local;
+  S.leaderboardData._ts=now;
+  return local;
+}
+
+async function selectWinner(period){
+  if(!S.user?.admin) return;
+  const lb=await fetchLeaderboard(period);
+  if(!lb||!lb.length){showToast('Liderlik cədvəli boşdur','error');return;}
+  const winner=lb[0];
+  const cs=S.contestSettings[period];
+  const entry={
+    period,name:winner.name,uid:winner.uid,score:winner.score,
+    prize:cs.prize,prizeType:cs.prizeType,title:cs.title,
+    date:new Date().toISOString(),announcedUntil:new Date(Date.now()+72*3600000).toISOString()
+  };
+  S.contestWinners.unshift(entry);
+  if(S.contestWinners.length>20) S.contestWinners=S.contestWinners.slice(0,20);
+  cs.announced=true;
+  // Auto-grant subscription if prize type is subscription
+  if(cs.prizeType==='subscription'&&winner.uid){
+    await grantSubscription(winner.uid,'monthly');
+  }
+  // Save to Supabase
+  persistContestData();
+  logAdminAction('Müsabiqə qalibi elan edildi: '+winner.name+' ('+period+')');
+  showToast('🏆 Qalib elan edildi: '+winner.name+'!');
+  render();
+}
+
+function checkPendingNotifications(){
+  if(!S.user) return;
+  // Check if user is a recent contest winner
+  const myWin=S.contestWinners.find(w=>w.uid===S.user.id&&new Date(w.announcedUntil)>new Date());
+  if(myWin&&!localStorage.getItem('notif_win_'+myWin.date)){
+    localStorage.setItem('notif_win_'+myWin.date,'1');
+    setTimeout(()=>{
+      showToast('🏆 Təbriklər! Siz müsabiqənin qalibi seçildiniz: '+myWin.prize);
+    },2000);
+  }
+}
+
+function saveContestSettings(period){
+  const g=id=>document.getElementById(id)?.value;
+  const c=S.contestSettings[period];
+  c.title=g(`contest-${period}-title`)||c.title;
+  c.prize=g(`contest-${period}-prize`)||c.prize;
+  c.prizeType=g(`contest-${period}-prizeType`)||c.prizeType;
+  c.nominationType=g(`contest-${period}-nomType`)||c.nominationType;
+  const ed=g(`contest-${period}-endDate`);
+  c.endDate=ed?new Date(ed).toISOString():null;
+  c.active=document.getElementById(`contest-${period}-active`)?.checked||false;
+  persistContestData();
+  logAdminAction(`${period} müsabiqə ayarları saxlanıldı`);
+  showToast('Müsabiqə ayarları saxlanıldı! ✅');
+  render();
+}
+
+async function persistContestData(){
+  if(!sb) return;
+  try{
+    await sb.from('site_settings').upsert({id:'contest_settings',settings:JSON.stringify(S.contestSettings),updated_at:new Date().toISOString()},{onConflict:'id'});
+    await sb.from('site_settings').upsert({id:'contest_winners',settings:JSON.stringify(S.contestWinners),updated_at:new Date().toISOString()},{onConflict:'id'});
+  }catch(e){console.error('Contest persist:',e);}
+}
+
+async function loadContestData(){
+  if(!sb) return;
+  try{
+    const {data:cs}=await sb.from('site_settings').select('settings').eq('id','contest_settings').single();
+    if(cs?.settings) S.contestSettings=JSON.parse(cs.settings);
+    const {data:cw}=await sb.from('site_settings').select('settings').eq('id','contest_winners').single();
+    if(cw?.settings) S.contestWinners=JSON.parse(cw.settings);
+  }catch(e){console.error('Contest load:',e);}
+}
+
+function getActiveContest(){
+  const w=S.contestSettings.weekly;
+  const m=S.contestSettings.monthly;
+  if(w.active) return {period:'weekly',...w};
+  if(m.active) return {period:'monthly',...m};
+  return null;
+}
+
+function contestCountdown(endDate){
+  if(!endDate) return '';
+  const diff=new Date(endDate)-new Date();
+  if(diff<=0) return 'Bitdi';
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor((diff%86400000)/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  if(d>0) return d+'g '+h+'s';
+  return h+'s '+m+'d';
+}
+
 function leaderboardHTML(){
   // Calculate scores from available data
   const userScores=[];
@@ -4268,6 +4488,79 @@ function leaderboardHTML(){
     </div>
   </div>`;
 }
+function contestTabHTML(){
+  const ac=getActiveContest();
+  const recentWinner=S.contestWinners.find(w=>new Date(w.announcedUntil)>new Date());
+  const pastWinners=S.contestWinners.slice(0,5);
+  const lb=S.leaderboardData.weekly||S.leaderboardData.monthly||calcLocalScores().slice(0,10);
+  return `<div>
+    <!-- Winner announcement banner (72 hours) -->
+    ${recentWinner?`
+    <div style="background:linear-gradient(135deg,rgba(242,142,20,.2),rgba(243,113,38,.1));border:2px solid var(--orange);border-radius:16px;padding:28px;text-align:center;margin-bottom:24px;position:relative;overflow:hidden">
+      <div class="confetti-wrap">${Array(12).fill(0).map((_,i)=>`<div class="confetti-piece" style="left:${8+i*7.5}%;animation-delay:${i*0.15}s;background:${['var(--orange)','var(--green)','var(--blue)','var(--purple)','#f472b6','#fbbf24'][i%6]}"></div>`).join('')}</div>
+      <div style="font-size:48px;margin-bottom:12px;animation:bounceIn .5s ease">🏆</div>
+      <div style="font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px">Qalib Elan Edildi!</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;margin-bottom:6px">${esc(recentWinner.name)}</div>
+      <div style="font-size:14px;color:var(--text2);font-weight:700">${esc(recentWinner.title)} — ${esc(recentWinner.prize)}</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:8px">${recentWinner.score} xal ilə birinci!</div>
+      <button class="btn btn-orange" style="margin-top:16px" onclick="switchCommTab('works')">Siz də iştirak edin! →</button>
+    </div>`:''}
+    <!-- Active contest card -->
+    ${ac?`
+    <div style="background:var(--card);border:1.5px solid var(--orange);border-radius:14px;padding:24px;margin-bottom:24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+        <div>
+          <div style="font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:1px">🏆 Aktiv Müsabiqə</div>
+          <div style="font-size:20px;font-weight:900;margin-top:4px">${esc(ac.title)}</div>
+        </div>
+        ${ac.endDate?`<div style="background:rgba(242,142,20,.12);border:1px solid rgba(242,142,20,.3);padding:8px 14px;border-radius:8px;font-size:13px;font-weight:800;color:var(--orange)">⏱ ${contestCountdown(ac.endDate)}</div>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <span style="font-size:24px">🎁</span>
+        <div><div style="font-size:14px;font-weight:800;color:var(--text)">Mükafat: ${esc(ac.prize)}</div></div>
+      </div>
+      <div style="background:var(--bg2);border-radius:10px;padding:16px">
+        <div style="font-size:13px;font-weight:800;margin-bottom:10px;color:var(--text)">Necə iştirak etmək olar?</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--text2);font-weight:600">
+          <div>🎥 Daha çox dərs izlə — hər video = 3 xal</div>
+          <div>🖼️ İşlərini paylaş — hər iş = 5 xal</div>
+          <div>💬 Şərhlər yaz — hər şərh = 2 xal</div>
+        </div>
+      </div>
+    </div>
+    `:`<div style="background:var(--card);border:1.5px solid var(--border2);border-radius:14px;padding:32px;text-align:center;margin-bottom:24px;color:var(--text3)">
+      <div style="font-size:36px;margin-bottom:12px">🏆</div>
+      <div style="font-size:16px;font-weight:800">Hazırda aktiv müsabiqə yoxdur</div>
+      <div style="font-size:13px;margin-top:6px">Tezliklə yeni müsabiqə başlayacaq!</div>
+    </div>`}
+    <!-- Current leaderboard top 10 -->
+    <div style="background:var(--card);border:1.5px solid var(--border2);border-radius:14px;overflow:hidden;margin-bottom:24px">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border2);font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:space-between">
+        <span>🏅 Xal Cədvəli — Top 10</span>
+        <button class="btn btn-outline btn-sm" onclick="S.leaderboardData._ts=0;fetchLeaderboard('weekly').then(()=>render())" style="font-size:11px">🔄 Yenilə</button>
+      </div>
+      ${lb.length?lb.map((u,i)=>`<div style="display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--border2)${i<3?';background:rgba(242,142,20,'+(0.06-i*0.015)+')':''}">
+        <div style="font-size:${i<3?'20':'14'}px;width:32px;text-align:center">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--navy2));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:white">${(u.name[0]||'?').toUpperCase()}</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:800">${esc(u.name)}</div><div style="font-size:11px;color:var(--text3)">${u.works||0} iş · ${u.comments||0} şərh</div></div>
+        <div style="font-size:18px;font-weight:900;color:var(--orange);font-family:'Cormorant Garamond',serif">${u.score}</div>
+      </div>`).join(''):'<div style="padding:40px;text-align:center;color:var(--text3)">Hələ xal yoxdur. Dərs izləyin, iş paylaşın!</div>'}
+    </div>
+    <!-- Past winners -->
+    ${pastWinners.length?`
+    <div style="background:var(--card);border:1.5px solid var(--border2);border-radius:14px;overflow:hidden">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border2);font-size:15px;font-weight:900">📜 Keçmiş Qaliblər</div>
+      ${pastWinners.map(w=>`<div style="display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--border2)">
+        <span style="font-size:20px">🏆</span>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:800">${esc(w.name)}</div>
+          <div style="font-size:11px;color:var(--text3)">${esc(w.title)} — ${esc(w.prize)}</div>
+        </div>
+        <div style="font-size:12px;color:var(--text3);font-weight:700">${new Date(w.date).toLocaleDateString('az-AZ')}</div>
+      </div>`).join('')}
+    </div>`:''}
+  </div>`;
+}
 // ── COMMUNITY PAGE HTML ───────────────────────────────────
 function communityPageHTML(){
   return `<div class="community-page">
@@ -4285,6 +4578,7 @@ function communityPageHTML(){
         <button class="comm-tab ${S.communityTab==='works'?'active':''}" onclick="switchCommTab('works')">${t('tab_works')}</button>
         <button class="comm-tab ${S.communityTab==='questions'?'active':''}" onclick="switchCommTab('questions')">${t('tab_questions')}</button>
         <button class="comm-tab ${S.communityTab==='leaderboard'?'active':''}" onclick="switchCommTab('leaderboard')">${t('tab_leaderboard')}</button>
+        <button class="comm-tab ${S.communityTab==='contest'?'active':''}" onclick="switchCommTab('contest')">🏆 Müsabiqə</button>
       </div>
     </div>
     <div class="community-body">
@@ -4327,6 +4621,7 @@ function communityPageHTML(){
         </div>`}
       `}
       ${S.communityTab==='leaderboard'?leaderboardHTML():''}
+      ${S.communityTab==='contest'?contestTabHTML():''}
     </div>
   </div>`;
 }
@@ -4335,6 +4630,7 @@ function switchCommTab(tab){
   render();
   if(tab==='works'){setTimeout(()=>loadStudentWorks(),100);}
   else if(tab==='questions'&&S.user){setTimeout(()=>loadMyQuestions(),100);}
+  else if(tab==='contest'||tab==='leaderboard'){fetchLeaderboard('weekly').then(()=>{const el=document.querySelector('.community-body');if(el)el.innerHTML=S.communityTab==='contest'?contestTabHTML():leaderboardHTML();});}
 }
 
 // ── REVIEW CRUD ─────────────────────────────────────────
@@ -5012,6 +5308,8 @@ async function loadSettings(){
       if(s.heroSlides) s.heroSlides.forEach((h,i)=>{if(HERO_SLIDES[i])Object.assign(HERO_SLIDES[i],h);});
       render();
     }
+    // Load contest data
+    loadContestData();
   }catch(e){console.error('Load settings:',e);}
 }
 function saveAllTexts(){
