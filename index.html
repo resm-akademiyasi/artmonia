@@ -645,141 +645,149 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:36px 44
 .quiz-option{display:block;width:100%;padding:13px 18px;background:rgba(255,255,255,.04);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:"Nunito Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;text-align:left;transition:all .2s}
 .quiz-option:hover{border-color:var(--orange);background:rgba(242,142,20,.08);color:white}
 .quiz-skip{background:none;border:none;color:var(--text3);font-size:12px;font-weight:700;cursor:pointer;margin-top:12px;padding:4px 8px}
+/* ═══ REDUCED MOTION ═══ */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}
+  .splash-path{stroke-dashoffset:0!important;animation:none!important}
+}
+/* ═══ DISABLE HOVER ON TOUCH ═══ */
+@media(hover:none){
+  .c-card:hover{transform:none;box-shadow:none;border-color:var(--border2)}
+  .btn-orange:hover{transform:none;box-shadow:none}
+  .glass-icon:hover{transform:none}
+}
+/* ═══ MOBILE — 768px and below ═══ */
 @media(max-width:768px){
-  /* GENERAL OVERFLOW FIX */
-  html,body{overflow-x:hidden;max-width:100vw}
-  body{padding-bottom:70px}
-  img{max-width:100%}
+  /* 1. OVERFLOW & BASE */
+  html,body{overflow-x:hidden;max-width:100vw;-webkit-text-size-adjust:100%}
+  body{padding-bottom:calc(56px + env(safe-area-inset-bottom,0px))}
+  img{max-width:100%;object-fit:cover;loading:lazy;decoding:async}
 
-  /* NAV */
-  .nav{padding:0 12px;height:56px}
+  /* 2. TOP NAVBAR */
+  .nav{padding:0 12px;height:56px;padding-top:env(safe-area-inset-top,0px);z-index:200}
   .nav-links,.nav-right .btn-outline,.nav-search{display:none}
-  .burger{display:flex}
+  .nav-logo img{min-width:120px;height:36px}
+  .burger{display:flex;min-width:44px;min-height:44px;align-items:center;justify-content:center}
 
-  /* HERO — clean mobile */
+  /* 3. BURGER MENU */
+  .mobile-menu{z-index:250}
+  .mobile-menu.open+#app{overflow:hidden}
+
+  /* 4. HERO — full width, proper height */
   .slide-bg{transform:none!important;transition:none!important}
-  .hero{height:75vw;min-height:320px;max-height:480px}
-  .slide-content{left:12px;right:12px;bottom:60px;max-width:100%}
-  .slide-title{font-size:20px!important;line-height:1.2}
+  .hero{height:70vh;min-height:300px;max-height:420px;overflow:hidden}
+  .slide-content{left:16px;right:16px;bottom:52px;max-width:100%}
+  .slide-title{font-size:clamp(18px,5vw,24px)!important;line-height:1.2}
   .slide-desc{display:none}
-  .slide-cat{font-size:10px;padding:4px 10px;margin-bottom:10px}
+  .slide-cat{font-size:10px;padding:4px 10px;margin-bottom:8px}
   .slide-actions{display:flex;gap:8px;flex-wrap:wrap}
-  .slide-actions .btn,.slide-actions .btn-lg{padding:10px 18px;font-size:13px;height:auto;min-height:0}
-  .slider-arrow{width:32px;height:32px;font-size:16px;min-height:0!important;min-width:0!important}
-  .hero-academy-badge{font-size:11px;padding:6px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90vw}
+  .slide-actions .btn{padding:12px 20px;font-size:13px;min-height:48px;width:auto;flex:1;justify-content:center}
+  .slider-arrow{width:32px;height:32px;font-size:14px;min-height:0!important;padding:0!important}
+  .hero-academy-badge{font-size:10px;padding:5px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:88vw}
   .hero-particles{display:none}
 
-  /* SLIDER DOTS — critical fix: remove 44px min from dots */
+  /* 5. SLIDER DOTS — tiny, no button styling */
   .slider-dots{bottom:8px}
-  .dot{width:8px!important;height:8px!important;min-height:0!important;min-width:0!important;padding:0!important;border-radius:50%;box-shadow:none;outline:none}
-  .dot.active{width:24px!important;border-radius:4px}
+  .dot{width:6px!important;height:6px!important;min-height:0!important;min-width:0!important;padding:0!important;border-radius:50%;box-shadow:none;outline:none;border:none}
+  .dot.active{width:20px!important;border-radius:3px}
 
-  /* COURSE CARDS — 2 per row */
+  /* 6. COURSE CARDS — horizontal scroll single row */
   .browse{padding-top:8px}
   .cat-row{padding:0 12px;margin-bottom:24px}
-  .row-head{padding:0;margin-bottom:14px}
-  .row-title{font-size:16px}
-  .row-scroll{padding-bottom:12px}
-  .c-card{flex:0 0 calc(50vw - 24px);min-width:140px;max-width:200px}
-  .c-thumb{height:110px}
-  .c-thumb img{object-fit:cover}
+  .row-head{padding:0;margin-bottom:12px}
+  .row-title{font-size:clamp(14px,4vw,18px)}
+  .row-scroll{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+  .row-scroll::-webkit-scrollbar{display:none}
+  .c-card{flex:0 0 160px;scroll-snap-align:start;border-radius:10px}
+  .c-thumb{aspect-ratio:16/9;height:auto}
+  .c-thumb img{width:100%;height:100%;object-fit:cover}
   .c-title{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .c-meta{font-size:10px}
-  .sb-l{left:4px}.sb-r{right:4px}
+  .scroll-btn{display:none}
 
-  /* DEMO BANNER — pill centered */
+  /* 7. DEMO BANNER */
   .demo-banner-pill{font-size:12px!important;padding:8px 14px!important;margin:8px auto!important;display:inline-flex!important}
 
-  /* CONTINUE CARD */
+  /* 8. CONTINUE & STREAK */
   .continue-card{margin:8px 12px;padding:12px 16px}
-  .continue-title{font-size:14px}
+  .continue-title{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .continue-arrow{flex-shrink:0}
-
-  /* STREAK WIDGET */
   .streak-widget{margin:8px 12px;padding:10px 14px}
-  .streak-num{font-size:20px}
-  .week-mins-num{font-size:16px}
+  .streak-num{font-size:clamp(18px,4vw,22px)}
+  .week-mins-num{font-size:clamp(14px,3vw,18px)}
 
-  /* VIDEO PAGE */
+  /* 9. VIDEO PLAYER — 16:9 responsive */
   .v-player-wrap,.v-info{padding:12px 14px}
-  .v-embed{height:56vw;min-height:200px}
+  .v-embed{position:relative;width:100%;aspect-ratio:16/9;height:auto;min-height:200px}
+  .v-embed iframe,.v-frame{position:absolute;inset:0;width:100%;height:100%}
   .parts-section,.comments-section,.cert-section{padding:0 12px 20px}
   .parts-grid{grid-template-columns:repeat(2,1fr);gap:8px}
-  .part-card{min-height:90px}
 
-  /* ADMIN */
+  /* 10. ADMIN — warning on mobile */
   .admin-header{padding:12px 16px}
   .a-form .f-row{grid-template-columns:1fr}
   .admin-page .admin-body{display:block;padding:16px}
   .admin-page .admin-nav{margin-bottom:16px}
 
-  /* FOOTER */
-  footer{padding:20px 14px}
+  /* 11. FOOTER */
+  footer{padding:20px 14px;margin-top:24px}
   .footer-inner{flex-direction:column;align-items:flex-start;gap:12px}
 
-  /* PROFILE */
+  /* 12. PROFILE */
   .profile-header{padding:20px 16px;flex-direction:column;align-items:flex-start}
   .profile-body{padding:12px 16px;grid-template-columns:1fr}
 
-  /* MODALS */
+  /* 13. MODALS — full screen, iOS keyboard safe */
+  .overlay{padding:0}
+  .modal{border-radius:0;min-height:100vh;min-height:100dvh;padding:48px 20px 32px;display:flex;flex-direction:column;justify-content:center;max-height:100dvh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .modal-close{min-width:44px;min-height:44px;top:12px;right:12px}
+  .level-test-box,.quiz-box{max-height:90vh;overflow-y:auto;margin:8px;border-radius:16px}
   .search-results{padding:70px 12px 24px}
-  .modal{padding:24px 16px;margin:8px;max-height:90vh;overflow-y:auto}
-  .overlay{padding:12px}
-  .overlay .modal,.level-test-box,.quiz-box{max-height:90vh;overflow-y:auto}
   .sub-wall{padding:24px 16px}
   .cert-card{flex-direction:column}
+  .mobile-hide-field{display:none}
 
-  /* GRIDS */
-  .stats-grid,.stats-row{grid-template-columns:repeat(2,1fr);gap:16px}
-  .testi-grid{grid-template-columns:1fr}
-  .blog-grid{grid-template-columns:1fr}
+  /* 14. GRIDS — single/double column */
+  .stats-grid,.stats-row{grid-template-columns:repeat(2,1fr);gap:12px}
+  .testi-grid,.blog-grid{grid-template-columns:1fr}
   .works-grid{grid-template-columns:repeat(2,1fr)!important}
   .cert-promo-inner{grid-template-columns:1fr}
-  .cert-promo{padding:36px 16px}
-
-  /* WELCOME */
-  .welcome-box{border-radius:16px}
-  .welcome-inner{padding:36px 24px 32px}
-  .welcome-stats{gap:16px}
-  .welcome-stat-num{font-size:22px}
-
-  /* COMMUNITY */
+  .cert-promo,.stats-section{padding:24px 16px}
   .community-body{padding:0 12px}
   .faq-list{padding:0}
+  .welcome-box{border-radius:16px}
+  .welcome-inner{padding:28px 20px 24px}
+  .welcome-stats{gap:12px}
+  .welcome-stat-num{font-size:20px}
 
-  /* TOUCH TARGETS — without dots */
-  .btn,.auth-btn,.mnav-item,.slider-arrow,.comment-del,.faq-q,.part-card,.scroll-btn{min-height:44px}
-  .btn-sm{min-height:44px;padding:10px 16px}
+  /* 15. FORMS — 16px font prevents iOS zoom */
   input,select,textarea,.f-input{font-size:16px!important}
   .f-input{padding:14px}
-  .auth-btn{padding:16px 24px}
+  .auth-btn{padding:16px 24px;min-height:52px}
 
-  /* MOBILE NAVBAR */
-  .mobile-navbar{display:grid;height:60px;padding:6px 0 max(6px,env(safe-area-inset-bottom))}
-  .mnav-item{padding:10px 4px;min-height:52px}
-  .mnav-icon{font-size:22px}
+  /* 16. TOUCH TARGETS — 44px minimum (NOT on dots) */
+  .btn,.auth-btn,.mnav-item,.comment-del,.faq-q,.part-card{min-height:44px}
+  .btn-sm{min-height:44px;padding:10px 16px}
+
+  /* 17. BOTTOM NAVBAR — 56px + safe area */
+  .mobile-navbar{display:grid;height:56px;padding:4px 0 calc(4px + env(safe-area-inset-bottom,0px));z-index:1000;position:fixed;bottom:0;left:0;right:0}
+  .mnav-item{padding:6px 4px;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;-webkit-tap-highlight-color:transparent}
   .mnav-label{font-size:10px}
 
-  /* WHATSAPP — above navbar */
-  .wa-btn{bottom:80px!important;right:16px!important}
-  .wa-wrap{bottom:80px!important;right:16px!important}
+  /* 18. WHATSAPP — above navbar */
+  .wa-btn{bottom:calc(70px + env(safe-area-inset-bottom,0px))!important;right:16px!important}
+  .wa-wrap{bottom:calc(70px + env(safe-area-inset-bottom,0px))!important;right:16px!important}
 
-  /* TEXT OVERFLOW */
-  .c-title,.part-name,.work-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  /* MOBILE CATEGORY ROW */
-  .row-scroll{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-  .row-scroll::-webkit-scrollbar{display:none}
-  .c-card{flex:0 0 160px;scroll-snap-align:start}
-  .scroll-btn{display:none}
-  /* MOBILE AUTH FULL SCREEN */
-  .overlay{padding:0}
-  .modal{border-radius:0;min-height:100vh;min-height:100dvh;padding:48px 24px 32px;display:flex;flex-direction:column;justify-content:center}
-  .mobile-hide-field{display:none}
-  /* SIMPLIFY MOBILE HOME */
-  .stats-section,.cert-promo{display:none}
-  .testi-grid{grid-template-columns:1fr}
-  /* BURGER Z-INDEX */
-  .mobile-menu{z-index:250}
+  /* 19. THEME TOGGLE — touch size */
+  .theme-toggle{min-width:56px;min-height:28px}
+
+  /* 20. TEXT OVERFLOW */
+  .c-title,.part-name,.work-title,.continue-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* 21. SPLASH — GPU optimized */
+  #splash-screen{will-change:opacity}
+  .splash-path{will-change:stroke-dashoffset}
+  .splash-logo-svg{width:160px;height:48px}
 }
 </style>
 <script type="application/ld+json">
@@ -1840,7 +1848,7 @@ function courseCardHTML(c){
   const hasCert=S.certificates.includes(c.id);
   return `<a href="#/course/${c.id}" class="c-card" onclick="openCourse(${c.id});return false" style="text-decoration:none;color:inherit;display:block">
     <div class="c-thumb">
-      <img src="${c.thumb}" alt="${esc(c.title)}" loading="lazy" onerror="this.style.display='none'">
+      <img src="${c.thumb}" alt="${esc(c.title)}" loading="lazy" loading="lazy" decoding="async" onerror="this.style.display='none'">
       ${c.free?`<div class="c-free">${t('free_badge')}</div>`:'<div class="c-lock">🔒</div>'}
       ${hasCert?'<div style="position:absolute;top:8px;right:8px;background:rgba(34,197,94,.9);color:white;font-size:11px;font-weight:900;padding:3px 8px;border-radius:10px">🏆 Sertifikat</div>':''}
     </div>
@@ -1904,7 +1912,7 @@ function videoPageHTML(){
           ${S.videoLoading
             ?`<div class="v-placeholder"><div class="spinner" style="width:48px;height:48px;border-width:3px"></div><p style="font-size:14px;font-weight:700;margin-top:16px">Video yüklənir...</p></div>`
             :S.activeEmbedUrl
-              ?`<iframe class="v-frame" src="${S.activeEmbedUrl}" allow="autoplay;fullscreen;picture-in-picture" allowfullscreen></iframe>`
+              ?`<iframe class="v-frame" src="${S.activeEmbedUrl}" allow="autoplay;fullscreen;picture-in-picture" allowfullscreen playsinline></iframe>`
               :S.activePart
                 ?`<div class="v-placeholder"><div class="play-btn">▶</div><p style="font-size:13px;font-weight:700">${t('video_no_link')}</p></div>`
                 :`<div class="v-placeholder"><div style="font-size:52px">🎨</div><p style="font-size:15px;font-weight:700">${t('select_part')}</p></div>`}
@@ -2153,12 +2161,12 @@ function authModalHTML(){
       </div>
       <div class="f-group">
         <label class="f-label">${t('auth_phone')} <span style="color:var(--text3);font-weight:600">${t('auth_optional')}</span></label>
-        <input class="f-input" id="f-phone" type="tel" placeholder="+994 50 000 00 00" autocomplete="tel">
+        <input class="f-input" id="f-phone" type="tel" inputmode="tel" placeholder="+994 50 000 00 00" autocomplete="tel">
       </div>`:''}
 
       <div class="f-group">
         <label class="f-label">${t('auth_email')} <span style="color:var(--red)">*</span></label>
-        <input class="f-input" id="f-email" type="email" placeholder="email@example.com"
+        <input class="f-input" id="f-email" type="email" inputmode="email" placeholder="email@example.com"
           autocomplete="email" oninput="validateEmail(this)" required>
         <div class="f-hint" id="email-hint"></div>
       </div>
@@ -2302,7 +2310,7 @@ function profilePageHTML(){
         ${myCourses.length?myCourses.map(c=>{
           const pct=getCourseProgress(c.id);
           return `<div style="display:flex;gap:14px;align-items:center;background:var(--card);border:1.5px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:12px;cursor:pointer;transition:all .2s" onclick="openCourse(${c.id})" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border2)'">
-            <div style="width:80px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--bg3)"><img src="${c.thumb}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"></div>
+            <div style="width:80px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--bg3)"><img src="${c.thumb}" style="width:100%;height:100%;object-fit:cover" loading="lazy" decoding="async" onerror="this.style.display='none'"></div>
             <div style="flex:1;min-width:0">
               <div style="font-size:14px;font-weight:800;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.title)}</div>
               <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
@@ -2369,7 +2377,7 @@ function adminPageHTML(){
   if(S.adminSection==='courses'){
     content=`<div class="a-card"><div class="a-card-title">Mövcud Kurslar (${courses.length})</div>
       <table class="a-table"><thead><tr><th>Kurs</th><th>Kateqoriya</th><th>Hissə</th><th>Status</th><th>Əməliyyat</th></tr></thead>
-      <tbody>${courses.map(c=>{const lb=c.level==='Başlanğıc'?'badge-b':c.level==='Orta'?'badge-m':'badge-a';return `<tr><td><div style="display:flex;align-items:center;gap:10px"><img src="${c.thumb}" style="width:48px;height:32px;object-fit:cover;border-radius:4px" onerror="this.style.display='none'"><span style="font-weight:700;color:var(--text)">${esc(c.title)}</span></div></td><td><span class="badge ${lb}">${c.category}</span></td><td style="font-weight:900;color:var(--orange)">${c.parts.length}</td><td><span class="badge ${c.free?'badge-free':'badge-paid'}">${c.free?'Ödənişsiz':'Ödənişli'}</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-success btn-sm" onclick="editParts(${c.id})">✏️ Hissələr</button>
+      <tbody>${courses.map(c=>{const lb=c.level==='Başlanğıc'?'badge-b':c.level==='Orta'?'badge-m':'badge-a';return `<tr><td><div style="display:flex;align-items:center;gap:10px"><img src="${c.thumb}" style="width:48px;height:32px;object-fit:cover;border-radius:4px" loading="lazy" decoding="async" onerror="this.style.display='none'"><span style="font-weight:700;color:var(--text)">${esc(c.title)}</span></div></td><td><span class="badge ${lb}">${c.category}</span></td><td style="font-weight:900;color:var(--orange)">${c.parts.length}</td><td><span class="badge ${c.free?'badge-free':'badge-paid'}">${c.free?'Ödənişsiz':'Ödənişli'}</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-success btn-sm" onclick="editParts(${c.id})">✏️ Hissələr</button>
 <button class="btn btn-ghost btn-sm" onclick="editCourseInfo(${c.id})">ℹ️ Məlumat</button><button class="btn btn-danger btn-sm" onclick="deleteCourse(${c.id})">🗑 Sil</button></div></td></tr>`;}).join('')}
       </tbody></table></div>`;
   }
@@ -3044,7 +3052,7 @@ function mobileNavbarHTML(){
     {icon:lucideIcon('Palette',20),label:t('mnav_community'),page:'community',action:"goPage('community')"},
   ];
   return `<nav class="mobile-navbar" id="mobile-navbar">
-    ${items.map(i=>`<button class="mnav-item ${p===i.page?'active':''}" onclick="${i.action}">
+    ${items.map(i=>`<button class="mnav-item ${p===i.page?'active':''}" ontouchstart="${i.action}" onclick="${i.action}">
       <span class="mnav-icon-wrap">${i.icon}</span>
       <span class="mnav-label">${i.label}</span>
     </button>`).join('')}
@@ -3622,8 +3630,15 @@ function setLang(lang){
   localStorage.setItem('artmonia_lang',S.lang);
   render();
 }
-function toggleMobile(){S.mobileMenu=!S.mobileMenu;render();}
-function closeMobile(){S.mobileMenu=false;}
+function toggleMobile(){
+  S.mobileMenu=!S.mobileMenu;
+  document.body.style.overflow=S.mobileMenu?'hidden':'';
+  render();
+}
+function closeMobile(){
+  S.mobileMenu=false;
+  document.body.style.overflow='';
+}
 function openAuth(m){S.authMode=m;render();setTimeout(()=>document.getElementById('f-email')?.focus(),100);}
 function closeAuth(){S.authMode=null;S.pendingPassword=null;render();}
 function closeAuthIfBg(e){if(e.target===document.getElementById('auth-overlay'))closeAuth();}
@@ -3686,7 +3701,7 @@ function renderVideoPlayer(){
   if(S.videoLoading){
     wrap.innerHTML = '<div class="v-placeholder"><div class="spinner" style="width:48px;height:48px;border-width:3px"></div><p style="font-size:14px;font-weight:700;margin-top:16px">Video yüklənir...</p></div>';
   } else if(url){
-    wrap.innerHTML = `<iframe class="v-frame" src="${url}" allow="autoplay;fullscreen;picture-in-picture" allowfullscreen></iframe>`;
+    wrap.innerHTML = `<iframe class="v-frame" src="${url}" allow="autoplay;fullscreen;picture-in-picture" allowfullscreen playsinline></iframe>`;
   } else if(S.activePart){
     wrap.innerHTML = '<div class="v-placeholder"><div class="play-btn">▶</div><p style="font-size:13px;font-weight:700">Video linki hələ əlavə edilməyib</p></div>';
   } else {
@@ -5059,7 +5074,7 @@ function teachersPageHTML(){
       ${teachers.map(t=>`
       <div style="background:var(--card);border:1.5px solid var(--border2);border-radius:14px;padding:24px;display:flex;gap:16px">
         <div style="width:60px;height:60px;border-radius:50%;background:${t.img?'none':'linear-gradient(135deg,var(--orange),var(--navy2))'};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:white;flex-shrink:0;overflow:hidden">
-          ${t.img?`<img src="${esc(t.img)}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`:esc(t.name[0]||'?')}
+          ${t.img?`<img src="${esc(t.img)}" style="width:100%;height:100%;object-fit:cover" loading="lazy" decoding="async" onerror="this.style.display='none'">`:esc(t.name[0]||'?')}
         </div>
         <div>
           <div style="font-size:16px;font-weight:900;margin-bottom:4px">${esc(t.name)}</div>
@@ -5600,9 +5615,9 @@ function boot(){
   const splashShown=sessionStorage.getItem('splash_shown');
   if(!splashShown){
     sessionStorage.setItem('splash_shown','1');
-    setTimeout(()=>{const s=document.getElementById('splash-screen');const a=document.getElementById('app');if(s){s.style.opacity='0';setTimeout(()=>{s.remove();if(a)a.style.opacity='1';},400);}else if(a)a.style.opacity='1';},2000);
+    setTimeout(()=>{const s=document.getElementById('splash-screen');const a=document.getElementById('app');if(s){s.style.opacity='0';setTimeout(()=>{s.style.display='none';if(a)a.style.opacity='1';},400);}else if(a)a.style.opacity='1';},2000);
   } else {
-    const s=document.getElementById('splash-screen');if(s)s.remove();const a=document.getElementById('app');if(a)a.style.opacity='1';
+    const s=document.getElementById('splash-screen');if(s)s.style.display='none';const a=document.getElementById('app');if(a)a.style.opacity='1';
   }
   checkUrlAdmin();
   // Theme init — render-dən əvvəl
