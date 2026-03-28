@@ -85,6 +85,17 @@ img{max-width:100%;display:block}
 .c-card,.blog-card,.testi-card{transition:opacity .4s ease,transform .4s ease}
 .c-card.animate-in,.blog-card.animate-in,.testi-card.animate-in{opacity:0;transform:translateY(16px)}
 .c-card.visible,.blog-card.visible,.testi-card.visible{opacity:1!important;transform:translateY(0)!important}
+/* SKELETON LOADING */
+.skeleton{background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);background-size:200% 100%;animation:skeletonShimmer 1.5s ease-in-out infinite;border-radius:8px}
+@keyframes skeletonShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-card{height:180px;border-radius:12px;margin-bottom:16px}
+.skeleton-text{height:14px;border-radius:4px;margin-bottom:8px}
+.skeleton-text.short{width:60%}
+/* GLASSMORPHISM STATS */
+.glass-stat-card:hover{background:rgba(255,255,255,.06)!important;border-color:rgba(242,142,20,.2)!important;transform:translateY(-2px)}
+[data-theme="light"] .glass-stat-card{background:rgba(255,255,255,.7)!important;border-color:rgba(0,0,0,.08)!important;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+/* GLOBAL TRANSITIONS */
+a,button,.btn,.c-card,.part-card,.blog-card,.testi-card{transition:all .3s ease}
 /* HERO ENTRANCE */
 .slide.active .slide-content{animation:heroEntrance .8s ease forwards}
 @keyframes heroEntrance{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -118,11 +129,12 @@ img{max-width:100%;display:block}
 /* NAV */
 .nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(7,6,20,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;}
 .nav-logo{display:flex;align-items:center;cursor:pointer}
-.nav-logo img{height:44px;width:auto;filter:brightness(0) invert(1)}
+.nav-logo img{height:40px;width:auto;max-height:40px;object-fit:contain;filter:brightness(0) invert(1)}
 .nav-links{display:flex;gap:4px;list-style:none}
-.nav-links a{color:var(--text2);font-size:12px;font-weight:800;padding:7px 16px;border-radius:6px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .2s}
-.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06)}
-.nav-links a.active{color:var(--orange)}
+.nav-links a{color:var(--text2);font-size:12px;font-weight:800;padding:7px 16px;border-radius:6px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .3s ease;text-decoration:none;border-bottom:none}
+.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06);text-decoration:none}
+.nav-links a.active{color:var(--orange);text-decoration:none;border-bottom:none}
+.nav-links a::after{display:none}
 .nav-right{display:flex;align-items:center;gap:10px}
 .nav-search{position:relative}
 .nav-search input{background:rgba(255,255,255,.06);border:1.5px solid var(--border);border-radius:20px;padding:7px 14px 7px 36px;font-family:"Nunito Sans",sans-serif;font-size:13px;color:var(--text);outline:none;width:200px;transition:all .2s;font-weight:600}
@@ -768,8 +780,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:36px 44
   .footer-inner{flex-direction:column;align-items:flex-start;gap:12px}
 
   /* 12. PROFILE */
-  .profile-header{padding:20px 16px;flex-direction:column;align-items:flex-start}
+  .profile-header{padding:20px 16px;flex-direction:column;align-items:center;text-align:center}
   .profile-body{padding:12px 16px;grid-template-columns:1fr}
+  .profile-stats-grid{grid-template-columns:repeat(2,1fr)!important;padding:0 16px!important}
 
   /* 13. MODALS — full screen, iOS keyboard safe */
   .overlay{padding:0}
@@ -1839,28 +1852,27 @@ function navHTML(){
         </div>
       </div>
       ${S.user
-        ? `<button class="btn btn-ghost btn-sm" onclick="goHome()">${t('nav_watch')}</button>
-           <button class="btn btn-orange btn-sm" onclick="doSearch('Ödənişsiz')">${t('nav_free_test')}</button>
-           <button class="btn btn-outline btn-sm" onclick="signOut()" style="font-size:11px">${t('nav_logout')}</button>`
+        ? `${!S.user.subscribed?`<button class="btn btn-orange btn-sm btn-register-pulse" onclick="doSearch('Ödənişsiz')">${t('nav_free_test')}</button>`:''}
+           <button class="btn btn-sm" onclick="signOut()" style="font-size:11px;color:#ff4d4d;border:1px solid rgba(255,77,77,.3);background:rgba(255,77,77,.08)">${lucideIcon('LogOut',14)} ${t('nav_logout')}</button>`
         : `<button class="btn btn-outline" onclick="openAuth('login')">${t('nav_login')}</button>
-           <button class="btn btn-orange" onclick="openAuth('register')">${t('nav_subscribe')}</button>`}
+           <button class="btn btn-orange btn-register-pulse" onclick="openAuth('register')">${t('nav_subscribe')}</button>`}
     </div>
     <button class="burger" onclick="event.stopPropagation();toggleMobile()"><span></span><span></span><span></span></button>
   </nav>
   <div class="mobile-menu ${S.mobileMenu?'open':''}" id="mobile-menu">
-    <a href="#/" onclick="goHome();closeMobile();return false">🏠 ${t('nav_watch')}</a>
+    <a href="#/" onclick="goHome();closeMobile();return false">${lucideIcon('Home',18)} ${t('nav_watch')}</a>
     <div style="padding:12px 0"><input class="f-input" placeholder="${t('nav_search')}" onkeydown="if(event.key==='Enter'){doSearch(this.value);closeMobile()}"></div>
-    <a href="#/about" onclick="goPage('about');closeMobile();return false">🎨 ${t('nav_academy')}</a>
-    <a href="#/online-lessons" onclick="goPage('online-lessons');closeMobile();return false">🎥 ${t('nav_online')}</a>
-    <a href="#/results" onclick="goPage('results');closeMobile();return false">⭐ ${t('nav_results')}</a>
-    <a href="#/certificates" onclick="goPage('certificates-page');closeMobile();return false">🏆 ${t('nav_cert')}</a>
-    <a href="#/teachers" onclick="goPage('teachers');closeMobile();return false">👨‍🎨 ${t('nav_teachers')}</a>
-    <a href="#/community" onclick="goPage('community');closeMobile();return false" style="color:var(--orange)">🎨 ${t('nav_student_community')}</a>
-    <a href="#/blog" onclick="goPage('blog');closeMobile();return false">📝 ${t('nav_blog')}</a>
-    <a href="#/faq" onclick="goPage('faq-page');closeMobile();return false">❓ ${t('nav_faq')}</a>
+    <a href="#/about" onclick="goPage('about');closeMobile();return false">${lucideIcon('Palette',18)} ${t('nav_academy')}</a>
+    <a href="#/online-lessons" onclick="goPage('online-lessons');closeMobile();return false">${lucideIcon('Play',18)} ${t('nav_online')}</a>
+    <a href="#/results" onclick="goPage('results');closeMobile();return false">${lucideIcon('Star',18)} ${t('nav_results')}</a>
+    <a href="#/certificates" onclick="goPage('certificates-page');closeMobile();return false">${lucideIcon('Award',18)} ${t('nav_cert')}</a>
+    <a href="#/teachers" onclick="goPage('teachers');closeMobile();return false">${lucideIcon('Users',18)} ${t('nav_teachers')}</a>
+    <a href="#/community" onclick="goPage('community');closeMobile();return false" style="color:var(--orange)">${lucideIcon('Palette',18)} ${t('nav_student_community')}</a>
+    <a href="#/blog" onclick="goPage('blog');closeMobile();return false">${lucideIcon('BookOpen',18)} ${t('nav_blog')}</a>
+    <a href="#/faq" onclick="goPage('faq-page');closeMobile();return false">${lucideIcon('Eye',18)} FAQ</a>
     ${S.user
-      ? `<a href="#/profile" onclick="goPage('profile');closeMobile();return false">👤 ${t('nav_profile')}</a><a onclick="signOut();closeMobile()">${t('nav_logout')}</a>`
-      : `<a onclick="openAuth('login');closeMobile()">${t('nav_login')}</a><a onclick="openAuth('register');closeMobile()">${t('nav_subscribe')}</a>`}
+      ? `<a href="#/profile" onclick="goPage('profile');closeMobile();return false">${lucideIcon('User',18)} ${t('nav_profile')}</a><a onclick="signOut();closeMobile()" style="color:#ff4d4d">${lucideIcon('LogOut',18)} ${t('nav_logout')}</a>`
+      : `<a onclick="openAuth('login');closeMobile()">${lucideIcon('User',18)} ${t('nav_login')}</a><a onclick="openAuth('register');closeMobile()" style="color:var(--orange)">${lucideIcon('Plus',18)} ${t('nav_subscribe')}</a>`}
     <div style="display:flex;gap:6px;padding:12px 0;border-top:1px solid var(--border2);margin-top:8px">
       <button onclick="applyTheme('dark');closeMobile();render()" class="btn btn-sm ${S.theme==='dark'?'btn-orange':'btn-outline'}" style="flex:1;justify-content:center">🌙 Tünd</button>
       <button onclick="applyTheme('light');closeMobile();render()" class="btn btn-sm ${S.theme==='light'?'btn-orange':'btn-outline'}" style="flex:1;justify-content:center">☀️ İşıqlı</button>
@@ -2311,8 +2323,10 @@ function profilePageHTML(){
   return `<div class="profile-page">
     <!-- Header -->
     <div class="profile-header" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
-      <div class="profile-avatar" style="width:80px;height:80px;font-size:32px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--navy2));display:flex;align-items:center;justify-content:center;color:white;font-weight:900;flex-shrink:0;position:relative">
-        ${initial}
+      <div class="profile-avatar" style="width:80px;height:80px;font-size:32px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--navy2));display:flex;align-items:center;justify-content:center;color:white;font-weight:900;flex-shrink:0;position:relative;overflow:hidden;cursor:pointer" onclick="document.getElementById('avatar-upload')?.click()">
+        ${S.user.avatarUrl?`<img src="${esc(S.user.avatarUrl)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:initial}
+        <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);padding:3px;text-align:center;font-size:10px;color:white">${lucideIcon('Upload',12)}</div>
+        <input type="file" id="avatar-upload" accept="image/*" style="display:none" onchange="uploadAvatar(this.files[0])">
       </div>
       <div style="flex:1;min-width:200px">
         <div style="font-size:20px;font-weight:900;color:var(--text)">${esc(S.user.name)}</div>
@@ -2327,14 +2341,15 @@ function profilePageHTML(){
       </div>
     </div>
     <!-- Stats Row -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:0 24px;margin:-10px 0 20px">
+    <div class="profile-stats-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:0 24px;margin:-10px 0 20px">
       ${[
-        {v:myCourses.length,l:t('stat_course'),c:'var(--orange)'},
-        {v:watchedParts,l:t('stat_parts'),c:'var(--blue)'},
-        {v:S.certificates.length,l:t('stat_cert'),c:'var(--green)'},
-        {v:S.streak||0,l:'🔥 Streak',c:'var(--orange)'}
-      ].map(s=>`<div style="text-align:center;background:var(--card);border:1.5px solid var(--border2);border-radius:12px;padding:16px 8px">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:${s.c}">${s.v}</div>
+        {v:myCourses.length,l:t('stat_course'),c:'var(--orange)',icon:lucideIcon('BookOpen',20)},
+        {v:watchedParts,l:t('stat_parts'),c:'var(--blue)',icon:lucideIcon('Play',20)},
+        {v:S.certificates.length,l:t('stat_cert'),c:'var(--green)',icon:lucideIcon('Award',20)},
+        {v:S.streak||0,l:'Streak',c:'var(--orange)',icon:lucideIcon('Star',20)}
+      ].map(s=>`<div class="glass-stat-card" style="text-align:center;background:rgba(255,255,255,.03);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px 8px;transition:all .3s ease">
+        <div style="margin-bottom:8px;opacity:.7">${s.icon}</div>
+        <div class="stat-count" data-count="${s.v}" style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:${s.c}">0</div>
         <div style="font-size:11px;color:var(--text3);font-weight:700;margin-top:4px">${s.l}</div>
       </div>`).join('')}
     </div>
@@ -2344,9 +2359,9 @@ function profilePageHTML(){
       <button class="btn btn-orange" onclick="S.page='subscribe';render()">${t('sub_btn')} →</button>
     </div>`:''}
     <!-- Tab Navigation -->
-    <div style="display:flex;gap:4px;padding:0 24px;margin-bottom:20px;border-bottom:1px solid var(--border2);padding-bottom:0">
-      ${[{id:'courses',icon:'📚',l:t('my_progress')},{id:'certs',icon:'🏆',l:t('my_certs')},{id:'notes',icon:'📝',l:t('personal_notes')},{id:'notifs',icon:'🔔',l:'Bildirişlər'}].map(tab=>
-        `<button onclick="S._profileTab='${tab.id}';render()" style="background:none;border:none;border-bottom:2px solid ${pt===tab.id?'var(--orange)':'transparent'};color:${pt===tab.id?'var(--orange)':'var(--text3)'};padding:12px 16px;font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px">${tab.icon} ${tab.l}</button>`
+    <div style="display:flex;gap:4px;padding:0 24px;margin-bottom:20px;border-bottom:1px solid var(--border2);padding-bottom:0;overflow-x:auto;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+      ${[{id:'courses',icon:lucideIcon('BookOpen',16),l:t('my_progress')},{id:'certs',icon:lucideIcon('Award',16),l:t('my_certs')},{id:'notes',icon:lucideIcon('Edit2',16),l:t('personal_notes')},{id:'notifs',icon:lucideIcon('Bell',16),l:'Bildirişlər'}].map(tab=>
+        `<button onclick="S._profileTab='${tab.id}';render()" style="background:none;border:none;border-bottom:2px solid ${pt===tab.id?'var(--orange)':'transparent'};color:${pt===tab.id?'var(--orange)':'var(--text3)'};padding:12px 16px;font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;flex-shrink:0">${tab.icon} ${tab.l}</button>`
       ).join('')}
     </div>
     <!-- Tab Content -->
@@ -3469,6 +3484,33 @@ async function adminSendNotification(){
     document.getElementById('notif-body').value='';
   }catch(e){showToast('Xəta: '+e.message,'error');console.error('Artmonia error:',e)}
 }
+// ── AVATAR UPLOAD ───────────────────────────────────────
+async function uploadAvatar(file){
+  if(!file||!sb||!S.user) return;
+  if(file.size>2*1024*1024){showToast('Şəkil 2MB-dan böyük olmamalıdır','error');return;}
+  try{
+    showToast('Yüklənir...');
+    const ext=file.name.split('.').pop();
+    const fname=`avatars/${S.user.id}.${ext}`;
+    await sb.storage.from('artmonia-uploads').upload(fname,file,{upsert:true});
+    const{data}=sb.storage.from('artmonia-uploads').getPublicUrl(fname);
+    if(data?.publicUrl){
+      S.user.avatarUrl=data.publicUrl+'?t='+Date.now();
+      await sb.from('profiles').update({avatar_url:S.user.avatarUrl}).eq('id',S.user.id);
+      showToast('Avatar yeniləndi! ✅');render();
+    }
+  }catch(e){showToast('Yükləmə xətası','error');console.error('Avatar upload:',e);}
+}
+// ── COUNT-UP ANİMATION ───────────────────────────────
+function animateStatCounts(){
+  document.querySelectorAll('.stat-count[data-count]').forEach(el=>{
+    const target=parseInt(el.dataset.count)||0;
+    if(target===0){el.textContent='0';return;}
+    let current=0;
+    const step=Math.max(1,Math.ceil(target/30));
+    const timer=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(timer);}el.textContent=current;},40);
+  });
+}
 function confettiExplosion(){
   const colors=['#F28E14','#FFB347','#F37126','#ffffff','#FFD700'];
   const c=document.createElement('div');
@@ -3730,7 +3772,7 @@ function render(){
     app.innerHTML=promoBannerHTML()+navHTML()+continueCardHTML()+streakWidgetHTML()+heroHTML()+demoBannerHTML()+`<div class="browse">${CATEGORIES.map(catRowHTML).join('')}</div>`+statsSectionHTML()+testimonialsHTML()+certPromoHTML()+faqHTML()+blogSectionHTML()+footerHTML()+waButtonHTML()+promoHTML()+authModalHTML()+adminLoginHTML()+subOfferModalHTML();
     startSlider();
     animateCounters();
-    setTimeout(()=>{initCardAnimations();initTouchSwipe();},100);
+    setTimeout(()=>{initCardAnimations();initTouchSwipe();animateStatCounts();},100);
     // Initialize Lucide icons
     if(window.lucide) setTimeout(()=>lucide.createIcons(),150);
     if(S.promo.active && S.promo.expiresAt) setTimeout(startPromoTimer, 300);
