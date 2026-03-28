@@ -4401,7 +4401,7 @@ function addCourse(){
   const parts=[];
   if(videoUrl){parts.push({id:'p'+Date.now(),name:title+' — Tam video',duration:'',vimeo:videoUrl,free:isFree});}
   S.courses.push({id:Date.now(),title,category:document.getElementById('nc-cat')?.value||'Başlanğıc',level:document.getElementById('nc-lv')?.value||'Başlanğıc',thumb:document.getElementById('nc-thumb')?.value||'',desc:document.getElementById('nc-desc')?.value||'',free:isFree,parts});
-  logAdminAction('Kurs əlavə edildi: '+title);showToast('✅ Kurs uğurla əlavə edildi!');render();
+  logAdminAction('Kurs əlavə edildi: '+title);showToast('✅ Kurs uğurla əlavə edildi!');persistCourses();render();
 }
 function editCourseInfo(id){S.editingCourseId=id;S.adminSection='edit-course-info';render();}
 function saveCourseInfo(id){
@@ -4412,17 +4412,17 @@ function saveCourseInfo(id){
   c.downloadUrl=document.getElementById('ci-download')?.value||'';
   c.viewerCount=parseInt(document.getElementById('ci-viewers')?.value)||0;
   logAdminAction('Kurs redaktə edildi: '+(c.title||id));showToast('Kurs məlumatları saxlanıldı ✅');
-  adminGo('courses');
+  persistCourses();adminGo('courses');
 }
-function deleteCourse(id){if(!confirm('Kursu silmək istədiyinizdən əminsiniz?'))return;const cn=S.courses.find(c=>c.id===id);logAdminAction('Kurs silindi: '+(cn?cn.title:id));S.courses=S.courses.filter(c=>c.id!==id);showToast('Kurs silindi');render();}
+function deleteCourse(id){if(!confirm('Kursu silmək istədiyinizdən əminsiniz?'))return;const cn=S.courses.find(c=>c.id===id);logAdminAction('Kurs silindi: '+(cn?cn.title:id));S.courses=S.courses.filter(c=>c.id!==id);showToast('Kurs silindi');persistCourses();render();}
 function addPart(courseId){
   const name=document.getElementById('np-name')?.value?.trim()||'';
   if(!name){showToast('Hissə adı daxil edin','error');return;}
   const c=S.courses.find(x=>x.id===courseId);
   if(c)c.parts.push({id:'p'+Date.now(),name,duration:document.getElementById('np-dur')?.value||'',vimeo:document.getElementById('np-vimeo')?.value||'',free:document.getElementById('np-free')?.checked||false});
-  logAdminAction('Hissə əlavə edildi: '+name);showToast('Hissə əlavə edildi!');render();
+  logAdminAction('Hissə əlavə edildi: '+name);showToast('Hissə əlavə edildi!');persistCourses();render();
 }
-function deletePart(courseId,partId){const c=S.courses.find(x=>x.id===courseId);const pn=c&&c.parts.find(p=>p.id===partId);logAdminAction('Hissə silindi: '+(pn?pn.name:partId));if(c)c.parts=c.parts.filter(p=>p.id!==partId);showToast('Hissə silindi');render();}
+function deletePart(courseId,partId){const c=S.courses.find(x=>x.id===courseId);const pn=c&&c.parts.find(p=>p.id===partId);logAdminAction('Hissə silindi: '+(pn?pn.name:partId));if(c)c.parts=c.parts.filter(p=>p.id!==partId);showToast('Hissə silindi');persistCourses();render();}
 function updatePartVimeo(courseId,partId,url){const c=S.courses.find(x=>x.id===courseId);if(c){const p=c.parts.find(x=>x.id===partId);if(p)p.vimeo=url;}}
 function submitComment(courseId){const inp=document.getElementById(`comment-input-${courseId}`);if(!inp)return;postComment(courseId,inp.value);inp.value='';}
 // ── SESSION GUARD ────────────────────────────────────────
@@ -5755,6 +5755,13 @@ async function persistSettings(){
     await sb.from('site_settings').upsert({id:'main',settings:JSON.stringify(settings),updated_at:new Date().toISOString()},{onConflict:'id'});
   }catch(e){console.error('Persist settings:',e);}
 }
+async function persistCourses(){
+  if(!sb) return;
+  try{
+    const coursesData=S.courses.map(c=>({id:c.id,title:c.title,category:c.category,level:c.level,thumb:c.thumb,desc:c.desc,free:c.free,purpose:c.purpose||'',totalDuration:c.totalDuration||'',materials:c.materials||'',downloadUrl:c.downloadUrl||'',viewerCount:c.viewerCount||0,parts:(c.parts||[]).map(p=>({id:p.id,name:p.name,duration:p.duration||'',vimeo:p.vimeo||'',free:!!p.free}))}));
+    await sb.from('site_settings').upsert({id:'courses',settings:JSON.stringify(coursesData),updated_at:new Date().toISOString()},{onConflict:'id'});
+  }catch(e){console.error('Persist courses:',e);}
+}
 async function loadSettings(){
   if(!sb) return;
   try{
@@ -5766,8 +5773,19 @@ async function loadSettings(){
       if(s.reviews) S.reviews=s.reviews;
       if(s.teachers) S.teachers=s.teachers;
       if(s.heroSlides) s.heroSlides.forEach((h,i)=>{if(HERO_SLIDES[i])Object.assign(HERO_SLIDES[i],h);});
-      render();
     }
+    // Load courses from Supabase — fallback to INIT_COURSES
+    try{
+      const {data:cd}=await sb.from('site_settings').select('settings').eq('id','courses').single();
+      if(cd&&cd.settings){
+        const courses=JSON.parse(cd.settings);
+        if(Array.isArray(courses)&&courses.length>0){
+          S.courses=courses;
+          console.log('[Courses] Loaded',courses.length,'from Supabase');
+        }
+      }
+    }catch(e){console.log('[Courses] Using INIT_COURSES fallback');}
+    render();
     // Load contest data
     loadContestData();
   }catch(e){console.error('Load settings:',e);}
