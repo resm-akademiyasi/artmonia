@@ -1945,8 +1945,8 @@ function courseCardHTML(c){
   const pct=getCourseProgress(c.id);
   const hasCert=S.certificates.includes(c.id);
   return `<a href="#/course/${c.id}" class="c-card" onclick="openCourse(${c.id});return false" style="text-decoration:none;color:inherit;display:block">
-    <div class="c-thumb">
-      <img src="${c.thumb}" alt="${esc(c.title)}" loading="lazy" decoding="async" onerror="this.style.display='none'">
+    <div class="c-thumb" style="background:linear-gradient(135deg,#0e0c1f,#1a1835)">
+      ${c.thumb?`<img src="${c.thumb}" alt="${esc(c.title)}" loading="lazy" decoding="async" onerror="this.style.display='none'">`:`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:32px;opacity:.4">🎨</div>`}
       ${c.free?`<div class="c-free">${t('free_badge')}</div>`:'<div class="c-lock">🔒</div>'}
       ${hasCert?'<div style="position:absolute;top:8px;right:8px;background:rgba(34,197,94,.9);color:white;font-size:11px;font-weight:900;padding:3px 8px;border-radius:10px">🏆 Sertifikat</div>':''}
     </div>
@@ -2044,7 +2044,7 @@ function videoPageHTML(){
       </div>`:''}
       ${!S.user?`<div class="money-back-badge">✅ <div><strong>30 gün pul geri zəmanəti</strong> — Məmnun qalmasanız, heç bir sual vermədən pulu geri qaytarırıq.</div></div>`:''}
       ${S.user?progressBarHTML(c.id):''}
-      ${!S.user?`<div class="sub-wall">
+      ${(!S.user && !c.free)?`<div class="sub-wall">
         <h3>${t('sub_title')}</h3>
         <p>${t('sub_desc')}</p>
         <div class="price-big">${S.siteTexts.subWallPrice||'₼29'}</div>
@@ -2838,6 +2838,7 @@ function adminPageHTML(){
         </div>
         <div class="f-group"><label class="f-label">Thumbnail URL</label><input class="f-input" id="nc-thumb" placeholder="https://images.unsplash.com/..."></div>
         <div class="f-group"><label class="f-label">Təsvir</label><textarea class="a-textarea" id="nc-desc" placeholder="Kurs haqqında..."></textarea></div>
+        <div class="f-group"><label class="f-label">Video URL (Vimeo/YouTube)</label><input class="f-input" id="nc-video" placeholder="https://vimeo.com/123456789"><span class="f-hint" style="font-size:11px;color:var(--text3)">Tək hissəli kurslar üçün — avtomatik ilk hissə yaradılır</span></div>
         <div class="checkbox-row"><input type="checkbox" id="nc-free"><label for="nc-free">Ödənişsiz kurs</label></div>
         <button class="btn btn-orange btn-lg" onclick="addCourse()">+ Kurs Əlavə Et</button>
       </div></div>`;
@@ -3938,20 +3939,15 @@ function openCourse(id){
 async function selectPart(courseId,partId){
   const c=S.courses.find(x=>x.id==courseId);if(!c)return;
   const p=c.parts.find(x=>x.id===partId);if(!p)return;
-  if(!p.free){
-    if(!S.user){ openAuth('register'); return; } // login deyilsə → qeydiyyat
-    if(!S.user.subscribed && !S.user.admin){
-      S.showSubModal=true;render();
-      return;
-    }
-  } else {
-    // Ödənişsiz video — mail toplamaq üçün hesab tələb et
-    if(!S.user){
-      // Ödənişsiz video üçün qeydiyyat tələb et - lead magnet
-      S._pendingFreePart={courseId,partId};
-      openAuth('register');
-      return;
-    }
+  const isPartFree=p.free===true||p.is_free===true||p.isFree===true;
+  const isCourseFree=c.free===true||c.category==='Ödənişsiz Dərslər'||c.is_free===true;
+  // Ödənişsiz dərslərə HAMI giriş edə bilər (qeydiyyatsız da)
+  if(isPartFree||isCourseFree){
+    // Heç bir blok yoxdur — birbaşa oyna
+  } else if(!S.user){
+    openAuth('register'); return;
+  } else if(!S.user.subscribed && !S.user.admin){
+    S.showSubModal=true;render(); return;
   }
   // Əgər pending free part varsa sil
   if(S._pendingFreePart) S._pendingFreePart=null;
@@ -4400,8 +4396,12 @@ function editParts(id){S.editingCourseId=id;S.adminSection='edit-parts';render()
 function addCourse(){
   const title=document.getElementById('nc-title')?.value?.trim()||'';
   if(!title){showToast('Kurs adı daxil edin','error');return;}
-  S.courses.push({id:Date.now(),title,category:document.getElementById('nc-cat')?.value||'Başlanğıc',level:document.getElementById('nc-lv')?.value||'Başlanğıc',thumb:document.getElementById('nc-thumb')?.value||'',desc:document.getElementById('nc-desc')?.value||'',free:document.getElementById('nc-free')?.checked||false,parts:[]});
-  logAdminAction('Kurs əlavə edildi: '+title);showToast('Kurs əlavə edildi!');render();
+  const videoUrl=document.getElementById('nc-video')?.value?.trim()||'';
+  const isFree=document.getElementById('nc-free')?.checked||false;
+  const parts=[];
+  if(videoUrl){parts.push({id:'p'+Date.now(),name:title+' — Tam video',duration:'',vimeo:videoUrl,free:isFree});}
+  S.courses.push({id:Date.now(),title,category:document.getElementById('nc-cat')?.value||'Başlanğıc',level:document.getElementById('nc-lv')?.value||'Başlanğıc',thumb:document.getElementById('nc-thumb')?.value||'',desc:document.getElementById('nc-desc')?.value||'',free:isFree,parts});
+  logAdminAction('Kurs əlavə edildi: '+title);showToast('✅ Kurs uğurla əlavə edildi!');render();
 }
 function editCourseInfo(id){S.editingCourseId=id;S.adminSection='edit-course-info';render();}
 function saveCourseInfo(id){
