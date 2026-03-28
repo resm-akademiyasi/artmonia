@@ -1398,7 +1398,9 @@ let slideIdx=0, slideTimer=null, sb=null;
 // ── SUPABASE ────────────────────────────────────────────────
 function initSB(){
   try{
-    sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{
+      auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true,flowType:'implicit'}
+    });
 
     // Email təsdiq linkindən gələn token-i tut
     // Supabase emaildəki link: https://online.artmoniya.com#access_token=...&type=signup
@@ -1440,12 +1442,24 @@ function initSB(){
     sb.auth.getSession().then(({data:{session}})=>{
       if(session?.user) setUser(session.user);
     });
-    sb.auth.onAuthStateChange((_,session)=>{
-      if(session?.user){
-        if(!S.user || S.user.id !== session.user.id){
-          setUser(session.user);
+    sb.auth.onAuthStateChange(async(event,session)=>{
+      console.log('Auth event:',event,session?.user?.email);
+      if(event==='SIGNED_IN'&&session){
+        const isNew=!S.user||S.user.id!==session.user.id;
+        if(isNew){
+          // Clear OAuth URL params
+          if(window.location.hash.includes('access_token')||window.location.search.includes('code=')){
+            window.history.replaceState({},'',window.location.pathname);
+          }
+          await setUser(session.user);
+          await ensureProfile(session.user);
+          confettiExplosion();
+          const name=session.user.user_metadata?.full_name||session.user.user_metadata?.name||session.user.email?.split('@')[0]||'Tələbə';
+          showToast(`Xoş gəldiniz, ${name}! 🎉`);
         }
-      } else {
+      } else if(event==='TOKEN_REFRESHED'&&session){
+        if(S.user)S.user.id=session.user.id;
+      } else if(event==='SIGNED_OUT'){
         S.user=null; S.progress={}; S.comments={}; S.certificates=[]; S.subscription=null;
         S.sessionToken=null;
         clearInterval(window._sessionCheck);
@@ -1453,6 +1467,16 @@ function initSB(){
       }
     });
   }catch(e){console.warn('Supabase init failed',e);}
+}
+async function ensureProfile(user){
+  try{
+    const{data:existing}=await sb.from('profiles').select('id').eq('id',user.id).single();
+    if(!existing){
+      const name=user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||'';
+      await sb.from('profiles').upsert({id:user.id,full_name:name,phone:'',avatar_url:user.user_metadata?.avatar_url||null},{onConflict:'id'});
+      console.log('Profile created for OAuth user:',name);
+    }
+  }catch(e){console.warn('ensureProfile:',e);}
 }
 async function setUser(u){
   const meta=u.user_metadata||{};
@@ -4170,40 +4194,18 @@ async function signInWithGoogle(){
   if(!sb){showToast('Bağlantı xətası','error');return;}
   try{
     showToast('Google ilə yönləndirilir...');
-    const{error}=await sb.auth.signInWithOAuth({
+    const{data,error}=await sb.auth.signInWithOAuth({
       provider:'google',
       options:{
-        redirectTo:window.location.origin,
-        queryParams:{access_type:'offline',prompt:'consent'}
+        redirectTo:window.location.origin+window.location.pathname,
+        skipBrowserRedirect:false
       }
     });
-    if(error) throw error;
+    if(error){console.error('Google OAuth error:',error);showToast('Xəta: '+error.message,'error');}
   }catch(e){
-    showToast('Google giriş xətası: '+(e.message||'Bilinməyən xəta'),'error');
+    console.error('Google OAuth exception:',e);
+    showToast('Giriş zamanı xəta baş verdi','error');
   }
-}
-async function handleOAuthRedirect(){
-  const hash=window.location.hash;
-  const search=window.location.search;
-  if(hash.includes('access_token')||search.includes('code=')){
-    try{
-      const{data:{session},error}=await sb.auth.getSession();
-      if(session&&!error){
-        const u=session.user;
-        const meta=u.user_metadata||{};
-        S.user={id:u.id,email:u.email,name:meta.full_name||meta.name||u.email.split('@')[0],phone:meta.phone||'',admin:u.email==='artmoniaacademy@gmail.com',subscribed:false,avatarUrl:meta.avatar_url||meta.picture||null,created_at:u.created_at};
-        window.history.replaceState({},'',window.location.pathname);
-        // Upsert profile
-        await sb.from('profiles').upsert({id:u.id,full_name:S.user.name,email:u.email,avatar_url:S.user.avatarUrl},{onConflict:'id'}).catch(()=>{});
-        await loadSubscription();await loadProgress();await loadCertificates();
-        confettiExplosion();
-        showToast(`Xoş gəldiniz, ${S.user.name}! 🎉`);
-        render();
-        return true;
-      }
-    }catch(e){console.warn('OAuth redirect error:',e);}
-  }
-  return false;
 }
 async function signOut(){
   clearInterval(window._sessionCheck);
@@ -5934,18 +5936,8 @@ function boot(){
   if(savedLang) S.lang=savedLang;
   loadLocalStats();
   initSB();
-  // Handle OAuth code= redirect (Google callback via query param)
-  if(window.location.search.includes('code=')&&sb){
-    sb.auth.getSession().then(({data:{session}})=>{
-      if(session?.user){
-        window.history.replaceState({},'',window.location.pathname);
-        setUser(session.user).then(()=>{
-          confettiExplosion();
-          showToast(`Xoş gəldiniz, ${S.user.name}! 🎉`);
-        });
-      }
-    }).catch(()=>{});
-  }
+  // Debug: log URL on load for OAuth troubleshooting
+  console.log('Boot URL:',window.location.href);
   render();
   // WhatsApp smart — 3s first show, then every 10 min for 3s
   initWhatsApp();
