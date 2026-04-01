@@ -33,31 +33,40 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const AnimatedRoutes = () => {
+const AppLayout = () => {
   const location = useLocation();
+  const isInvestor = location.pathname === "/investor";
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageTransition><Index /></PageTransition>} />
-        <Route path="/program" element={<PageTransition><ProgramPage /></PageTransition>} />
-        <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
-        <Route path="/faq" element={<PageTransition><FaqPage /></PageTransition>} />
-        <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
-        <Route path="/privacy" element={<PageTransition><PrivacyPage /></PageTransition>} />
-        <Route path="/go" element={<PageTransition><GoPage /></PageTransition>} />
-        <Route path="/auth" element={<PageTransition><AuthPage /></PageTransition>} />
-        <Route path="/reset-password" element={<PageTransition><ResetPasswordPage /></PageTransition>} />
-        <Route path="/results" element={<PageTransition><ResultsPage /></PageTransition>} />
-        <Route path="/news/:id" element={<PageTransition><NewsDetailPage /></PageTransition>} />
-        <Route path="/stories" element={<PageTransition><StoriesPage /></PageTransition>} />
-        <Route path="/teachers" element={<PageTransition><TeachersPage /></PageTransition>} />
-        <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
-        <Route path="/blog/:slug" element={<PageTransition><BlogDetailPage /></PageTransition>} />
-        <Route path="/admin" element={<PageTransition><AdminPage /></PageTransition>} />
-        <Route path="/investor" element={<InvestorPage />} />
-        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
-      </Routes>
-    </AnimatePresence>
+    <>
+      {!isInvestor && <ScrollProgressBar />}
+      {!isInvestor && <CampaignBanner />}
+      {!isInvestor && <Navbar />}
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+          <Route path="/program" element={<PageTransition><ProgramPage /></PageTransition>} />
+          <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
+          <Route path="/faq" element={<PageTransition><FaqPage /></PageTransition>} />
+          <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
+          <Route path="/privacy" element={<PageTransition><PrivacyPage /></PageTransition>} />
+          <Route path="/go" element={<PageTransition><GoPage /></PageTransition>} />
+          <Route path="/auth" element={<PageTransition><AuthPage /></PageTransition>} />
+          <Route path="/reset-password" element={<PageTransition><ResetPasswordPage /></PageTransition>} />
+          <Route path="/results" element={<PageTransition><ResultsPage /></PageTransition>} />
+          <Route path="/news/:id" element={<PageTransition><NewsDetailPage /></PageTransition>} />
+          <Route path="/stories" element={<PageTransition><StoriesPage /></PageTransition>} />
+          <Route path="/teachers" element={<PageTransition><TeachersPage /></PageTransition>} />
+          <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
+          <Route path="/blog/:slug" element={<PageTransition><BlogDetailPage /></PageTransition>} />
+          <Route path="/admin" element={<PageTransition><AdminPage /></PageTransition>} />
+          <Route path="/investor" element={<InvestorPage />} />
+          <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+        </Routes>
+      </AnimatePresence>
+      {!isInvestor && <Footer />}
+      {!isInvestor && <LiveViewerBadge />}
+      {!isInvestor && <WhatsAppButton />}
+    </>
   );
 };
 
@@ -68,13 +77,7 @@ const App = () => (
       <BrushCursor />
       <Sonner />
       <BrowserRouter>
-        <ScrollProgressBar />
-        <CampaignBanner />
-        <Navbar />
-        <AnimatedRoutes />
-        <Footer />
-        <LiveViewerBadge />
-        <WhatsAppButton />
+        <AppLayout />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
