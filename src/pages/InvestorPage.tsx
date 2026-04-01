@@ -441,12 +441,12 @@ function Overview({ data }) {
   const consData = data.map((d) => ({ name: d.month, Konsultasiya: d.consultations, Qeydiyyat: d.registrations }));
 
   // Expense category across months
-  const allCats = new Set();
-  data.forEach((d) => (d.expBreak || []).forEach((e) => allCats.add(e.c)));
-  const expByMonth = data.map((d) => {
-    const row = { name: d.month };
-    const map = {};
-    (d.expBreak || []).forEach((e) => {
+  const allCats = new Set<string>();
+  data.forEach((d: any) => (d.expBreak || []).forEach((e: any) => allCats.add(e.c)));
+  const expByMonth = data.map((d: any) => {
+    const row: Record<string, any> = { name: d.month };
+    const map: Record<string, number> = {};
+    (d.expBreak || []).forEach((e: any) => {
       map[e.c] = e.a;
     });
     allCats.forEach((c) => {
@@ -454,14 +454,14 @@ function Overview({ data }) {
     });
     return row;
   });
-  const catTotals = {};
-  data.forEach((d) =>
-    (d.expBreak || []).forEach((e) => {
+  const catTotals: Record<string, number> = {};
+  data.forEach((d: any) =>
+    (d.expBreak || []).forEach((e: any) => {
       catTotals[e.c] = (catTotals[e.c] || 0) + e.a;
     }),
   );
   const topCats = Object.entries(catTotals)
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) => (b[1] as number) - (a[1] as number))
     .map(([c]) => c);
 
   const achievements = [
