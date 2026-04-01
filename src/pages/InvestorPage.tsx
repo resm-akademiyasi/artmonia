@@ -405,7 +405,7 @@ function SectionTitle({ children, icon: Icon }: { children: React.ReactNode; ico
   );
 }
 
-function TT({ active, payload, label }) {
+function TT({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) {
   if (!active || !payload) return null;
   return (
     <div style={{ background: C.card, borderColor: C.border }} className="p-3 rounded-lg shadow-xl border text-[11px]">
