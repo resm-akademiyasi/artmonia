@@ -28,6 +28,7 @@ import StoriesPage from "./pages/StoriesPage";
 import TeachersPage from "./pages/TeachersPage";
 import BlogPage from "./pages/BlogPage";
 import BlogDetailPage from "./pages/BlogDetailPage";
+import InvestorPage from "./pages/InvestorPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
