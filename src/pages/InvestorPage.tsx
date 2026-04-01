@@ -1077,7 +1077,7 @@ function MonthDetail({ d, prev }) {
           label="Lead → Kons."
           value={`${leadToConsRate}%`}
           sub={`${fmt(leadsLost)} lead itirildi`}
-          color={parseFloat(leadToConsRate) < 10 ? C.red : C.green}
+          color={parseFloat(String(leadToConsRate)) < 10 ? C.red : C.green}
         />
       </div>
       {d.consultations < 30 && (
