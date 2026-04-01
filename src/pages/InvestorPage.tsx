@@ -873,7 +873,7 @@ function MonthDetail({ d, prev }) {
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(v) => `${fmt(v)} ₼`}
+                  formatter={(v: any) => `${fmt(v)} ₼`}
                   contentStyle={{
                     background: C.navy || "#1A1F36",
                     border: `1px solid ${C.border}`,
