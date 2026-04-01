@@ -1103,7 +1103,7 @@ function MonthDetail({ d, prev }) {
         <Metric
           label="İtirilən Lead"
           value={fmt(leadsLost)}
-          sub={`${(100 - parseFloat(leadToConsRate)).toFixed(0)}% itirilir`}
+          sub={`${(100 - parseFloat(String(leadToConsRate))).toFixed(0)}% itirilir`}
           color={C.red}
         />
         <Metric label="CAC" value={`${fmt(costPerReg)} ₼`} sub="Xərc / Qeydiyyat" color={C.teal} />
