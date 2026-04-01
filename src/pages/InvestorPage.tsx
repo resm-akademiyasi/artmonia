@@ -394,7 +394,7 @@ function Metric({ label, value, sub, icon: Icon, color, trend }: { label: string
   );
 }
 
-function SectionTitle({ children, icon: Icon }) {
+function SectionTitle({ children, icon: Icon }: { children: React.ReactNode; icon?: any }) {
   return (
     <div className="flex items-center gap-2 mb-4 mt-6">
       {Icon && <Icon size={16} style={{ color: C.accent }} />}
