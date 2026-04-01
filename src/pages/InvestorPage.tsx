@@ -1009,7 +1009,7 @@ function MonthDetail({ d, prev }) {
                     {fmt(v)} ₼
                   </span>
                   <span className="text-[9px]" style={{ color: C.textMuted }}>
-                    {((v / d.expenses) * 100).toFixed(0)}%
+                    {(((v as number) / d.expenses) * 100).toFixed(0)}%
                   </span>
                 </div>
               ))}
