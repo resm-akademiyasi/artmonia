@@ -641,7 +641,7 @@ function Overview({ data }) {
                 fontSize: 11,
                 color: C.textPrimary,
               }}
-              formatter={(v) => `${fmt(v)} ₼`}
+              formatter={(v: any) => `${fmt(v)} ₼`}
             />
             <Legend wrapperStyle={{ fontSize: 10, color: C.textSecondary }} />
             {topCats.slice(0, 8).map((cat, i) => (
