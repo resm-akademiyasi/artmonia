@@ -747,12 +747,12 @@ function MonthDetail({ d, prev }) {
     });
 
   // Group totals by type
-  const grouped = {};
-  expData.forEach((e) => {
-    const t = (expTypes[e.c] || {}).type || "Digər";
+  const grouped: Record<string, number> = {};
+  expData.forEach((e: any) => {
+    const t = (expTypes[e.c] || {} as any).type || "Digər";
     grouped[t] = (grouped[t] || 0) + e.a;
   });
-  const groupedArr = Object.entries(grouped).sort((a, b) => b[1] - a[1]);
+  const groupedArr = Object.entries(grouped).sort((a, b) => (b[1] as number) - (a[1] as number));
 
   return (
     <div>
