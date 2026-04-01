@@ -1361,7 +1361,7 @@ export default function Dashboard() {
     })();
   }, []);
 
-  const save = useCallback(async (nd) => {
+  const save = useCallback(async (nd: any[]) => {
     setData(nd);
     try {
       localStorage.setItem(SK, JSON.stringify(nd));
