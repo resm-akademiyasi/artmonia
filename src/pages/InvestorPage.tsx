@@ -352,9 +352,9 @@ const INIT = [
 ];
 
 const SK = "artmonia-inv-v2";
-const fmt = (n) => Number(n).toLocaleString("az-AZ");
+const fmt = (n: number | string) => Number(n).toLocaleString("az-AZ");
 
-function Metric({ label, value, sub, icon: Icon, color, trend }) {
+function Metric({ label, value, sub, icon: Icon, color, trend }: { label: string; value: any; sub?: string; icon?: any; color: string; trend?: any }) {
   return (
     <div
       style={{ background: C.card, borderColor: C.border }}
@@ -394,7 +394,7 @@ function Metric({ label, value, sub, icon: Icon, color, trend }) {
   );
 }
 
-function SectionTitle({ children, icon: Icon }) {
+function SectionTitle({ children, icon: Icon }: { children: React.ReactNode; icon?: any }) {
   return (
     <div className="flex items-center gap-2 mb-4 mt-6">
       {Icon && <Icon size={16} style={{ color: C.accent }} />}
@@ -405,7 +405,7 @@ function SectionTitle({ children, icon: Icon }) {
   );
 }
 
-function TT({ active, payload, label }) {
+function TT({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) {
   if (!active || !payload) return null;
   return (
     <div style={{ background: C.card, borderColor: C.border }} className="p-3 rounded-lg shadow-xl border text-[11px]">
@@ -441,12 +441,12 @@ function Overview({ data }) {
   const consData = data.map((d) => ({ name: d.month, Konsultasiya: d.consultations, Qeydiyyat: d.registrations }));
 
   // Expense category across months
-  const allCats = new Set();
-  data.forEach((d) => (d.expBreak || []).forEach((e) => allCats.add(e.c)));
-  const expByMonth = data.map((d) => {
-    const row = { name: d.month };
-    const map = {};
-    (d.expBreak || []).forEach((e) => {
+  const allCats = new Set<string>();
+  data.forEach((d: any) => (d.expBreak || []).forEach((e: any) => allCats.add(e.c)));
+  const expByMonth = data.map((d: any) => {
+    const row: Record<string, any> = { name: d.month };
+    const map: Record<string, number> = {};
+    (d.expBreak || []).forEach((e: any) => {
       map[e.c] = e.a;
     });
     allCats.forEach((c) => {
@@ -454,14 +454,14 @@ function Overview({ data }) {
     });
     return row;
   });
-  const catTotals = {};
-  data.forEach((d) =>
-    (d.expBreak || []).forEach((e) => {
+  const catTotals: Record<string, number> = {};
+  data.forEach((d: any) =>
+    (d.expBreak || []).forEach((e: any) => {
       catTotals[e.c] = (catTotals[e.c] || 0) + e.a;
     }),
   );
   const topCats = Object.entries(catTotals)
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) => (b[1] as number) - (a[1] as number))
     .map(([c]) => c);
 
   const achievements = [
@@ -641,7 +641,7 @@ function Overview({ data }) {
                 fontSize: 11,
                 color: C.textPrimary,
               }}
-              formatter={(v) => `${fmt(v)} ₼`}
+              formatter={(v: any) => `${fmt(v)} ₼`}
             />
             <Legend wrapperStyle={{ fontSize: 10, color: C.textSecondary }} />
             {topCats.slice(0, 8).map((cat, i) => (
@@ -747,12 +747,12 @@ function MonthDetail({ d, prev }) {
     });
 
   // Group totals by type
-  const grouped = {};
-  expData.forEach((e) => {
-    const t = (expTypes[e.c] || {}).type || "Digər";
+  const grouped: Record<string, number> = {};
+  expData.forEach((e: any) => {
+    const t = (expTypes[e.c] || {} as any).type || "Digər";
     grouped[t] = (grouped[t] || 0) + e.a;
   });
-  const groupedArr = Object.entries(grouped).sort((a, b) => b[1] - a[1]);
+  const groupedArr = Object.entries(grouped).sort((a, b) => (b[1] as number) - (a[1] as number));
 
   return (
     <div>
@@ -873,7 +873,7 @@ function MonthDetail({ d, prev }) {
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(v) => `${fmt(v)} ₼`}
+                  formatter={(v: any) => `${fmt(v)} ₼`}
                   contentStyle={{
                     background: C.navy || "#1A1F36",
                     border: `1px solid ${C.border}`,
@@ -1009,7 +1009,7 @@ function MonthDetail({ d, prev }) {
                     {fmt(v)} ₼
                   </span>
                   <span className="text-[9px]" style={{ color: C.textMuted }}>
-                    {((v / d.expenses) * 100).toFixed(0)}%
+                    {(((v as number) / d.expenses) * 100).toFixed(0)}%
                   </span>
                 </div>
               ))}
@@ -1077,7 +1077,7 @@ function MonthDetail({ d, prev }) {
           label="Lead → Kons."
           value={`${leadToConsRate}%`}
           sub={`${fmt(leadsLost)} lead itirildi`}
-          color={parseFloat(leadToConsRate) < 10 ? C.red : C.green}
+          color={parseFloat(String(leadToConsRate)) < 10 ? C.red : C.green}
         />
       </div>
       {d.consultations < 30 && (
@@ -1103,7 +1103,7 @@ function MonthDetail({ d, prev }) {
         <Metric
           label="İtirilən Lead"
           value={fmt(leadsLost)}
-          sub={`${(100 - parseFloat(leadToConsRate)).toFixed(0)}% itirilir`}
+          sub={`${(100 - parseFloat(String(leadToConsRate))).toFixed(0)}% itirilir`}
           color={C.red}
         />
         <Metric label="CAC" value={`${fmt(costPerReg)} ₼`} sub="Xərc / Qeydiyyat" color={C.teal} />
@@ -1351,9 +1351,9 @@ export default function Dashboard() {
   useEffect(() => {
     (async () => {
       try {
-        const r = await window.storage.get(SK);
-        if (r?.value) {
-          const p = JSON.parse(r.value);
+        const r = localStorage.getItem(SK);
+        if (r) {
+          const p = JSON.parse(r);
           if (Array.isArray(p) && p.length) setData(p);
         }
       } catch {}
@@ -1361,14 +1361,14 @@ export default function Dashboard() {
     })();
   }, []);
 
-  const save = useCallback(async (nd) => {
+  const save = useCallback(async (nd: any[]) => {
     setData(nd);
     try {
-      await window.storage.set(SK, JSON.stringify(nd));
+      localStorage.setItem(SK, JSON.stringify(nd));
     } catch {}
   }, []);
   const addMonth = useCallback(
-    (m) => {
+    (m: any) => {
       save([...data, m].sort((a, b) => a.id.localeCompare(b.id)));
       setShowAdd(false);
       setTab(m.id);
