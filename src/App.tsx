@@ -35,7 +35,12 @@ const queryClient = new QueryClient();
 
 const AnimatedRoutes = () => {
   const location = useLocation();
+  const isInvestor = location.pathname === "/investor";
   return (
+    <>
+    {!isInvestor && <ScrollProgressBar />}
+    {!isInvestor && <CampaignBanner />}
+    {!isInvestor && <Navbar />}
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><Index /></PageTransition>} />
