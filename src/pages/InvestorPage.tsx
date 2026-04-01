@@ -1368,7 +1368,7 @@ export default function Dashboard() {
     } catch {}
   }, []);
   const addMonth = useCallback(
-    (m) => {
+    (m: any) => {
       save([...data, m].sort((a, b) => a.id.localeCompare(b.id)));
       setShowAdd(false);
       setTab(m.id);
