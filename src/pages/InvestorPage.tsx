@@ -354,7 +354,7 @@ const INIT = [
 const SK = "artmonia-inv-v2";
 const fmt = (n: number | string) => Number(n).toLocaleString("az-AZ");
 
-function Metric({ label, value, sub, icon: Icon, color, trend }) {
+function Metric({ label, value, sub, icon: Icon, color, trend }: { label: string; value: any; sub?: string; icon?: any; color: string; trend?: any }) {
   return (
     <div
       style={{ background: C.card, borderColor: C.border }}
