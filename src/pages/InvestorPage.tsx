@@ -1364,7 +1364,7 @@ export default function Dashboard() {
   const save = useCallback(async (nd) => {
     setData(nd);
     try {
-      await window.storage.set(SK, JSON.stringify(nd));
+      localStorage.setItem(SK, JSON.stringify(nd));
     } catch {}
   }, []);
   const addMonth = useCallback(
