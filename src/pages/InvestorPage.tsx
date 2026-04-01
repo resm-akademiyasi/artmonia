@@ -1351,9 +1351,9 @@ export default function Dashboard() {
   useEffect(() => {
     (async () => {
       try {
-        const r = await window.storage.get(SK);
-        if (r?.value) {
-          const p = JSON.parse(r.value);
+        const r = localStorage.getItem(SK);
+        if (r) {
+          const p = JSON.parse(r);
           if (Array.isArray(p) && p.length) setData(p);
         }
       } catch {}
