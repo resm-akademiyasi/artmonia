@@ -352,7 +352,7 @@ const INIT = [
 ];
 
 const SK = "artmonia-inv-v2";
-const fmt = (n) => Number(n).toLocaleString("az-AZ");
+const fmt = (n: number | string) => Number(n).toLocaleString("az-AZ");
 
 function Metric({ label, value, sub, icon: Icon, color, trend }) {
   return (
