@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   BarChart,
   Bar,
@@ -40,6 +40,8 @@ import {
   GraduationCap,
   Wallet,
   PiggyBank,
+  Lock,
+  LogOut,
 } from "lucide-react";
 
 const C = {
@@ -1342,11 +1344,95 @@ function AddForm({ onAdd, onCancel, ids }) {
   );
 }
 
+const PIN_CODES = { "3333": "investor", "1907": "admin" } as const;
+type Role = "investor" | "admin";
+
+function PinScreen({ onSuccess }: { onSuccess: (role: Role) => void }) {
+  const [digits, setDigits] = useState(["", "", "", ""]);
+  const [error, setError] = useState(false);
+  const refs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
+
+  const handleChange = (idx: number, val: string) => {
+    if (!/^\d?$/.test(val)) return;
+    const nd = [...digits];
+    nd[idx] = val;
+    setDigits(nd);
+    setError(false);
+    if (val && idx < 3) refs[idx + 1].current?.focus();
+    if (idx === 3 && val) {
+      const pin = nd.join("");
+      const role = PIN_CODES[pin as keyof typeof PIN_CODES];
+      if (role) {
+        sessionStorage.setItem("artmonia-pin-role", role);
+        onSuccess(role);
+      } else {
+        setError(true);
+        setDigits(["", "", "", ""]);
+        setTimeout(() => refs[0].current?.focus(), 100);
+      }
+    }
+  };
+
+  const handleKeyDown = (idx: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !digits[idx] && idx > 0) {
+      refs[idx - 1].current?.focus();
+    }
+  };
+
+  useEffect(() => { refs[0].current?.focus(); }, []);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0F" }}>
+      <div className="flex flex-col items-center gap-6">
+        <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "rgba(200,255,0,0.1)" }}>
+          <Lock size={28} style={{ color: "#C8FF00" }} />
+        </div>
+        <div className="text-center">
+          <h1 className="text-xl font-bold tracking-tight" style={{ color: "#F0F0F5" }}>Artmonia Academy</h1>
+          <p className="text-xs mt-1" style={{ color: "#5A5E72" }}>İnvestor Dashboard</p>
+        </div>
+        <div className="flex gap-3 mt-2">
+          {digits.map((d, i) => (
+            <input
+              key={i}
+              ref={refs[i]}
+              type="password"
+              inputMode="numeric"
+              maxLength={1}
+              value={d}
+              onChange={(e) => handleChange(i, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(i, e)}
+              className="w-14 h-14 text-center text-2xl font-bold rounded-xl border-2 focus:outline-none transition-colors"
+              style={{
+                background: "#14141F",
+                color: "#C8FF00",
+                borderColor: error ? "#EF4444" : d ? "#C8FF00" : "#2A2D3A",
+                caretColor: "#C8FF00",
+              }}
+            />
+          ))}
+        </div>
+        {error && <p className="text-sm font-medium" style={{ color: "#EF4444" }}>Yanlış kod</p>}
+        <p className="text-[11px] mt-4" style={{ color: "#5A5E72" }}>4 rəqəmli PIN kodu daxil edin</p>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
+  const [role, setRole] = useState<Role | null>(null);
+  const [pinChecked, setPinChecked] = useState(false);
   const [data, setData] = useState(INIT);
   const [tab, setTab] = useState("overview");
   const [showAdd, setShowAdd] = useState(false);
   const [loading, setLoading] = useState(true);
+  const isAdmin = role === "admin";
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem("artmonia-pin-role");
+    if (saved === "admin" || saved === "investor") setRole(saved);
+    setPinChecked(true);
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -1385,7 +1471,12 @@ export default function Dashboard() {
     [data, save],
   );
 
-  if (loading)
+  const handleLogout = () => {
+    sessionStorage.removeItem("artmonia-pin-role");
+    setRole(null);
+  };
+
+  if (!pinChecked || loading)
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: C.bg }}>
         <div
@@ -1394,6 +1485,8 @@ export default function Dashboard() {
         />
       </div>
     );
+
+  if (!role) return <PinScreen onSuccess={setRole} />;
 
   const activeMonth = data.find((d) => d.id === tab);
   const prevMonth = activeMonth ? data[data.indexOf(activeMonth) - 1] : null;
@@ -1413,14 +1506,31 @@ export default function Dashboard() {
                 İnvestor Dashboard
               </p>
             </div>
+            {isAdmin && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(200,255,0,0.15)", color: "#C8FF00" }}>
+                Admin
+              </span>
+            )}
           </div>
-          <button
-            onClick={() => setShowAdd(!showAdd)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium"
-            style={{ background: C.accent, color: C.bg }}
-          >
-            <Plus size={13} /> Yeni Ay
-          </button>
+          <div className="flex items-center gap-2">
+            {isAdmin && (
+              <button
+                onClick={() => setShowAdd(!showAdd)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium"
+                style={{ background: C.accent, color: C.bg }}
+              >
+                <Plus size={13} /> Yeni Ay
+              </button>
+            )}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium border"
+              style={{ color: C.textMuted, borderColor: C.border }}
+              title="Çıxış"
+            >
+              <LogOut size={14} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1455,22 +1565,24 @@ export default function Dashboard() {
 
       {/* Content */}
       <div className="max-w-6xl mx-auto px-4 py-5">
-        {showAdd && <AddForm onAdd={addMonth} onCancel={() => setShowAdd(false)} ids={data.map((d) => d.id)} />}
+        {isAdmin && showAdd && <AddForm onAdd={addMonth} onCancel={() => setShowAdd(false)} ids={data.map((d) => d.id)} />}
 
         {tab === "overview" ? (
           <Overview data={data} />
         ) : activeMonth ? (
           <div>
             <MonthDetail d={activeMonth} prev={prevMonth} />
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={() => delMonth(activeMonth.id)}
-                className="text-[11px] px-3 py-1.5 rounded-lg border"
-                style={{ color: C.textMuted, borderColor: C.border }}
-              >
-                Bu ayı sil
-              </button>
-            </div>
+            {isAdmin && (
+              <div className="mt-4 flex justify-end">
+                <button
+                  onClick={() => delMonth(activeMonth.id)}
+                  className="text-[11px] px-3 py-1.5 rounded-lg border"
+                  style={{ color: C.textMuted, borderColor: C.border }}
+                >
+                  Bu ayı sil
+                </button>
+              </div>
+            )}
           </div>
         ) : null}
 
