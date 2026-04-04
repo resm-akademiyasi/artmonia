@@ -50,6 +50,7 @@ const Footer = () => {
           <Link to="/privacy" className="font-body text-xs text-muted-foreground hover:text-primary transition-colors">
             Məxfilik Siyasəti
           </Link>
+          <span className="font-body text-xs text-muted-foreground/50">v</span>
         </div>
       </div>
     </footer>
