@@ -89,6 +89,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 <script src="/js/supabase-kabinet.js"></script>
 <script src="/js/auth-kabinet.js"></script>
 <script>
+/* ── Fallback: go() əgər auth-kabinet.js yüklənməyibsə ── */
+if (typeof go === 'undefined') { function go(p) { window.location.replace(window.location.origin + p); } }
+
 /* ── Helpers ── */
 function showMsg(text, type) {
   const el = document.getElementById('msg');

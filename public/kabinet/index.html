@@ -131,6 +131,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 <script src="/js/auth-kabinet.js"></script>
 <script src="/js/gamification.js"></script>
 <script>
+/* ---- Fallback: go() əgər auth-kabinet.js yüklənməyibsə ---- */
+if (typeof go === 'undefined') { function go(p) { window.location.replace(window.location.origin + p); } }
+if (typeof getSession === 'undefined') { async function getSession() { try { const {data}=await sb.auth.getSession(); return data.session; } catch(e) { return null; } } }
+if (typeof getRole === 'undefined') { async function getRole() { const s=await getSession(); if(!s)return null; const{data}=await sb.from('user_roles').select('role').eq('user_id',s.user.id).single(); return data?.role||null; } }
+
 /* ---- State ---- */
 let currentPhone = '';
 
