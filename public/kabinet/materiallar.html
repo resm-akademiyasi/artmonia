@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materiallar və Tapşırıqlar — Artmonia Kabinet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #0b0b1a; color: #fff; min-height: 100vh; display: flex; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+    .sidebar { width: 260px; background: #14122a; border-right: 1px solid #252240; min-height: 100vh; padding: 24px 16px; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
+    .sidebar-logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #f97316; margin-bottom: 32px; text-align: center; text-decoration: none; display: block; }
+    .sidebar-nav { list-style: none; flex: 1; }
+    .sidebar-nav li { margin-bottom: 4px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: #b0acd0; text-decoration: none; font-size: 14px; transition: all .2s; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(249,115,22,.12); color: #f97316; }
+    .sidebar-nav a .icon { font-size: 18px; width: 24px; text-align: center; }
+    .sidebar-bottom { border-top: 1px solid #252240; padding-top: 16px; margin-top: 16px; }
+    .sidebar-bottom button { background: none; border: 1px solid #252240; color: #b0acd0; padding: 10px 14px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 14px; transition: all .2s; }
+    .sidebar-bottom button:hover { border-color: #f97316; color: #f97316; }
+
+    .main { margin-left: 260px; flex: 1; padding: 32px; width: calc(100% - 260px); }
+    .page-title { font-size: 28px; margin-bottom: 24px; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #6b6790; font-size: 16px; }
+    .loading { text-align: center; padding: 40px; color: #6b6790; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: #14122a; border-radius: 10px; padding: 4px; border: 1px solid #252240; width: fit-content; }
+    .tab-btn { padding: 10px 24px; border: none; background: transparent; color: #b0acd0; font-size: 14px; font-weight: 500; border-radius: 8px; cursor: pointer; transition: all .2s; }
+    .tab-btn.active { background: #f97316; color: #fff; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Homework cards */
+    .hw-card { background: #14122a; border: 1px solid #252240; border-radius: 12px; padding: 20px; margin-bottom: 12px; }
+    .hw-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .hw-title { font-size: 16px; font-weight: 600; }
+    .hw-desc { font-size: 14px; color: #b0acd0; margin-bottom: 12px; }
+    .hw-due { font-size: 12px; color: #6b6790; margin-bottom: 12px; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+    .badge-pending { background: rgba(234,179,8,.15); color: #eab308; }
+    .badge-submitted { background: rgba(59,130,246,.15); color: #3b82f6; }
+    .badge-reviewed { background: rgba(34,197,94,.15); color: #22c55e; }
+    .hw-actions { margin-top: 12px; }
+    .hw-upload { display: flex; gap: 8px; align-items: center; }
+    .hw-upload input[type="file"] { font-size: 13px; color: #b0acd0; }
+    .hw-upload input[type="file"]::file-selector-button { background: #f97316; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+    .btn-submit { background: #f97316; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; transition: opacity .2s; }
+    .btn-submit:hover { opacity: .85; }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+    .teacher-note { background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2); border-radius: 8px; padding: 12px; margin-top: 12px; }
+    .teacher-note-label { font-size: 12px; color: #22c55e; margin-bottom: 4px; font-weight: 600; }
+    .teacher-note-text { font-size: 14px; color: #b0acd0; }
+    .points-awarded { color: #f97316; font-weight: 600; font-size: 13px; margin-top: 6px; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; width: 100%; padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <a href="/kabinet/dashboard.html" class="sidebar-logo">Artmonia</a>
+    <ul class="sidebar-nav">
+      <li><a href="/kabinet/dashboard.html"><span class="icon">🏠</span> Ana Səhifə</a></li>
+      <li><a href="/kabinet/cedvel.html"><span class="icon">📅</span> Dərs Cədvəli</a></li>
+      <li><a href="/kabinet/odenisler.html"><span class="icon">💳</span> Ödənişlər</a></li>
+      <li><a href="/kabinet/materiallar.html" class="active"><span class="icon">📂</span> Materiallar</a></li>
+      <li><a href="/kabinet/reyler.html"><span class="icon">💬</span> Müəllim Rəyləri</a></li>
+      <li><a href="/kabinet/neticelerim.html"><span class="icon">🖼️</span> Əsərlərim</a></li>
+      <li><a href="/kabinet/gamification.html"><span class="icon">🏆</span> Gamification</a></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <button onclick="logout()">Çıxış</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">Materiallar və Tapşırıqlar</h1>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('homework')">Tapşırıqlar</button>
+      <button class="tab-btn" onclick="switchTab('materials')">Materiallar</button>
+    </div>
+
+    <div id="tab-homework" class="tab-content active">
+      <div id="homework-content"><div class="loading">Yüklənir...</div></div>
+    </div>
+    <div id="tab-materials" class="tab-content">
+      <div class="empty-state">Tezliklə əlavə olunacaq</div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-kabinet.js"></script>
+  <script src="/js/auth-kabinet.js"></script>
+  <script src="/js/gamification.js"></script>
+  <script>
+    requireAuth();
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    async function loadHomework() {
+      const student = await getStudent();
+      const container = document.getElementById('homework-content');
+
+      if (!student) {
+        container.innerHTML = '<div class="empty-state">Tələbə tapılmadı</div>';
+        return;
+      }
+
+      const { data: homeworks, error } = await sb
+        .from('homework')
+        .select('*')
+        .eq('student_id', student.id)
+        .order('due_date', { ascending: false });
+
+      if (error || !homeworks || homeworks.length === 0) {
+        container.innerHTML = '<div class="empty-state">Hələ tapşırıq yoxdur</div>';
+        return;
+      }
+
+      let html = '';
+      homeworks.forEach(hw => {
+        const statusClass = hw.status === 'reviewed' ? 'badge-reviewed' : hw.status === 'submitted' ? 'badge-submitted' : 'badge-pending';
+        const statusText = hw.status === 'reviewed' ? 'Yoxlanılıb' : hw.status === 'submitted' ? 'Göndərilib' : 'Gözləyir';
+        const dueDate = hw.due_date ? new Date(hw.due_date).toLocaleDateString('az-AZ') : '';
+
+        html += `<div class="hw-card">
+          <div class="hw-header">
+            <div class="hw-title">${hw.title || 'Tapşırıq'}</div>
+            <span class="badge ${statusClass}">${statusText}</span>
+          </div>
+          ${hw.description ? `<div class="hw-desc">${hw.description}</div>` : ''}
+          ${dueDate ? `<div class="hw-due">Son tarix: ${dueDate}</div>` : ''}`;
+
+        if (hw.status === 'pending') {
+          html += `<div class="hw-actions">
+            <div class="hw-upload">
+              <input type="file" id="file-${hw.id}" accept="image/*,.pdf">
+              <button class="btn-submit" onclick="submitHomework('${hw.id}')">Göndər</button>
+            </div>
+          </div>`;
+        }
+
+        if (hw.status === 'reviewed') {
+          html += `<div class="teacher-note">
+            <div class="teacher-note-label">Müəllim rəyi</div>
+            <div class="teacher-note-text">${hw.teacher_note || 'Rəy yoxdur'}</div>
+            ${hw.points_awarded ? `<div class="points-awarded">+${hw.points_awarded} XP</div>` : ''}
+          </div>`;
+        }
+
+        html += '</div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    async function submitHomework(hwId) {
+      const fileInput = document.getElementById('file-' + hwId);
+      if (!fileInput || !fileInput.files.length) {
+        alert('Zəhmət olmasa fayl seçin');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const student = await getStudent();
+      const filePath = `homework/${student.id}/${hwId}/${file.name}`;
+
+      const btn = fileInput.parentElement.querySelector('.btn-submit');
+      btn.disabled = true;
+      btn.textContent = 'Göndərilir...';
+
+      const { error: uploadError } = await sb.storage
+        .from('homework')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        alert('Yükləmə xətası: ' + uploadError.message);
+        btn.disabled = false;
+        btn.textContent = 'Göndər';
+        return;
+      }
+
+      const { error: updateError } = await sb
+        .from('homework')
+        .update({ status: 'submitted', submitted_at: new Date().toISOString(), file_url: filePath })
+        .eq('id', hwId);
+
+      if (updateError) {
+        alert('Xəta: ' + updateError.message);
+        btn.disabled = false;
+        btn.textContent = 'Göndər';
+        return;
+      }
+
+      loadHomework();
+    }
+
+    loadHomework();
+  </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gamification — Artmonia Kabinet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #0b0b1a; color: #fff; min-height: 100vh; display: flex; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+    .sidebar { width: 260px; background: #14122a; border-right: 1px solid #252240; min-height: 100vh; padding: 24px 16px; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
+    .sidebar-logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #f97316; margin-bottom: 32px; text-align: center; text-decoration: none; display: block; }
+    .sidebar-nav { list-style: none; flex: 1; }
+    .sidebar-nav li { margin-bottom: 4px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: #b0acd0; text-decoration: none; font-size: 14px; transition: all .2s; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(249,115,22,.12); color: #f97316; }
+    .sidebar-nav a .icon { font-size: 18px; width: 24px; text-align: center; }
+    .sidebar-bottom { border-top: 1px solid #252240; padding-top: 16px; margin-top: 16px; }
+    .sidebar-bottom button { background: none; border: 1px solid #252240; color: #b0acd0; padding: 10px 14px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 14px; transition: all .2s; }
+    .sidebar-bottom button:hover { border-color: #f97316; color: #f97316; }
+
+    .main { margin-left: 260px; flex: 1; padding: 32px; width: calc(100% - 260px); }
+    .page-title { font-size: 28px; margin-bottom: 24px; }
+    .loading { text-align: center; padding: 40px; color: #6b6790; }
+
+    /* XP Section */
+    .xp-section { background: #14122a; border: 1px solid #252240; border-radius: 16px; padding: 28px; margin-bottom: 28px; }
+    .xp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .xp-level { font-size: 28px; }
+    .xp-points { font-size: 20px; font-weight: 700; color: #f97316; }
+    .xp-bar { background: #252240; border-radius: 10px; height: 14px; overflow: hidden; }
+    .xp-fill { background: linear-gradient(90deg, #f97316, #fb923c); height: 100%; border-radius: 10px; transition: width .5s; }
+    .xp-next { font-size: 13px; color: #6b6790; margin-top: 10px; }
+
+    /* Section Titles */
+    .section-title { font-size: 20px; margin-bottom: 16px; margin-top: 8px; }
+
+    /* Badges Grid */
+    .badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin-bottom: 28px; }
+    .badge-card { background: #14122a; border: 1px solid #252240; border-radius: 12px; padding: 20px; text-align: center; transition: border-color .2s; }
+    .badge-card:hover { border-color: #f97316; }
+    .badge-emoji { font-size: 36px; margin-bottom: 8px; }
+    .badge-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .badge-desc { font-size: 12px; color: #6b6790; margin-bottom: 6px; }
+    .badge-date { font-size: 11px; color: #b0acd0; }
+    .no-badges { text-align: center; padding: 30px; color: #6b6790; font-size: 14px; }
+
+    /* Point History Table */
+    .points-table { width: 100%; border-collapse: collapse; background: #14122a; border-radius: 12px; overflow: hidden; border: 1px solid #252240; margin-bottom: 28px; }
+    .points-table thead th { text-align: left; padding: 12px 16px; font-size: 12px; color: #6b6790; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid #252240; }
+    .points-table tbody td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid #252240; color: #b0acd0; }
+    .points-table tbody tr:last-child td { border-bottom: none; }
+    .pts-positive { color: #22c55e; font-weight: 600; }
+
+    /* Leaderboard */
+    .leaderboard { background: #14122a; border: 1px solid #252240; border-radius: 12px; overflow: hidden; }
+    .lb-row { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid #252240; }
+    .lb-row:last-child { border-bottom: none; }
+    .lb-rank { font-size: 20px; font-weight: 700; color: #f97316; min-width: 32px; text-align: center; }
+    .lb-rank.gold { color: #eab308; }
+    .lb-rank.silver { color: #94a3b8; }
+    .lb-rank.bronze { color: #b45309; }
+    .lb-name { flex: 1; font-size: 14px; }
+    .lb-name.me { color: #f97316; font-weight: 600; }
+    .lb-points { font-size: 14px; font-weight: 600; color: #f97316; }
+    .lb-empty { text-align: center; padding: 30px; color: #6b6790; font-size: 14px; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; width: 100%; padding: 20px 16px; }
+      .badges-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <a href="/kabinet/dashboard.html" class="sidebar-logo">Artmonia</a>
+    <ul class="sidebar-nav">
+      <li><a href="/kabinet/dashboard.html"><span class="icon">🏠</span> Ana Səhifə</a></li>
+      <li><a href="/kabinet/cedvel.html"><span class="icon">📅</span> Dərs Cədvəli</a></li>
+      <li><a href="/kabinet/odenisler.html"><span class="icon">💳</span> Ödənişlər</a></li>
+      <li><a href="/kabinet/materiallar.html"><span class="icon">📂</span> Materiallar</a></li>
+      <li><a href="/kabinet/reyler.html"><span class="icon">💬</span> Müəllim Rəyləri</a></li>
+      <li><a href="/kabinet/neticelerim.html"><span class="icon">🖼️</span> Əsərlərim</a></li>
+      <li><a href="/kabinet/gamification.html" class="active"><span class="icon">🏆</span> Gamification</a></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <button onclick="logout()">Çıxış</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">Gamification</h1>
+    <div id="content"><div class="loading">Yüklənir...</div></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-kabinet.js"></script>
+  <script src="/js/auth-kabinet.js"></script>
+  <script src="/js/gamification.js"></script>
+  <script>
+    requireAuth();
+
+    const ACTION_LABELS = {
+      derse_geldi: 'Dərsə gəldi',
+      tapshiriq_tamamladi: 'Tapşırıq tamamladı',
+      ela_rey: 'Əla rəy aldı',
+      eser_yuklendi: 'Əsər yüklədi',
+      ayin_telebesi: 'Ayın tələbəsi'
+    };
+
+    async function loadGamification() {
+      const student = await getStudent();
+      const container = document.getElementById('content');
+
+      if (!student) {
+        container.innerHTML = '<div class="loading">Tələbə tapılmadı</div>';
+        return;
+      }
+
+      const points = student.total_points || 0;
+
+      // Fetch badges, point log, leaderboard in parallel
+      const [badgesRes, logRes, leaderRes] = await Promise.all([
+        sb.from('badges').select('*').eq('student_id', student.id).order('earned_at', { ascending: false }),
+        sb.from('point_log').select('*').eq('student_id', student.id).order('created_at', { ascending: false }).limit(20),
+        student.group_id
+          ? sb.from('students').select('id, full_name, total_points').eq('group_id', student.group_id).order('total_points', { ascending: false }).limit(5)
+          : Promise.resolve({ data: [] })
+      ]);
+
+      const badges = badgesRes.data || [];
+      const logs = logRes.data || [];
+      const leaders = leaderRes.data || [];
+
+      let html = '';
+
+      // XP Section
+      html += renderXPBar(points);
+
+      // Badges
+      html += '<h2 class="section-title">Nişanlar</h2>';
+      html += `<div class="badges-grid">${renderBadges(badges)}</div>`;
+
+      // Point History
+      html += '<h2 class="section-title">Xal Tarixçəsi</h2>';
+      if (logs.length) {
+        html += `<table class="points-table">
+          <thead><tr><th>Hərəkət</th><th>Xal</th><th>Tarix</th></tr></thead>
+          <tbody>`;
+        logs.forEach(l => {
+          const date = l.created_at ? new Date(l.created_at).toLocaleDateString('az-AZ') : '-';
+          const label = ACTION_LABELS[l.action] || l.action;
+          html += `<tr>
+            <td>${label}</td>
+            <td class="pts-positive">+${l.points}</td>
+            <td>${date}</td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+      } else {
+        html += '<div class="no-badges">Hələ xal tarixçəsi yoxdur</div>';
+      }
+
+      // Leaderboard
+      html += '<h2 class="section-title">Liderlik Cədvəli</h2>';
+      if (leaders.length) {
+        html += '<div class="leaderboard">';
+        leaders.forEach((l, i) => {
+          const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+          const isMe = l.id === student.id;
+          html += `<div class="lb-row">
+            <div class="lb-rank ${rankClass}">${i + 1}</div>
+            <div class="lb-name${isMe ? ' me' : ''}">${l.full_name || 'Anonim'}${isMe ? ' (Sən)' : ''}</div>
+            <div class="lb-points">${l.total_points || 0} XP</div>
+          </div>`;
+        });
+        html += '</div>';
+      } else {
+        html += '<div class="lb-empty">Qrupda digər tələbə yoxdur</div>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    loadGamification();
+  </script>
+</body>
+</html>

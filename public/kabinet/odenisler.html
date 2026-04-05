@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ödənişlər — Artmonia Kabinet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #0b0b1a; color: #fff; min-height: 100vh; display: flex; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+    .sidebar { width: 260px; background: #14122a; border-right: 1px solid #252240; min-height: 100vh; padding: 24px 16px; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
+    .sidebar-logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #f97316; margin-bottom: 32px; text-align: center; text-decoration: none; display: block; }
+    .sidebar-nav { list-style: none; flex: 1; }
+    .sidebar-nav li { margin-bottom: 4px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: #b0acd0; text-decoration: none; font-size: 14px; transition: all .2s; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(249,115,22,.12); color: #f97316; }
+    .sidebar-nav a .icon { font-size: 18px; width: 24px; text-align: center; }
+    .sidebar-bottom { border-top: 1px solid #252240; padding-top: 16px; margin-top: 16px; }
+    .sidebar-bottom button { background: none; border: 1px solid #252240; color: #b0acd0; padding: 10px 14px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 14px; transition: all .2s; }
+    .sidebar-bottom button:hover { border-color: #f97316; color: #f97316; }
+
+    .main { margin-left: 260px; flex: 1; padding: 32px; width: calc(100% - 260px); }
+    .page-title { font-size: 28px; margin-bottom: 24px; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #6b6790; font-size: 16px; }
+    .loading { text-align: center; padding: 40px; color: #6b6790; }
+
+    /* Summary Cards */
+    .summary-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .summary-card { background: #14122a; border: 1px solid #252240; border-radius: 12px; padding: 20px; }
+    .summary-label { font-size: 13px; color: #6b6790; margin-bottom: 6px; }
+    .summary-value { font-size: 24px; font-weight: 700; color: #f97316; }
+    .summary-value.white { color: #fff; }
+
+    /* Table */
+    .payments-table { width: 100%; border-collapse: collapse; background: #14122a; border-radius: 12px; overflow: hidden; border: 1px solid #252240; }
+    .payments-table thead th { text-align: left; padding: 14px 16px; font-size: 12px; color: #6b6790; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid #252240; background: #14122a; }
+    .payments-table tbody td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #252240; color: #b0acd0; }
+    .payments-table tbody tr:last-child td { border-bottom: none; }
+    .payments-table tbody tr:hover { background: rgba(249,115,22,.05); }
+    .amount { color: #f97316; font-weight: 600; }
+    .method-badge { display: inline-block; background: rgba(249,115,22,.12); color: #f97316; font-size: 11px; padding: 2px 8px; border-radius: 4px; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; width: 100%; padding: 20px 16px; }
+      .payments-table { font-size: 12px; }
+      .payments-table thead th, .payments-table tbody td { padding: 10px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <a href="/kabinet/dashboard.html" class="sidebar-logo">Artmonia</a>
+    <ul class="sidebar-nav">
+      <li><a href="/kabinet/dashboard.html"><span class="icon">🏠</span> Ana Səhifə</a></li>
+      <li><a href="/kabinet/cedvel.html"><span class="icon">📅</span> Dərs Cədvəli</a></li>
+      <li><a href="/kabinet/odenisler.html" class="active"><span class="icon">💳</span> Ödənişlər</a></li>
+      <li><a href="/kabinet/materiallar.html"><span class="icon">📂</span> Materiallar</a></li>
+      <li><a href="/kabinet/reyler.html"><span class="icon">💬</span> Müəllim Rəyləri</a></li>
+      <li><a href="/kabinet/neticelerim.html"><span class="icon">🖼️</span> Əsərlərim</a></li>
+      <li><a href="/kabinet/gamification.html"><span class="icon">🏆</span> Gamification</a></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <button onclick="logout()">Çıxış</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">Ödənişlər</h1>
+    <div id="content"><div class="loading">Yüklənir...</div></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-kabinet.js"></script>
+  <script src="/js/auth-kabinet.js"></script>
+  <script src="/js/gamification.js"></script>
+  <script>
+    requireAuth();
+
+    async function loadPayments() {
+      const student = await getStudent();
+      const container = document.getElementById('content');
+
+      if (!student) {
+        container.innerHTML = '<div class="empty-state">Tələbə tapılmadı</div>';
+        return;
+      }
+
+      const { data: payments, error } = await sb
+        .from('payments')
+        .select('*')
+        .eq('student_id', student.id)
+        .order('paid_at', { ascending: false });
+
+      if (error || !payments || payments.length === 0) {
+        container.innerHTML = '<div class="empty-state">Hələ ödəniş qeydiyyatı yoxdur</div>';
+        return;
+      }
+
+      // Calculate summary
+      const totalPaid = payments.reduce((s, p) => s + (p.amount || 0), 0);
+      const lastPayment = payments[0];
+      const lastDate = lastPayment.paid_at ? new Date(lastPayment.paid_at).toLocaleDateString('az-AZ') : '-';
+      const currentBalance = lastPayment.balance_after != null ? lastPayment.balance_after : '-';
+
+      let html = `
+        <div class="summary-row">
+          <div class="summary-card">
+            <div class="summary-label">Ümumi ödəniş</div>
+            <div class="summary-value">${totalPaid.toFixed(2)} AZN</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Son ödəniş tarixi</div>
+            <div class="summary-value white">${lastDate}</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Cari balans</div>
+            <div class="summary-value">${currentBalance !== '-' ? currentBalance.toFixed(2) + ' AZN' : '-'}</div>
+          </div>
+        </div>
+
+        <table class="payments-table">
+          <thead>
+            <tr>
+              <th>Tarix</th>
+              <th>Məbləğ</th>
+              <th>Üsul</th>
+              <th>Ay</th>
+              <th>Qeyd</th>
+              <th>Balans</th>
+            </tr>
+          </thead>
+          <tbody>`;
+
+      payments.forEach(p => {
+        const date = p.paid_at ? new Date(p.paid_at).toLocaleDateString('az-AZ') : '-';
+        html += `<tr>
+          <td>${date}</td>
+          <td class="amount">${(p.amount || 0).toFixed(2)} AZN</td>
+          <td><span class="method-badge">${p.method || '-'}</span></td>
+          <td>${p.month || '-'}</td>
+          <td>${p.note || '-'}</td>
+          <td>${p.balance_after != null ? p.balance_after.toFixed(2) + ' AZN' : '-'}</td>
+        </tr>`;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    loadPayments();
+  </script>
+</body>
+</html>
