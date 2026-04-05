@@ -1,5 +1,9 @@
 /* auth-kabinet.js — Authentication & role helpers for Kabinet */
 
+function go(path) {
+  window.location.replace(window.location.origin + path);
+}
+
 async function getUser() {
   try {
     const { data: { user }, error } = await sb.auth.getUser();
@@ -48,7 +52,7 @@ async function getStudent() {
 async function requireAuth() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
-    window.location.href = '/kabinet/';
+    go('/kabinet/');
     return false;
   }
   return true;
@@ -57,18 +61,18 @@ async function requireAuth() {
 async function requireRole(...allowedRoles) {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
-    window.location.href = '/kabinet/';
+    go('/kabinet/');
     return false;
   }
 
   const role = await getRole();
   if (!role || !allowedRoles.includes(role)) {
     if (!role) {
-      window.location.href = '/kabinet/';
+      go('/kabinet/');
     } else if (role === 'student' && allowedRoles.some(r => ['super_admin', 'manager', 'teacher'].includes(r))) {
-      window.location.href = '/kabinet/dashboard.html';
+      go('/kabinet/dashboard.html');
     } else if (['super_admin', 'manager', 'teacher'].includes(role) && allowedRoles.includes('student')) {
-      window.location.href = '/admin/index.html';
+      go('/admin/index.html');
     } else {
       redirectByRole(role);
     }
@@ -80,29 +84,29 @@ async function requireRole(...allowedRoles) {
 function redirectByRole(role) {
   switch (role) {
     case 'student':
-      window.location.href = '/kabinet/dashboard.html';
+      go('/kabinet/dashboard.html');
       break;
     case 'teacher':
-      window.location.href = '/admin/muellim-qrup.html';
+      go('/admin/muellim-qrup.html');
       break;
     case 'manager':
-      window.location.href = '/admin/telebeler.html';
+      go('/admin/telebeler.html');
       break;
     case 'super_admin':
-      window.location.href = '/admin/dashboard.html';
+      go('/admin/dashboard.html');
       break;
     default:
-      window.location.href = '/kabinet/';
+      go('/kabinet/');
   }
 }
 
 async function logout() {
   await sb.auth.signOut();
-  window.location.href = '/kabinet/';
+  go('/kabinet/');
 }
 
 sb.auth.onAuthStateChange((event) => {
   if (event === 'SIGNED_OUT') {
-    window.location.href = '/kabinet/';
+    go('/kabinet/');
   }
 });

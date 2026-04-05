@@ -189,13 +189,13 @@ async function handleLogin() {
     const role = roleData.role;
 
     if (role === 'super_admin') {
-      window.location.href = '/admin/dashboard.html';
+      go('/admin/dashboard.html');
     } else if (role === 'manager') {
-      window.location.href = '/admin/telebeler.html';
+      go('/admin/telebeler.html');
     } else if (role === 'teacher') {
-      window.location.href = '/admin/muellim-qrup.html';
+      go('/admin/muellim-qrup.html');
     } else if (role === 'student') {
-      window.location.href = '/kabinet/dashboard.html';
+      go('/kabinet/dashboard.html');
     } else {
       errorBox.textContent = 'Naməlum rol: ' + role;
       errorBox.style.display = 'block';
