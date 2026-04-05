@@ -1,4 +1,3 @@
 /kabinet/*  /kabinet/:splat  200
 /admin/*    /admin/:splat    200
 /js/*       /js/:splat       200
-/*          /index.html      200

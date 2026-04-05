@@ -139,7 +139,7 @@ function showPageMsg(text,type){
 }
 
 async function init(){
-  const ok=await requireRole('super_admin');
+  const ok=await requireAuth(['super_admin'], '/admin/index.html');
   if(!ok) return;
   currentUser=await getUser();
   filterNav('super_admin');

@@ -151,7 +151,7 @@ function levelName(xp){
 }
 
 async function init(){
-  const ok = await requireRole('super_admin','manager');
+  const ok = await requireAuth(['super_admin','manager'], '/admin/index.html');
   if(!ok) return;
   currentRole = await getRole();
   filterNav(currentRole);

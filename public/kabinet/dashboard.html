@@ -106,7 +106,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <a href="/kabinet/gamification.html" class="nav-item"><span class="nav-emoji">🎮</span> Gamification</a>
   </nav>
   <div class="sidebar-bottom">
-    <button class="logout-btn" onclick="logout()"><span>🚪</span> Çıxış</button>
+    <button class="logout-btn" onclick="logoutStudent()"><span>🚪</span> Çıxış</button>
   </div>
 </aside>
 
@@ -118,7 +118,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <h1 id="greeting">Salam!</h1>
     </div>
     <div class="header-right">
-      <button class="logout-icon" onclick="logout()" title="Çıxış">🚪</button>
+      <button class="logout-icon" onclick="logoutStudent()" title="Çıxış">🚪</button>
     </div>
   </div>
 
@@ -194,7 +194,7 @@ const DAY_NAMES = ['Bazar', 'Bazar ertəsi', 'Çərşənbə axşamı', 'Çərş�
 
 /* ---- Load dashboard ---- */
 (async () => {
-  const ok = await requireRole('student');
+  const ok = await requireAuth(['student'], '/kabinet/index.html');
   if (!ok) return;
 
   const student = await getStudent();

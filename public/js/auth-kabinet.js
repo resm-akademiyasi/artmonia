@@ -1,28 +1,27 @@
-/* auth-kabinet.js — Authentication & role helpers for Kabinet */
+/* auth-kabinet.js — Artmonia Kabinet Auth Helpers */
 
 function go(path) {
   window.location.replace(window.location.origin + path);
 }
 
-async function getUser() {
+async function getSession() {
   try {
-    const { data: { user }, error } = await sb.auth.getUser();
-    if (error || !user) return null;
-    return user;
+    const { data } = await sb.auth.getSession();
+    return data.session;
   } catch (e) {
-    console.error('getUser error:', e);
+    console.error('getSession error:', e);
     return null;
   }
 }
 
 async function getRole() {
-  const user = await getUser();
-  if (!user) return null;
+  const session = await getSession();
+  if (!session) return null;
   try {
     const { data, error } = await sb
       .from('user_roles')
       .select('role')
-      .eq('user_id', user.id)
+      .eq('user_id', session.user.id)
       .single();
     if (error || !data) return null;
     return data.role;
@@ -33,13 +32,13 @@ async function getRole() {
 }
 
 async function getStudent() {
-  const user = await getUser();
-  if (!user) return null;
+  const session = await getSession();
+  if (!session) return null;
   try {
     const { data, error } = await sb
       .from('students')
       .select('*, groups(*)')
-      .eq('id', user.id)
+      .eq('id', session.user.id)
       .maybeSingle();
     if (error || !data) return null;
     return data;
@@ -49,64 +48,32 @@ async function getStudent() {
   }
 }
 
-async function requireAuth() {
-  const { data: { session } } = await sb.auth.getSession();
+/**
+ * Səhifə girişini yoxlayır.
+ * @param {string[]} allowedRoles - icazə verilən rollar
+ * @param {string} redirectTo - icazəsiz olduqda hara yönləndir
+ * @returns {Promise<boolean>} - icazə varsa true
+ */
+async function requireAuth(allowedRoles, redirectTo) {
+  const session = await getSession();
   if (!session) {
-    go('/kabinet/');
+    go(redirectTo);
     return false;
   }
-  return true;
-}
-
-async function requireRole(...allowedRoles) {
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) {
-    go('/kabinet/');
-    return false;
-  }
-
   const role = await getRole();
   if (!role || !allowedRoles.includes(role)) {
-    if (!role) {
-      go('/kabinet/');
-    } else if (role === 'student' && allowedRoles.some(r => ['super_admin', 'manager', 'teacher'].includes(r))) {
-      go('/kabinet/dashboard.html');
-    } else if (['super_admin', 'manager', 'teacher'].includes(role) && allowedRoles.includes('student')) {
-      go('/admin/index.html');
-    } else {
-      redirectByRole(role);
-    }
+    go(redirectTo);
     return false;
   }
   return true;
-}
-
-function redirectByRole(role) {
-  switch (role) {
-    case 'student':
-      go('/kabinet/dashboard.html');
-      break;
-    case 'teacher':
-      go('/admin/muellim-qrup.html');
-      break;
-    case 'manager':
-      go('/admin/telebeler.html');
-      break;
-    case 'super_admin':
-      go('/admin/dashboard.html');
-      break;
-    default:
-      go('/kabinet/');
-  }
 }
 
 async function logout() {
   await sb.auth.signOut();
-  go('/kabinet/');
+  go('/admin/index.html');
 }
 
-sb.auth.onAuthStateChange((event) => {
-  if (event === 'SIGNED_OUT') {
-    go('/kabinet/');
-  }
-});
+async function logoutStudent() {
+  await sb.auth.signOut();
+  go('/kabinet/index.html');
+}

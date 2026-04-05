@@ -6,7 +6,7 @@
 <title>Artmonia Admin - Daxil ol</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b0b1a;--bg2:#0f0e24;--card:#14122a;--card2:#1a1835;--border:#252240;--accent:#f97316;--accent2:#ea580c;--text:#fff;--text2:#b0acd0;--text3:#6b6790;--green:#4ade80;--blue:#60a5fa;--red:#f87171}
+:root{--bg:#0b0b1a;--bg2:#0f0e24;--card:#14122a;--border:#252240;--accent:#f97316;--accent2:#ea580c;--text:#fff;--text2:#b0acd0;--text3:#6b6790;--green:#4ade80;--red:#f87171}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .login-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:40px 32px;width:100%;max-width:420px}
@@ -25,9 +25,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .pill-btn.loading .spinner{display:inline-block}
 .pill-btn.loading .btn-text{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
-.msg-box{padding:12px 16px;border-radius:10px;font-size:.9rem;margin-bottom:16px;display:none;line-height:1.4}
-.msg-box.error{display:block;background:rgba(248,113,113,.12);border:1px solid var(--red);color:var(--red)}
-.msg-box.success{display:block;background:rgba(74,222,128,.12);border:1px solid var(--green);color:var(--green)}
+.msg{padding:12px 16px;border-radius:10px;font-size:.9rem;margin-bottom:16px;display:none;line-height:1.4}
+.msg.error{display:block;background:rgba(248,113,113,.12);border:1px solid var(--red);color:var(--red)}
+.msg.success{display:block;background:rgba(74,222,128,.12);border:1px solid var(--green);color:var(--green)}
+.tabs{display:flex;gap:0;margin-bottom:24px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.tab-btn{flex:1;padding:12px;border:none;font-family:'Inter',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;background:var(--bg2);color:var(--text3)}
+.tab-btn.active{background:var(--accent);color:#fff}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -39,14 +42,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <p>Admin Panel</p>
   </div>
 
-  <!-- Tabs -->
-  <div class="tabs" style="display:flex;gap:0;margin-bottom:24px;border-radius:10px;overflow:hidden;border:1px solid var(--border)">
-    <button class="tab-btn active" onclick="switchTab('login')" id="tabLogin" style="flex:1;padding:12px;background:var(--accent);color:#fff;border:none;font-family:'Inter',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s">Daxil ol</button>
-    <button class="tab-btn" onclick="switchTab('register')" id="tabRegister" style="flex:1;padding:12px;background:var(--bg2);color:var(--text3);border:none;font-family:'Inter',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s">Qeydiyyat</button>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('login')">Daxil ol</button>
+    <button class="tab-btn" id="tabReg" onclick="switchTab('register')">Qeydiyyat</button>
   </div>
 
-  <div id="msg" class="msg-box"></div>
-  <div id="error-message" style="display:none;color:#ff4444;background:#2a1a1a;padding:10px;border-radius:8px;margin-bottom:12px;font-size:.9rem"></div>
+  <div id="msg" class="msg"></div>
 
   <!-- Login Form -->
   <form id="loginForm" onsubmit="event.preventDefault();handleLogin()">
@@ -65,7 +66,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   </form>
 
   <!-- Register Form (müvəqqəti) -->
-  <form id="registerForm" onsubmit="handleRegister(event)" style="display:none">
+  <form id="registerForm" onsubmit="event.preventDefault();handleRegister()" style="display:none">
     <div class="form-group">
       <label>Ad Soyad</label>
       <input type="text" id="regName" placeholder="Ad Soyad" required>
@@ -88,153 +89,94 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 <script src="/js/supabase-kabinet.js"></script>
 <script src="/js/auth-kabinet.js"></script>
 <script>
-const msgBox = document.getElementById('msg');
-
+/* ── Helpers ── */
+function showMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg ' + type;
+}
+function clearMsg() {
+  const el = document.getElementById('msg');
+  el.className = 'msg';
+  el.textContent = '';
+}
+function setLoading(btn, on) {
+  btn.disabled = on;
+  btn.classList.toggle('loading', on);
+}
 function switchTab(tab) {
   document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
-  document.getElementById('tabLogin').style.background = tab === 'login' ? 'var(--accent)' : 'var(--bg2)';
-  document.getElementById('tabLogin').style.color = tab === 'login' ? '#fff' : 'var(--text3)';
-  document.getElementById('tabRegister').style.background = tab === 'register' ? 'var(--accent)' : 'var(--bg2)';
-  document.getElementById('tabRegister').style.color = tab === 'register' ? '#fff' : 'var(--text3)';
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'register' && i === 1));
+  });
   clearMsg();
 }
 
-async function handleRegister(e) {
-  e.preventDefault();
-  clearMsg();
-  const btn = document.getElementById('regBtn');
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const password = document.getElementById('regPassword').value;
-  if (!name || !email || !password) return showMsg('Bütün sahələri doldurun', 'error');
-  if (password.length < 6) return showMsg('Şifrə minimum 6 simvol olmalıdır', 'error');
-
-  setLoading(btn, true);
-  try {
-    const { data, error } = await sb.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: name } }
-    });
-    if (error) throw error;
-    showMsg('Qeydiyyat uğurlu! İndi "Daxil ol" tab-ından daxil ola bilərsiniz.', 'success');
-    // Qeydiyyat uğurlu — tab-ı gizlət
-    document.getElementById('tabRegister').style.display = 'none';
-    setTimeout(() => switchTab('login'), 1500);
-  } catch (err) {
-    const msg = err.message?.includes('already registered')
-      ? 'Bu email artıq qeydiyyatdadır'
-      : (err.message || 'Qeydiyyat uğursuz oldu');
-    showMsg(msg, 'error');
-  } finally {
-    setLoading(btn, false);
-  }
-}
-
-function showMsg(text, type) {
-  msgBox.textContent = text;
-  msgBox.className = 'msg-box ' + type;
-}
-function clearMsg() {
-  msgBox.className = 'msg-box';
-  msgBox.textContent = '';
-}
-
-function setLoading(btn, loading) {
-  btn.disabled = loading;
-  btn.classList.toggle('loading', loading);
-}
-
+/* ── Login ── */
 async function handleLogin() {
-  console.log('1. Login başladı');
+  clearMsg();
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
-  const errorBox = document.getElementById('error-message');
-  errorBox.style.display = 'none';
-
-  console.log('2. Email:', email);
-
-  if (!email || !password) {
-    errorBox.textContent = 'Email və şifrəni daxil edin';
-    errorBox.style.display = 'block';
-    return;
-  }
+  if (!email || !password) { showMsg('Email və şifrəni daxil edin', 'error'); return; }
 
   const btn = document.getElementById('loginBtn');
   setLoading(btn, true);
-
   try {
-    console.log('3. signInWithPassword çağırılır...');
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) { showMsg('Xəta: ' + error.message, 'error'); return; }
 
-    console.log('4. Auth nəticəsi:', { data, error });
+    // Rol yoxla
+    const { data: rd, error: re } = await sb
+      .from('user_roles').select('role')
+      .eq('user_id', data.user.id).single();
 
-    if (error) {
-      errorBox.textContent = 'Xəta: ' + error.message;
-      errorBox.style.display = 'block';
-      return;
-    }
-
-    console.log('5. User ID:', data.user.id);
-
-    const { data: roleData, error: roleError } = await sb
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', data.user.id)
-      .single();
-
-    console.log('6. Role sorğusu nəticəsi:', { roleData, roleError });
-
-    if (roleError || !roleData) {
-      errorBox.textContent = 'Rol tapılmadı: ' + (roleError?.message || 'boş');
-      errorBox.style.display = 'block';
+    if (re || !rd) {
+      showMsg('Rol tapılmadı. Admin ilə əlaqə saxlayın.', 'error');
       await sb.auth.signOut();
       return;
     }
 
-    console.log('7. Rol:', roleData.role);
-    console.log('8. Yönləndirmə başlayır...');
-
-    const role = roleData.role;
-
-    if (role === 'super_admin') {
-      console.log('9. super_admin → dashboard');
-      window.location.replace(window.location.origin + '/admin/dashboard.html');
-    } else if (role === 'manager') {
-      window.location.replace(window.location.origin + '/admin/telebeler.html');
-    } else if (role === 'teacher') {
-      window.location.replace(window.location.origin + '/admin/muellim-qrup.html');
-    } else if (role === 'student') {
-      window.location.replace(window.location.origin + '/kabinet/dashboard.html');
-    } else {
-      errorBox.textContent = 'Naməlum rol: ' + role;
-      errorBox.style.display = 'block';
-    }
+    showMsg('Uğurlu! Yönləndirilir...', 'success');
+    const r = rd.role;
+    if (r === 'super_admin')    go('/admin/dashboard.html');
+    else if (r === 'manager')   go('/admin/telebeler.html');
+    else if (r === 'teacher')   go('/admin/muellim-qrup.html');
+    else if (r === 'student')   go('/kabinet/dashboard.html');
+    else { showMsg('Naməlum rol: ' + r, 'error'); await sb.auth.signOut(); }
 
   } catch (err) {
-    console.log('XƏTA:', err);
-    errorBox.textContent = 'Gözlənilməz xəta: ' + err.message;
-    errorBox.style.display = 'block';
+    showMsg('Gözlənilməz xəta: ' + err.message, 'error');
   } finally {
     setLoading(btn, false);
   }
 }
 
-// Check if already logged in with admin role
-(async () => {
+/* ── Register (müvəqqəti) ── */
+async function handleRegister() {
+  clearMsg();
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pw = document.getElementById('regPassword').value;
+  if (!name || !email || !pw) { showMsg('Bütün sahələri doldurun', 'error'); return; }
+  if (pw.length < 6) { showMsg('Şifrə minimum 6 simvol', 'error'); return; }
+
+  const btn = document.getElementById('regBtn');
+  setLoading(btn, true);
   try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session) {
-      const role = await getRole();
-      if (role && ['super_admin', 'manager', 'teacher'].includes(role)) {
-        redirectByRole(role);
-      }
-    }
-  } catch (e) {
-    console.error('Session check error:', e);
+    const { error } = await sb.auth.signUp({ email, password: pw, options: { data: { full_name: name } } });
+    if (error) throw error;
+    showMsg('Qeydiyyat uğurlu! "Daxil ol" tab-ından daxil olun.', 'success');
+    document.getElementById('tabReg').style.display = 'none';
+    setTimeout(() => switchTab('login'), 1500);
+  } catch (err) {
+    showMsg(err.message?.includes('already registered') ? 'Bu email artıq qeydiyyatdadır' : (err.message || 'Qeydiyyat uğursuz'), 'error');
+  } finally {
+    setLoading(btn, false);
   }
-})();
+}
+
+/* ── NO auto session check on login page ── */
 </script>
 </body>
 </html>

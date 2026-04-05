@@ -176,7 +176,9 @@ async function handleEmailLogin(e) {
     if (error) throw error;
     showMsg('Daxil oldunuz! Yönləndirilir...', 'success');
     const role = await getRole();
-    redirectByRole(role);
+    if (role === 'student') go('/kabinet/dashboard.html');
+    else if (role === 'super_admin' || role === 'manager' || role === 'teacher') go('/admin/dashboard.html');
+    else go('/kabinet/dashboard.html');
   } catch (err) {
     showMsg(err.message || 'Giriş uğursuz oldu', 'error');
     setLoading(btn, false);
@@ -220,7 +222,9 @@ async function handleOtpVerify(e) {
     if (error) throw error;
     showMsg('Təsdiqləndi! Yönləndirilir...', 'success');
     const role = await getRole();
-    redirectByRole(role);
+    if (role === 'student') go('/kabinet/dashboard.html');
+    else if (role) go('/admin/dashboard.html');
+    else go('/kabinet/dashboard.html');
   } catch (err) {
     showMsg(err.message || 'OTP təsdiqi uğursuz oldu', 'error');
     setLoading(btn, false);
@@ -256,10 +260,11 @@ async function handleForgotPassword(e) {
 /* ---- Auto-redirect if logged in ---- */
 (async () => {
   try {
-    const { data: { session } } = await sb.auth.getSession();
+    const session = await getSession();
     if (session) {
       const role = await getRole();
-      if (role) redirectByRole(role);
+      if (role === 'student') go('/kabinet/dashboard.html');
+      else if (role) go('/admin/dashboard.html');
     }
   } catch (e) {
     console.error('Session check error:', e);

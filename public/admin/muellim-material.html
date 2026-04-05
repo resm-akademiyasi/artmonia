@@ -153,7 +153,7 @@ function showMsg(text,type){
 }
 
 async function init(){
-  const ok=await requireRole('teacher','super_admin');
+  const ok=await requireAuth(['teacher','super_admin'], '/admin/index.html');
   if(!ok) return;
   currentRole=await getRole();
   currentUser=await getUser();

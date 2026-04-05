@@ -340,7 +340,7 @@
       </a>
     </nav>
     <div class="sidebar-bottom">
-      <button class="btn-logout" onclick="logout()">&#128682; &#199;&#305;x&#305;&#351;</button>
+      <button class="btn-logout" onclick="logoutStudent()">&#128682; &#199;&#305;x&#305;&#351;</button>
     </div>
   </aside>
 
@@ -362,7 +362,7 @@
   <script src="/js/gamification.js"></script>
 
   <script>
-    requireRole('student');
+    requireAuth(['student'], '/kabinet/index.html');
 
     const hamburger = document.getElementById('hamburger');
     const sidebar   = document.getElementById('sidebar');
