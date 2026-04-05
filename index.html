@@ -1661,7 +1661,7 @@ async function postComment(courseId,text){
   if(sb){ try{ await sb.from('comments').insert({user_id:S.user.id,course_id:courseId,content:text.trim()}); }catch(e){console.error('Artmonia error:',e)} }
 }
 async function deleteComment(courseId,commentId){
-  S.comments[courseId]=(S.comments[courseId]||[]).filter(c=>c.id!==commentId&&String(c.id)!==String(commentId));
+  S.comments[courseId]=(S.comments[courseId]||[]).filter(c=>String(c.id)!==String(commentId));
   renderComments(courseId);
   // Only delete from DB if it's a real DB id (not local_xxx)
   if(sb && !String(commentId).startsWith('local_')){
@@ -2063,7 +2063,7 @@ function videoPageHTML(){
       <div class="parts-grid">
         ${c.parts.map((p,i)=>{
           const w=canWatch(p),playing=S.activePart?.id===p.id,watched=isWatched(c.id,p.id);
-          return `<div class="part-card ${!w?'locked':''} ${playing?'playing':''} ${watched?'watched':''}" onclick="selectPart(${c.id},'${p.id}')">
+          return `<div class="part-card ${!w?'locked':''} ${playing?'playing':''} ${watched?'watched':''}" onclick="selectPart(${c.id},'${esc(p.id)}')">
             <div class="part-thumb">${t('parts_title')} ${i+1}${!w?'<div class="lock-ov">🔒</div>':''}${p.duration?`<div class="p-dur">${p.duration}</div>`:''}
             </div>
             <div class="part-body">
@@ -2108,7 +2108,7 @@ function renderComments(courseId){
         <div class="comment-header">
           <span class="comment-author">${esc(cm.profiles?.full_name||'İstifadəçi')}</span>
           <span class="comment-date">${timeAgo(cm.created_at)}</span>
-          ${isOwn?`<button class="comment-del" onclick="deleteComment(${courseId},'${cm.id}')">🗑</button>`:''}
+          ${isOwn?`<button class="comment-del" onclick="deleteComment(${courseId},'${esc(cm.id)}')">🗑</button>`:''}
         </div>
         <div class="comment-text">${esc(cm.content)}</div>
       </div>
@@ -2260,7 +2260,7 @@ function authModalHTML(){
       ${!isLogin?`
       <div class="f-group">
         <label class="f-label">${t('auth_name')} <span style="color:var(--red)">*</span></label>
-        <input class="f-input" id="f-name" type="text" placeholder="${t('auth_name')}
+        <input class="f-input" id="f-name" type="text" placeholder="${t('auth_name')}"
           autocomplete="name" oninput="validateName(this)">
       </div>
       <div class="f-group">
@@ -3387,7 +3387,7 @@ function staticPageHTML(page){
       content:`<h2>Forum Tezliklə Açılır</h2>
         <p>Artmonia forumu hazırlanır. Burada tələbələr öz işlərini paylaşa, sual verə və bir-birinə kömək edə biləcək.</p>
         <p>Forum açılana qədər suallarınızı WhatsApp-dan bizə yönəldin.</p>
-        <button class="btn btn-orange btn-lg" onclick="window.open('https://wa.me/994XXXXXXXX','_blank')" style="margin-top:8px">💬 WhatsApp-dan Əlaqə Saxla</button>`
+        <button class="btn btn-orange btn-lg" onclick="window.open('https://wa.me/994776411907','_blank')" style="margin-top:8px">💬 WhatsApp-dan Əlaqə Saxla</button>`
     },
     help:{
       title:'Kömək Mərkəzi',
@@ -3395,7 +3395,7 @@ function staticPageHTML(page){
       content:`<h2>Necə Kömək Ala Bilərəm?</h2>
         <p>Artmonia dəstək komandası sizə kömək etməyə hazırdır. Aşağıdakı yollarla bizimlə əlaqə saxlaya bilərsiniz:</p>
         <ul>
-          <li>WhatsApp: +994 XX XXX XX XX (həftəiçi 09:00–21:00)</li>
+          <li>WhatsApp: +994 77 641 19 07 (həftəiçi 09:00–21:00)</li>
           <li>Email: artmoniaacademy@gmail.com</li>
           <li>Instagram: @artmoniya.academy</li>
         </ul>
@@ -3552,7 +3552,7 @@ async function uploadAvatar(file){
 // ── COUNT-UP ANİMATION ───────────────────────────────
 function animateStatCounts(){
   document.querySelectorAll('.stat-count[data-count]').forEach(el=>{
-    const target=parseInt(el.dataset.count)||0;
+    const target=parseInt(el.dataset.count,10)||0;
     if(target===0){el.textContent='0';return;}
     let current=0;
     const step=Math.max(1,Math.ceil(target/30));
@@ -3746,7 +3746,7 @@ function adminQuizHTML(){
   ${savedAnswers?`<div class="a-card" style="margin-top:20px"><div class="a-card-title">📋 Son Sorğu Cavabları</div>
     <p style="font-size:13px;color:var(--text2);margin-bottom:16px;font-weight:600">localStorage-dən oxunan son cavablar:</p>
     ${Object.entries(savedAnswers).map(([k,v])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg2);border-radius:8px;margin-bottom:8px">
-      <span style="font-size:13px;font-weight:700;color:var(--text2)">Sual ${parseInt(k)+1}</span>
+      <span style="font-size:13px;font-weight:700;color:var(--text2)">Sual ${parseInt(k,10)+1}</span>
       <span style="font-size:13px;font-weight:800;color:var(--orange)">${v}</span>
     </div>`).join('')}
   </div>`:''}`;
@@ -4410,7 +4410,7 @@ function saveCourseInfo(id){
   c.totalDuration=document.getElementById('ci-duration')?.value||'';
   c.materials=document.getElementById('ci-materials')?.value||'';
   c.downloadUrl=document.getElementById('ci-download')?.value||'';
-  c.viewerCount=parseInt(document.getElementById('ci-viewers')?.value)||0;
+  c.viewerCount=parseInt(document.getElementById('ci-viewers')?.value,10)||0;
   logAdminAction('Kurs redaktə edildi: '+(c.title||id));showToast('Kurs məlumatları saxlanıldı ✅');
   persistCourses();adminGo('courses');
 }
@@ -4596,7 +4596,7 @@ function notesPanelHTML(courseId,partId,notes){
     ${notes.map(n=>`<div class="note-item">
       <div class="note-timestamp" onclick="seekVideo(${n.timestamp_seconds})">▶ ${fmtTime(n.timestamp_seconds)}</div>
       <div class="note-text">${esc(n.note_text)}</div>
-      <button class="note-del" onclick="deleteVideoNote('${n.id}',${courseId},'${partId}')">✕</button>
+      <button class="note-del" onclick="deleteVideoNote('${esc(n.id)}',${courseId},'${esc(partId)}')">✕</button>
     </div>`).join('')||'<div style="text-align:center;padding:16px;color:var(--text3);font-size:13px;font-weight:700">Hələ qeyd yoxdur. Videonu izləyərkən vacib anları qeyd edin!</div>'}
     <div class="note-add-form">
       <input id="note-time" type="number" min="0" placeholder="san" style="width:70px;flex:none" title="Video vaxtı (saniyə)">
@@ -4698,10 +4698,10 @@ function worksGridHTML(){
         <span class="work-author-name">${esc(w.profiles?.full_name||'Tələbə')}</span>
       </div>
       <div class="work-actions">
-        <button class="like-btn ${w._liked?'liked':''}" onclick="toggleWorkLike('${w.id}')">
+        <button class="like-btn ${w._liked?'liked':''}" onclick="toggleWorkLike('${esc(w.id)}')">
           ${w._liked?'❤️':'🤍'} ${w.likes_count||0}
         </button>
-        ${S.user&&w.user_id===S.user.id?`<button class="btn btn-danger btn-sm" onclick="deleteWork('${w.id}')">🗑</button>`:''}
+        ${S.user&&w.user_id===S.user.id?`<button class="btn btn-danger btn-sm" onclick="deleteWork('${esc(w.id)}')">🗑</button>`:''}
       </div>
     </div>
   </div>`).join('');
@@ -4758,7 +4758,7 @@ function questionsListHTML(){
     <div class="q-text">${esc(q.question_text)}</div>
     <div style="font-size:11px;color:var(--text3);font-weight:700;margin-top:6px">${new Date(q.created_at).toLocaleDateString('az-AZ')}</div>
     ${q.answer_text?`<div class="q-answer"><div class="q-answer-label">MÜƏLLİM CAVABI</div><div class="q-answer-text">${esc(q.answer_text)}</div></div>`:''}
-    ${q.status==='pending'?`<button class="btn btn-danger btn-sm" style="margin-top:10px" onclick="deleteQuestion('${q.id}')">Sil</button>`:''}
+    ${q.status==='pending'?`<button class="btn btn-danger btn-sm" style="margin-top:10px" onclick="deleteQuestion('${esc(q.id)}')">Sil</button>`:''}
   </div>`).join('');
 }
 
@@ -4824,7 +4824,8 @@ async function selectWinner(period){
   const lb=await fetchLeaderboard(period);
   if(!lb||!lb.length){showToast('Liderlik cədvəli boşdur','error');return;}
   const winner=lb[0];
-  const cs=S.contestSettings[period];
+  const cs=S.contestSettings?.[period];
+  if(!cs){showToast('Müsabiqə ayarları tapılmadı','error');return;}
   const entry={
     period,name:winner.name,uid:winner.uid,score:winner.score,
     prize:cs.prize,prizeType:cs.prizeType,title:cs.title,
@@ -4884,17 +4885,17 @@ async function loadContestData(){
   if(!sb) return;
   try{
     const {data:cs}=await sb.from('site_settings').select('settings').eq('id','contest_settings').single();
-    if(cs?.settings) S.contestSettings=JSON.parse(cs.settings);
+    if(cs?.settings) try{S.contestSettings=JSON.parse(cs.settings);}catch(e){console.error('Contest settings parse:',e);}
     const {data:cw}=await sb.from('site_settings').select('settings').eq('id','contest_winners').single();
-    if(cw?.settings) S.contestWinners=JSON.parse(cw.settings);
+    if(cw?.settings) try{S.contestWinners=JSON.parse(cw.settings);}catch(e){console.error('Contest winners parse:',e);}
   }catch(e){console.error('Contest load:',e);}
 }
 
 function getActiveContest(){
-  const w=S.contestSettings.weekly;
-  const m=S.contestSettings.monthly;
-  if(w.active) return {period:'weekly',...w};
-  if(m.active) return {period:'monthly',...m};
+  const w=S.contestSettings?.weekly;
+  const m=S.contestSettings?.monthly;
+  if(w?.active) return {period:'weekly',...w};
+  if(m?.active) return {period:'monthly',...m};
   return null;
 }
 
@@ -5095,11 +5096,9 @@ function switchCommTab(tab){
 
 // ── REVIEW CRUD ─────────────────────────────────────────
 function startAddReview(){
-  S.reviews.push({id:'new_'+Date.now(),name:'',role:'',text:'',stars:5,visible:true});
-  S.editingReviewId='new_'+S.reviews[S.reviews.length-1].id.split('_')[1];
-  // Yeni id düzgün qeyd et
-  const last=S.reviews[S.reviews.length-1];
-  S.editingReviewId=last.id;
+  const newId='new_'+Date.now();
+  S.reviews.push({id:newId,name:'',role:'',text:'',stars:5,visible:true});
+  S.editingReviewId=newId;
   adminGo('reviews');
 }
 function startEditReview(id){
@@ -5142,9 +5141,9 @@ function toggleReviewVisibility(id){
 }
 // ── TEACHER CRUD ─────────────────────────────────────────
 function startAddTeacher(){
-  S.teachers.push({id:'new_'+Date.now(),name:'',spec:'',bio:'',img:'',visible:true});
-  const last=S.teachers[S.teachers.length-1];
-  S.editingTeacherId=last.id;
+  const newId='new_'+Date.now();
+  S.teachers.push({id:newId,name:'',spec:'',bio:'',img:'',visible:true});
+  S.editingTeacherId=newId;
   adminGo('teachers');
 }
 function startEditTeacher(id){
@@ -5190,13 +5189,13 @@ async function adminLoadQuestions(){
           <div class="q-status ${q.status}" style="display:inline-block;margin-right:8px">${q.status==='answered'?'✅ Cavablandı':'⏳ Gözləyir'}</div>
           <span style="font-size:12px;color:var(--text3);font-weight:700">${q.profiles?.full_name||'Tələbə'} · ${new Date(q.created_at).toLocaleDateString('az-AZ')}</span>
         </div>
-        <button class="btn btn-danger btn-sm" onclick="adminDeleteQuestion('${q.id}')">🗑</button>
+        <button class="btn btn-danger btn-sm" onclick="adminDeleteQuestion('${esc(q.id)}')">🗑</button>
       </div>
       <div class="q-text">${esc(q.question_text)}</div>
       ${q.answer_text?`<div class="q-answer"><div class="q-answer-label">CAVAB</div><div class="q-answer-text">${esc(q.answer_text)}</div></div>`:''}
       ${q.status==='pending'?`<div style="margin-top:10px;display:flex;gap:8px">
-        <textarea class="f-input" id="ans-${q.id}" style="min-height:60px;resize:vertical;flex:1" placeholder="Cavabınızı yazın..."></textarea>
-        <button class="btn btn-orange btn-sm" style="align-self:flex-end" onclick="adminAnswerQuestion('${q.id}')">Cavabla</button>
+        <textarea class="f-input" id="ans-${esc(q.id)}" style="min-height:60px;resize:vertical;flex:1" placeholder="Cavabınızı yazın..."></textarea>
+        <button class="btn btn-orange btn-sm" style="align-self:flex-end" onclick="adminAnswerQuestion('${esc(q.id)}')">Cavabla</button>
       </div>`:''}
     </div>`).join('');
   }catch(e){el.innerHTML='<div style="color:var(--red);padding:16px;font-weight:700">Xəta: '+e.message+'</div>';}
@@ -5229,7 +5228,7 @@ async function adminLoadWorks(){
         <div style="padding:12px">
           <div style="font-size:13px;font-weight:800;margin-bottom:4px">${esc(w.title)}</div>
           <div style="font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:700">${w.profiles?.full_name||'Tələbə'} · ❤️ ${w.likes_count}</div>
-          <button class="btn btn-danger btn-sm" onclick="adminDeleteWork('${w.id}')">🗑 Sil</button>
+          <button class="btn btn-danger btn-sm" onclick="adminDeleteWork('${esc(w.id)}')">🗑 Sil</button>
         </div>
       </div>`).join('')+'</div>';
   }catch(e){el.innerHTML='<div style="color:var(--red);padding:16px;font-weight:700">Xəta: '+e.message+'</div>';}
@@ -5246,7 +5245,7 @@ function setStat(key,mode){
 function saveStatManual(key){
   const inp=document.getElementById('stat-'+key);
   if(!inp) return;
-  const val=parseInt(inp.value)||0;
+  const val=parseInt(inp.value,10)||0;
   S.siteStats[key].manual=val;
   showToast(key+' rəqəmi saxlanıldı: '+val);
   adminGo('site-numbers');
@@ -5813,7 +5812,7 @@ function saveHeroSlides(){
     const cid=document.getElementById(`slide-cid-${i}`)?.value;
     if(bg) s.bg=bg;
     if(cat) s.cat=cat;
-    if(cid) s.courseId=parseInt(cid)||s.courseId;
+    if(cid) s.courseId=parseInt(cid,10)||s.courseId;
   });
   showToast('Hero şəkilləri saxlanıldı! ✅');
 }
@@ -5835,7 +5834,7 @@ function toggleFaq(i){
 function animateCounters(){
   const els=document.querySelectorAll('[data-count]');
   els.forEach(el=>{
-    const target=parseInt(el.getAttribute('data-count'));
+    const target=parseInt(el.getAttribute('data-count'),10)||0;
     let current=0;
     const step=Math.ceil(target/60);
     const timer=setInterval(()=>{
@@ -5891,7 +5890,7 @@ function handleRoute(){
   // Course route: /course/123
   const courseMatch=hash.match(/^\/course\/(\d+)$/);
   if(courseMatch){
-    const cid=parseInt(courseMatch[1]);
+    const cid=parseInt(courseMatch[1],10);
     const c=S.courses.find(x=>x.id===cid);
     if(c){S.selectedCourse=c;S.activePart=null;S.activeEmbedUrl=null;S.page='video';}
     else{S.page='browse';}
