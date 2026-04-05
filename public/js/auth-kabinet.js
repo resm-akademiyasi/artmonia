@@ -35,8 +35,8 @@ async function getStudent() {
     const { data, error } = await sb
       .from('students')
       .select('*, groups(*)')
-      .eq('user_id', user.id)
-      .single();
+      .eq('id', user.id)
+      .maybeSingle();
     if (error || !data) return null;
     return data;
   } catch (e) {
