@@ -12,14 +12,17 @@ export const useSettings = () => {
   useEffect(() => {
     if (cachedSettings) return;
     const fetch = async () => {
-      const { data } = await supabase.from("site_settings").select("key, value");
-      if (data) {
-        const map: Settings = {};
-        data.forEach((s: { key: string; value: string }) => { map[s.key] = s.value; });
-        cachedSettings = map;
-        setSettings(map);
-      }
-      setLoading(false);
+      try {
+        const { data, error } = await supabase.from("site_settings").select("key, value");
+        if (error) { console.error("Settings fetch error:", error); return; }
+        if (data) {
+          const map: Settings = {};
+          data.forEach((s: { key: string; value: string }) => { map[s.key] = s.value; });
+          cachedSettings = map;
+          setSettings(map);
+        }
+      } catch (e) { console.error("Settings fetch error:", e); }
+      finally { setLoading(false); }
     };
     fetch();
   }, []);

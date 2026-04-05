@@ -96,7 +96,8 @@ const SuccessStoriesManager = () => {
   };
 
   const togglePublish = async (id: string, current: boolean) => {
-    await supabase.from("success_stories").update({ is_published: !current }).eq("id", id);
+    const { error } = await supabase.from("success_stories").update({ is_published: !current }).eq("id", id);
+    if (error) { toast({ title: "Xəta", description: error.message, variant: "destructive" }); return; }
     fetchStories();
   };
 

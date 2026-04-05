@@ -67,7 +67,7 @@ const StudentResultsManager = () => {
       before_image_url,
       after_image_url,
       display_order: items.length,
-      duration_months: form.duration_months ? parseInt(form.duration_months) : null,
+      duration_months: form.duration_months ? parseInt(form.duration_months, 10) : null,
     });
 
     setUploading(false);
@@ -93,7 +93,8 @@ const StudentResultsManager = () => {
   };
 
   const togglePublish = async (id: string, current: boolean) => {
-    await supabase.from("student_results").update({ is_published: !current }).eq("id", id);
+    const { error } = await supabase.from("student_results").update({ is_published: !current }).eq("id", id);
+    if (error) { toast({ title: "Xəta", description: error.message, variant: "destructive" }); return; }
     fetchResults();
   };
 

@@ -77,7 +77,8 @@ const NewsManager = () => {
   };
 
   const togglePublish = async (id: string, current: boolean) => {
-    await supabase.from("news").update({ is_published: !current }).eq("id", id);
+    const { error } = await supabase.from("news").update({ is_published: !current }).eq("id", id);
+    if (error) { toast({ title: "Xəta", description: error.message, variant: "destructive" }); return; }
     fetchNews();
   };
 

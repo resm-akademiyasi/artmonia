@@ -57,7 +57,8 @@ const BlogManager = () => {
   };
 
   const togglePublish = async (id: string, current: boolean) => {
-    await supabase.from("blog_posts").update({ is_published: !current }).eq("id", id);
+    const { error } = await supabase.from("blog_posts").update({ is_published: !current }).eq("id", id);
+    if (error) { toast({ title: "Xəta", description: error.message, variant: "destructive" }); return; }
     fetchPosts();
   };
 

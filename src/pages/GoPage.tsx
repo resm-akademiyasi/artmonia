@@ -22,7 +22,7 @@ const GoPage = () => {
       user_agent: navigator.userAgent,
     }).then(({ error }) => {
       if (error) console.error("Event log error:", error);
-    });
+    }).catch((err) => console.error("Event log error:", err));
 
     // Redirect to WhatsApp
     const timer = setTimeout(() => {

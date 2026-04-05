@@ -25,7 +25,7 @@ const NewsDetailPage = () => {
         .select("*")
         .eq("id", id)
         .eq("is_published", true)
-        .single();
+        .maybeSingle();
       if (data) setItem(data);
       setLoading(false);
     };

@@ -70,8 +70,9 @@ const BlogDetailPage = () => {
       if (line.startsWith("- ")) return <li key={i} className="ml-6 font-body text-base leading-relaxed text-foreground/80 list-disc">{line.slice(2)}</li>;
       if (line.match(/^\d+\. /)) return <li key={i} className="ml-6 font-body text-base leading-relaxed text-foreground/80 list-decimal">{line.replace(/^\d+\. /, "")}</li>;
       if (line.trim() === "") return <br key={i} />;
-      // bold
-      const boldParsed = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      // bold — safe: escape HTML first, then apply bold
+      const escaped = line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      const boldParsed = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       return <p key={i} className="font-body text-base leading-relaxed text-foreground/80 mb-2" dangerouslySetInnerHTML={{ __html: boldParsed }} />;
     });
   };
