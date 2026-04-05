@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Rəssamın Yol Xəritəsi — Artmonia Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0b0b1a;
+    --bg-card:   #13132a;
+    --bg-surface:#0f0f22;
+    --orange:    #f97316;
+    --orange-dim:#f9731622;
+    --orange-mid:#fb923c;
+    --white:     #ffffff;
+    --muted:     #9898b8;
+    --border:    rgba(255,255,255,0.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--orange);
+    z-index: 999;
+    box-shadow: 0 0 10px var(--orange);
+    transition: width 0.1s linear;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 24px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, rgba(11,11,26,0.25) 0%, rgba(11,11,26,0.65) 55%, rgba(11,11,26,1) 100%),
+      url('https://images.unsplash.com/photo-1531836914009-a73f7f4c1b06?w=800&q=80') center/cover no-repeat;
+  }
+
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(249,115,22,0.07) 0%, transparent 55%);
+  }
+
+  .badge-dot { width:6px; height:6px; border-radius:50%; background:var(--orange); box-shadow:0 0 8px var(--orange); flex-shrink:0; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    padding: 9px 18px;
+    border-radius: 100px;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: white;
+    margin-bottom: 24px;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.7s 0.3s ease forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(38px, 10vw, 64px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeUp 0.8s 0.5s ease forwards;
+  }
+
+  .hero-title em { font-style:italic; color:var(--orange); }
+
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.62);
+    max-width: 340px;
+    margin-bottom: 44px;
+    line-height: 1.8;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.7s 0.75s ease forwards;
+  }
+
+  .hero-sub strong { color: rgba(255,255,255,0.9); font-weight: 500; }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    display: flex; align-items:center; justify-content:center; gap:8px;
+    background: var(--orange);
+    color: white; text-decoration:none;
+    padding: 18px 28px; border-radius:100px;
+    font-size: 14px; font-weight:600; letter-spacing:0.02em;
+    box-shadow: 0 8px 32px rgba(249,115,22,0.38);
+    transition: all 0.25s;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .btn-primary:active { transform:scale(0.97); }
+
+  .btn-arr {
+    width:22px; height:22px; border-radius:50%;
+    background:rgba(255,255,255,0.22);
+    display:flex; align-items:center; justify-content:center; font-size:11px;
+  }
+
+  /* ── LAYOUT ── */
+  .section { padding:64px 24px; }
+
+  .section-tag {
+    display:inline-flex; align-items:center; gap:8px;
+    border:1px solid rgba(249,115,22,0.28);
+    background:rgba(249,115,22,0.06);
+    padding:6px 15px; border-radius:100px;
+    font-size:10px; letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--orange); margin-bottom:18px;
+  }
+
+  .section-title {
+    font-family:'Playfair Display',serif;
+    font-size:clamp(28px,7vw,40px); font-weight:800; line-height:1.15; margin-bottom:10px;
+  }
+  .section-title em { font-style:italic; color:var(--orange); }
+
+  .section-desc { font-size:15px; color:var(--muted); line-height:1.8; margin-bottom:32px; }
+
+  .hr { border:none; height:1px; background:var(--border); margin:0 24px; }
+
+  /* ── DIAG ── */
+  .diag-card {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:16px; padding:22px; margin-bottom:10px;
+    cursor:pointer; transition:border-color 0.3s, box-shadow 0.3s; position:relative; overflow:hidden;
+  }
+  .diag-card::before {
+    content:''; position:absolute; top:0;left:0;right:0; height:2px;
+    background:linear-gradient(90deg,var(--orange),var(--orange-mid));
+    opacity:0; transition:opacity 0.3s;
+  }
+  .diag-card.active { border-color:rgba(249,115,22,0.38); box-shadow:0 4px 28px rgba(249,115,22,0.1); }
+  .diag-card.active::before { opacity:1; }
+
+  .diag-row { display:flex; align-items:center; justify-content:space-between; }
+  .diag-num { font-size:10px; letter-spacing:0.2em; color:var(--orange); text-transform:uppercase; margin-bottom:3px; }
+  .diag-name { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; }
+
+  .diag-chev {
+    width:32px;height:32px; border:1px solid var(--border); border-radius:50%;
+    display:flex;align-items:center;justify-content:center; font-size:12px; color:var(--muted);
+    transition:all 0.3s; flex-shrink:0;
+  }
+  .diag-card.active .diag-chev { background:var(--orange); border-color:var(--orange); color:white; transform:rotate(180deg); }
+
+  .diag-body {
+    max-height:0; overflow:hidden; opacity:0;
+    transition:max-height 0.5s ease, opacity 0.4s;
+    font-size:14px; color:var(--muted); line-height:1.8;
+  }
+  .diag-card.active .diag-body { max-height:300px; opacity:1; margin-top:14px; }
+  .diag-body strong { color:rgba(255,255,255,0.85); font-weight:500; }
+
+  /* ── PILLARS ── */
+  .pillar { padding:32px 0; border-bottom:1px solid var(--border); }
+  .pillar:last-child { border-bottom:none; }
+
+  .pillar-head { display:flex; align-items:flex-start; gap:14px; margin-bottom:18px; }
+
+  .pillar-icon {
+    min-width:44px;height:44px; border-radius:12px;
+    background:var(--orange-dim); border:1px solid rgba(249,115,22,0.22);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Playfair Display',serif; font-size:18px; font-weight:800; color:var(--orange);
+  }
+
+  .pillar-lbl { font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--orange); margin-bottom:2px; }
+  .pillar-name { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; line-height:1; }
+
+  .pillar-body { font-size:14px; color:var(--muted); line-height:1.85; margin-bottom:18px; }
+  .pillar-body strong { color:rgba(255,255,255,0.85); font-weight:500; }
+
+  .pillar-quote {
+    background:linear-gradient(135deg,rgba(249,115,22,0.07),rgba(249,115,22,0.02));
+    border:1px solid rgba(249,115,22,0.14); border-radius:12px; padding:18px 20px;
+  }
+  .pillar-quote p { font-family:'Playfair Display',serif; font-size:16px; font-style:italic; color:rgba(255,255,255,0.8); line-height:1.5; }
+
+  /* ── TRUTH ── */
+  .truth { background:var(--bg-surface); margin:0 -24px; padding:64px 24px; position:relative; overflow:hidden; }
+  .truth::before {
+    content:''; position:absolute; top:-80px;right:-80px;
+    width:280px;height:280px;
+    background:radial-gradient(circle,rgba(249,115,22,0.09) 0%,transparent 70%); pointer-events:none;
+  }
+
+  .truth-title { font-family:'Playfair Display',serif; font-size:clamp(26px,6vw,38px); font-weight:800; line-height:1.2; margin-bottom:24px; }
+  .truth-title em { font-style:italic; color:var(--orange); }
+
+  .stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:28px 0; }
+
+  .stat { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:22px 16px; text-align:center; }
+  .stat-val { font-family:'Playfair Display',serif; font-size:44px; font-weight:800; color:var(--orange); line-height:1; display:block; margin-bottom:8px; }
+  .stat-txt { font-size:12px; color:var(--muted); line-height:1.4; }
+
+  .truth-body { font-size:14px; color:var(--muted); line-height:1.9; }
+  .truth-body strong { color:rgba(255,255,255,0.85); font-weight:500; }
+
+  /* ── CTA ── */
+  .cta { padding:72px 24px 100px; text-align:center; position:relative; overflow:hidden; }
+  .cta::before {
+    content:''; position:absolute; bottom:-40px;left:50%; transform:translateX(-50%);
+    width:320px;height:320px; background:radial-gradient(circle,rgba(249,115,22,0.07) 0%,transparent 70%); pointer-events:none;
+  }
+
+  .cta-pill {
+    display:inline-flex;align-items:center;gap:8px;
+    border:1px solid rgba(249,115,22,0.28); background:rgba(249,115,22,0.06);
+    padding:7px 18px; border-radius:100px;
+    font-size:11px;letter-spacing:0.15em;text-transform:uppercase; color:var(--orange); margin-bottom:26px;
+  }
+
+  .cta-title { font-family:'Playfair Display',serif; font-size:clamp(32px,8vw,48px); font-weight:800; line-height:1.1; margin-bottom:14px; }
+  .cta-title em { font-style:italic; color:var(--orange); }
+
+  .cta-desc { font-size:14px; color:var(--muted); max-width:290px; margin:0 auto 36px; line-height:1.8; }
+
+  /* ── FOOTER ── */
+  .footer { padding:28px 24px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .footer-brand { font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:rgba(255,255,255,0.35); }
+  .footer-copy { font-size:11px; color:rgba(255,255,255,0.18); letter-spacing:0.1em; }
+
+  /* ── BOTTOM POPUP ── */
+  .popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11,11,26,0.75);
+    backdrop-filter: blur(6px);
+    z-index: 9998;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .popup-overlay.show { opacity:1; pointer-events:all; }
+
+  .popup-box {
+    background: var(--bg-card);
+    border: 1px solid rgba(249,115,22,0.25);
+    border-radius: 24px 24px 0 0;
+    padding: 36px 24px 48px;
+    width: 100%;
+    transform: translateY(100%);
+    transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+    overflow: hidden;
+  }
+  .popup-overlay.show .popup-box { transform: translateY(0); }
+
+  .popup-box::before {
+    content:'';
+    position:absolute; top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--orange),var(--orange-mid));
+  }
+
+  .popup-handle {
+    width:40px;height:4px; background:rgba(255,255,255,0.15);
+    border-radius:2px; margin:0 auto 28px;
+  }
+
+  .popup-emoji { font-size:36px; margin-bottom:16px; display:block; text-align:center; }
+
+  .popup-title {
+    font-family:'Playfair Display',serif;
+    font-size:26px; font-weight:800; line-height:1.15;
+    text-align:center; margin-bottom:12px;
+  }
+  .popup-title em { font-style:italic; color:var(--orange); }
+
+  .popup-desc {
+    font-size:14px; color:var(--muted); text-align:center;
+    line-height:1.75; margin-bottom:28px; max-width:280px; margin-left:auto; margin-right:auto;
+  }
+
+  .popup-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(249,115,22,0.1); border:1px solid rgba(249,115,22,0.3);
+    border-radius:100px; padding:8px 18px;
+    font-size:13px; font-weight:600; color:var(--orange);
+    margin:0 auto 28px; display:flex; justify-content:center;
+    width:fit-content; margin-left:auto; margin-right:auto;
+  }
+
+  .popup-close {
+    display:block; text-align:center;
+    font-size:12px; color:rgba(255,255,255,0.25);
+    letter-spacing:0.1em; text-transform:uppercase;
+    cursor:pointer; margin-top:16px; padding:8px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+  .reveal { opacity:0; transform:translateY(20px); transition:opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+  .d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s} .d4{transition-delay:.4s}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="prog"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Rəssamlıq Akademiyası
+  </div>
+
+  <h1 class="hero-title">
+    Qısa zamanda rəsmin sirlərini öyrənmək <em>əslində möcüzə deyil</em>
+  </h1>
+
+  <p class="hero-sub">
+    İnstaqramda "SİSTEM" yazdın — bu təsadüf deyil. Demək ki sən YouTube xaosundan yoruldun, <strong>"nə vaxt nəticə görəcəm?"</strong> sualına cavab istəyirsən. Tam olaraq nə edəcəyini və haradan başlayacağını bilmirsən. İndi öyrənəcəksən.
+  </p>
+</section>
+
+<hr class="hr">
+
+<!-- DIAGNOSTICS -->
+<section class="section">
+  <div class="section-tag reveal"><span class="badge-dot"></span> Diaqnostika</div>
+  <h2 class="section-title reveal d1">Özünü tanı.<br><em>Sonra irəlilə.</em></h2>
+  <p class="section-desc reveal d2">Hər rəssam eyni problemlə gəlmir. Sən hansı tipsən?</p>
+
+  <div class="reveal d3">
+    <div class="diag-card" onclick="tog(this)">
+      <div class="diag-row">
+        <div><div class="diag-num">Tip 01</div><div class="diag-name">Həvəskar</div></div>
+        <div class="diag-chev">↓</div>
+      </div>
+      <div class="diag-body">Rəsm çəkmək istəyirsən, amma haradan başlayacağını bilmirsən. Hər gün "sabahdan başlayacam" deyirsən. Problem istedadsızlıq deyil — <strong>istiqamət yoxluğudur.</strong> Sənə, sadəcə, düzgün yol göstərən lazımdır.</div>
+    </div>
+
+    <div class="diag-card" onclick="tog(this)">
+      <div class="diag-row">
+        <div><div class="diag-num">Tip 02</div><div class="diag-name">Texnikada İlişən</div></div>
+        <div class="diag-chev">↓</div>
+      </div>
+      <div class="diag-body">Çəkirsən, amma nəsə "düzgün görünmür." Proporsiya, kölgə, perspektiv — nə qədər video baxsan da, heç kim sənin <strong>xüsusi</strong> səhvini tapmır. Sənə ümumi dərs deyil, fərdi baxış lazımdır.</div>
+    </div>
+
+    <div class="diag-card" onclick="tog(this)">
+      <div class="diag-row">
+        <div><div class="diag-num">Tip 03</div><div class="diag-name">Sistem Axtaran</div></div>
+        <div class="diag-chev">↓</div>
+      </div>
+      <div class="diag-body">Artıq çəkirsən. Öyrənirsən. Amma qeyri-müntəzəm, parça-parça. Ardıcıllığı pozursan. İçindən bir səs deyir ki <strong>bu belə olmaz.</strong></div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- SYSTEM -->
+<section class="section" id="sistem">
+  <div class="section-tag reveal"><span class="badge-dot"></span> Artmonia Sistemi</div>
+  <h2 class="section-title reveal d1">Niyə bəziləri 3 ayda öyrənir,<br><em>bəziləri 3 ildə öyrənmir?</em></h2>
+  <p class="section-desc reveal d2">Cavab bu 4 pillədədir.</p>
+
+  <div class="reveal d3">
+
+    <div class="pillar">
+      <div class="pillar-head">
+        <div class="pillar-icon">I</div>
+        <div><div class="pillar-lbl">Pillər 01</div><div class="pillar-name">Məntiq</div></div>
+      </div>
+      <p class="pillar-body">Rəssamlığı "hiss" kimi öyrənmək mümkün deyil. Hər forma, hər kölgə, hər proporsiya arxasında bir qanun var. Artmonia-da sən əvvəlcə <strong>görməyi</strong> öyrənirsən — sonra çəkirsən. İşin sistemini öyrənirsən.</p>
+      <div class="pillar-quote"><p>"Rəssamlıq əl işi deyil, düşüncə işidir. Əl sadəcə icraçıdır."</p></div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-head">
+        <div class="pillar-icon">II</div>
+        <div><div class="pillar-lbl">Pillər 02</div><div class="pillar-name">Mentor</div></div>
+      </div>
+      <p class="pillar-body">YouTube sənə video verir. Mentor sənə <strong>geri bildirim</strong> verir. Fərq budur: video səni görmür. Mentor isə sənin məhz <strong>nədə ilişdiyini</strong> tapır, orada dayanır, düzəldir. Bu bir dərsin dəyəri onlarca videodan çoxdur.</p>
+      <div class="pillar-quote"><p>"Ən sürətli öyrənmə yolu: düzgün insan sənin yanında oturub sənə baxanda baş verir."</p></div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-head">
+        <div class="pillar-icon">III</div>
+        <div><div class="pillar-lbl">Pillər 03</div><div class="pillar-name">Proqram</div></div>
+      </div>
+      <p class="pillar-body">"Bu həftə nə çəkim?" — bu sual artıq sənin problemin olmamalıdır. Artmonia-da hər tələbənin <strong>şəxsi inkişaf xəritəsi</strong> var. Hər dərs əvvəlkinin üzərində qurulur. Heç bir boşluq, heç bir iz itirmə.</p>
+      <div class="pillar-quote"><p>"Hər sabah masaya oturanda nə edəcəyini bilirsənsə — artıq yarısını qazanmısan."</p></div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-head">
+        <div class="pillar-icon">IV</div>
+        <div><div class="pillar-lbl">Pillər 04</div><div class="pillar-name">Mühit</div></div>
+      </div>
+      <p class="pillar-body">Tək öyrənəndə ilk əngəldə dayanırsan. Düzgün mühitdə isə — ətrafındakıların irəliləməsi sənə də enerji verir. Artmonia-dakı tələbələr yarışmır — <strong>bir-birini çəkir.</strong></p>
+      <div class="pillar-quote"><p>"Ən yaxın 5 insanının ortalaması olursan. Rəssam mühitini seç."</p></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TRUTH -->
+<div class="truth">
+  <div class="section-tag reveal"><span class="badge-dot"></span> Açıq Danışaq</div>
+  <h2 class="truth-title reveal d1">Tək başına öyrənmək <em>pulsuz deyil.</em><br>Vaxtını ödəyirsən.</h2>
+
+  <div class="stats reveal d2">
+    <div class="stat"><span class="stat-val">3×</span><span class="stat-txt">daha uzun vaxt eyni nəticəyə çatmaq üçün</span></div>
+    <div class="stat"><span class="stat-val">87%</span><span class="stat-txt">tək başlayanlar 3 ayda tamamilə dayanır</span></div>
+  </div>
+
+  <p class="truth-body reveal d3">
+    1 video baxırsan, digərinə keçirsən. Hər müəllim öz üslubunda danışır. Heç biri sənin səhvini tapmır. Heç biri sabah sənin işini yoxlamır. Heç biri sənin üçün cavabdeh deyil.<br><br>
+    Nəticə? <strong>İllər keçir. Portfolio formalaşmır. Sən "öyrənən adam" olaraq qalırsan — rəssam olmursan.</strong><br><br>
+    Sistem bu ilə mübarizə edir. 4 il, yüzlərlə tələbə, bir nəticə.
+  </p>
+</div>
+
+<!-- CTA -->
+<section class="cta" id="cta">
+  <div class="cta-pill reveal"><span class="badge-dot"></span> Pulsuz · Öhdəliksiz</div>
+  <h2 class="cta-title reveal d1">Ödənişsiz<br><em>Konsultasiya</em></h2>
+  <p class="cta-desc reveal d2">
+    15 dəqiqə. Sənin səviyyən, sənin hədəfin, sənin yolun. Heç bir öhdəlik yoxdur.
+  </p>
+
+  <div class="reveal d3">
+    <a href="https://wa.me/994103831393?text=Salam%2C%20m%C9%99n%20sistemli%20r%C9%99sm%20qruplar%C4%B1na%20qo%C5%9Fulmaq%20istəyirəm" class="btn-primary">
+      Konsultasiyaya Yazıl <span class="btn-arr">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER SENTINEL -->
+<div id="sentinel" style="height:1px;"></div>
+
+<footer class="footer">
+  <div class="footer-brand">Artmonia Academy</div>
+  <div class="footer-copy">Bakı · 2025</div>
+</footer>
+
+<!-- BOTTOM POPUP -->
+<div class="popup-overlay" id="popup">
+  <div class="popup-box">
+    <div class="popup-handle"></div>
+    <span class="popup-emoji">🎉</span>
+    <h3 class="popup-title">Təbriklər!<br><em>Sona qədər oxudun.</em></h3>
+    <p class="popup-desc">
+      Tənbəllik etmədin — bu artıq sənin haqqında çox şey deyir. Və buna görə sənə xüsusi bir hədiyyəmiz var.
+    </p>
+    <div class="popup-badge">
+      🎁 &nbsp; Konsultasiyada <strong style="color:var(--orange)">10% endirim</strong>
+    </div>
+    <p class="section-desc" style="text-align:center; font-size:13px; margin-bottom:20px;">
+      Bizə indi yazsan — bu endirimi avtomatik alacaqsan.
+    </p>
+    <a href="https://wa.me/994103831393?text=Salam%2C%20m%C9%99n%20sistemli%20r%C9%99sm%20qruplar%C4%B1na%20qo%C5%9Fulmaq%20istəyirəm%20v%C9%99%20s%C9%99hif%C9%99ni%20sona%20q%C9%99d%C9%99r%20oxudum%20%E2%80%94%2010%25%20endirim%20almaq%20istəyirəm" class="btn-primary" style="margin-bottom:0;">
+      İndi Yazım — 10% Endirimlə <span class="btn-arr">→</span>
+    </a>
+    <span class="popup-close" onclick="closePopup()">Bağla</span>
+  </div>
+</div>
+
+<script>
+  // Scroll reveal
+  const io = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Diag toggle
+  function tog(c) {
+    const on = c.classList.contains('active');
+    document.querySelectorAll('.diag-card').forEach(x => x.classList.remove('active'));
+    if(!on) c.classList.add('active');
+  }
+
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const p = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    document.getElementById('prog').style.width = p + '%';
+  });
+
+  // Bottom popup — trigger when sentinel enters viewport
+  let popupShown = false;
+  const sentinel = document.getElementById('sentinel');
+  const popupObs = new IntersectionObserver(entries => {
+    if(entries[0].isIntersecting && !popupShown) {
+      popupShown = true;
+      setTimeout(() => {
+        document.getElementById('popup').classList.add('show');
+      }, 600);
+    }
+  }, { threshold: 1.0 });
+  popupObs.observe(sentinel);
+
+  function closePopup() {
+    document.getElementById('popup').classList.remove('show');
+  }
+
+  // Close on overlay click
+  document.getElementById('popup').addEventListener('click', function(e) {
+    if(e.target === this) closePopup();
+  });
+</script>
+</body>
+</html>
