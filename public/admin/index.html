@@ -39,19 +39,46 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <p>Admin Panel</p>
   </div>
 
+  <!-- Tabs -->
+  <div class="tabs" style="display:flex;gap:0;margin-bottom:24px;border-radius:10px;overflow:hidden;border:1px solid var(--border)">
+    <button class="tab-btn active" onclick="switchTab('login')" id="tabLogin" style="flex:1;padding:12px;background:var(--accent);color:#fff;border:none;font-family:'Inter',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s">Daxil ol</button>
+    <button class="tab-btn" onclick="switchTab('register')" id="tabRegister" style="flex:1;padding:12px;background:var(--bg2);color:var(--text3);border:none;font-family:'Inter',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s">Qeydiyyat</button>
+  </div>
+
   <div id="msg" class="msg-box"></div>
 
+  <!-- Login Form -->
   <form id="loginForm" onsubmit="handleLogin(event)">
     <div class="form-group">
       <label>Email</label>
       <input type="email" id="emailInput" placeholder="admin@artmonia.com" required>
     </div>
     <div class="form-group">
-      <label>Sifre</label>
-      <input type="password" id="passwordInput" placeholder="Sifrenizi daxil edin" required>
+      <label>Şifrə</label>
+      <input type="password" id="passwordInput" placeholder="Şifrənizi daxil edin" required>
     </div>
     <button type="submit" class="pill-btn" id="loginBtn">
       <span class="btn-text">Daxil ol</span>
+      <span class="spinner"></span>
+    </button>
+  </form>
+
+  <!-- Register Form (müvəqqəti) -->
+  <form id="registerForm" onsubmit="handleRegister(event)" style="display:none">
+    <div class="form-group">
+      <label>Ad Soyad</label>
+      <input type="text" id="regName" placeholder="Ad Soyad" required>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="regEmail" placeholder="email@example.com" required>
+    </div>
+    <div class="form-group">
+      <label>Şifrə (minimum 6 simvol)</label>
+      <input type="password" id="regPassword" placeholder="Şifrə təyin edin" required minlength="6">
+    </div>
+    <button type="submit" class="pill-btn" id="regBtn">
+      <span class="btn-text">Qeydiyyatdan keç</span>
       <span class="spinner"></span>
     </button>
   </form>
@@ -61,6 +88,48 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 <script src="/js/auth-kabinet.js"></script>
 <script>
 const msgBox = document.getElementById('msg');
+
+function switchTab(tab) {
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('tabLogin').style.background = tab === 'login' ? 'var(--accent)' : 'var(--bg2)';
+  document.getElementById('tabLogin').style.color = tab === 'login' ? '#fff' : 'var(--text3)';
+  document.getElementById('tabRegister').style.background = tab === 'register' ? 'var(--accent)' : 'var(--bg2)';
+  document.getElementById('tabRegister').style.color = tab === 'register' ? '#fff' : 'var(--text3)';
+  clearMsg();
+}
+
+async function handleRegister(e) {
+  e.preventDefault();
+  clearMsg();
+  const btn = document.getElementById('regBtn');
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  if (!name || !email || !password) return showMsg('Bütün sahələri doldurun', 'error');
+  if (password.length < 6) return showMsg('Şifrə minimum 6 simvol olmalıdır', 'error');
+
+  setLoading(btn, true);
+  try {
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: name } }
+    });
+    if (error) throw error;
+    showMsg('Qeydiyyat uğurlu! İndi "Daxil ol" tab-ından daxil ola bilərsiniz.', 'success');
+    // Qeydiyyat uğurlu — tab-ı gizlət
+    document.getElementById('tabRegister').style.display = 'none';
+    setTimeout(() => switchTab('login'), 1500);
+  } catch (err) {
+    const msg = err.message?.includes('already registered')
+      ? 'Bu email artıq qeydiyyatdadır'
+      : (err.message || 'Qeydiyyat uğursuz oldu');
+    showMsg(msg, 'error');
+  } finally {
+    setLoading(btn, false);
+  }
+}
 
 function showMsg(text, type) {
   msgBox.textContent = text;
