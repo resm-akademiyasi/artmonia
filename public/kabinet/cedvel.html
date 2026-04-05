@@ -3,126 +3,443 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dərs Cədvəli — Artmonia Kabinet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Cədvəl — Artmonia Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #0b0b1a; color: #fff; min-height: 100vh; display: flex; }
-    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* Sidebar */
-    .sidebar { width: 260px; background: #14122a; border-right: 1px solid #252240; min-height: 100vh; padding: 24px 16px; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
-    .sidebar-logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #f97316; margin-bottom: 32px; text-align: center; text-decoration: none; display: block; }
-    .sidebar-nav { list-style: none; flex: 1; }
-    .sidebar-nav li { margin-bottom: 4px; }
-    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: #b0acd0; text-decoration: none; font-size: 14px; transition: all .2s; }
-    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(249,115,22,.12); color: #f97316; }
-    .sidebar-nav a .icon { font-size: 18px; width: 24px; text-align: center; }
-    .sidebar-bottom { border-top: 1px solid #252240; padding-top: 16px; margin-top: 16px; }
-    .sidebar-bottom button { background: none; border: 1px solid #252240; color: #b0acd0; padding: 10px 14px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 14px; transition: all .2s; }
-    .sidebar-bottom button:hover { border-color: #f97316; color: #f97316; }
+    :root {
+      --bg: #0b0b1a;
+      --bg2: #0f0e24;
+      --card: #14122a;
+      --card2: #1a1835;
+      --border: #252240;
+      --accent: #f97316;
+      --accent-hover: #fb923c;
+      --text: #ffffff;
+      --text2: #b0acd0;
+      --text3: #6b6790;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --red: #f87171;
+      --sidebar-w: 260px;
+    }
 
-    /* Main */
-    .main { margin-left: 260px; flex: 1; padding: 32px; width: calc(100% - 260px); }
-    .page-title { font-size: 28px; margin-bottom: 24px; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
 
-    /* Cards */
-    .empty-state { text-align: center; padding: 60px 20px; color: #6b6790; font-size: 16px; }
-    .today-label { display: inline-block; background: #f97316; color: #fff; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-left: 8px; text-transform: uppercase; }
-    .day-section { margin-bottom: 24px; }
-    .day-title { font-size: 18px; color: #b0acd0; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .schedule-card { background: #14122a; border: 1px solid #252240; border-radius: 12px; padding: 16px 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 16px; transition: border-color .2s; }
-    .schedule-card:hover { border-color: #f97316; }
-    .schedule-card.today { border-left: 3px solid #f97316; }
-    .sc-time { font-size: 15px; font-weight: 600; color: #f97316; min-width: 90px; }
-    .sc-info { flex: 1; }
-    .sc-room { font-size: 13px; color: #6b6790; margin-top: 2px; }
-    .sc-teacher { font-size: 13px; color: #b0acd0; }
-    .loading { text-align: center; padding: 40px; color: #6b6790; }
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
 
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform .3s ease;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: .935rem;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all .2s ease;
+    }
+
+    .sidebar-nav a:hover {
+      color: var(--text);
+      background: rgba(249, 115, 22, .06);
+    }
+
+    .sidebar-nav a.active {
+      color: var(--text);
+      border-left-color: var(--accent);
+      background: rgba(249, 115, 22, .1);
+    }
+
+    .sidebar-nav a .nav-icon {
+      font-size: 1.15rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar-bottom {
+      padding: 16px 24px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-logout {
+      width: 100%;
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text2);
+      font-size: .875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+
+    .btn-logout:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      margin-left: var(--sidebar-w);
+      padding: 32px 36px 48px;
+      min-height: 100vh;
+    }
+
+    /* ── Hamburger ── */
+    .hamburger {
+      display: none;
+      position: fixed;
+      top: 16px; left: 16px;
+      z-index: 200;
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 20px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 90;
+    }
+
+    .sidebar-overlay.show { display: block; }
+
+    /* ── Page Title ── */
+    .page-title {
+      font-size: 1.65rem;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+
+    /* ── Info Card ── */
+    .info-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 28px;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .info-item .info-label {
+      font-size: .8rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .info-item .info-value {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ── Schedule Cards ── */
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .day-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .day-card:hover {
+      border-color: rgba(249, 115, 22, .35);
+      transform: translateY(-2px);
+    }
+
+    .day-card.today {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(249,115,22,.08), var(--card));
+    }
+
+    .day-card .day-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .day-card.today .day-name::after {
+      content: ' (Bu gun)';
+      color: var(--accent);
+      font-size: .8rem;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .day-card .day-time {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text3);
+      font-size: 1.05rem;
+    }
+
+    .empty-state .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    /* ── Loading ── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--border) 25%, rgba(255,255,255,.06) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    /* ── Responsive ── */
     @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main { margin-left: 0; width: 100%; padding: 20px 16px; }
+      .hamburger { display: flex; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; padding: 80px 18px 36px; }
+      .info-card { flex-direction: column; gap: 16px; }
+      .schedule-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Hamburger (mobile) -->
+  <button class="hamburger" id="hamburger" aria-label="Menyu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
   <!-- Sidebar -->
-  <aside class="sidebar">
-    <a href="/kabinet/dashboard.html" class="sidebar-logo">Artmonia</a>
-    <ul class="sidebar-nav">
-      <li><a href="/kabinet/dashboard.html"><span class="icon">🏠</span> Ana Səhifə</a></li>
-      <li><a href="/kabinet/cedvel.html" class="active"><span class="icon">📅</span> Dərs Cədvəli</a></li>
-      <li><a href="/kabinet/odenisler.html"><span class="icon">💳</span> Ödənişlər</a></li>
-      <li><a href="/kabinet/materiallar.html"><span class="icon">📂</span> Materiallar</a></li>
-      <li><a href="/kabinet/reyler.html"><span class="icon">💬</span> Müəllim Rəyləri</a></li>
-      <li><a href="/kabinet/neticelerim.html"><span class="icon">🖼️</span> Əsərlərim</a></li>
-      <li><a href="/kabinet/gamification.html"><span class="icon">🏆</span> Gamification</a></li>
-    </ul>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">Artmonia</div>
+    <nav class="sidebar-nav">
+      <a href="/kabinet/dashboard.html">
+        <span class="nav-icon">&#127968;</span> &#399;sas
+      </a>
+      <a href="/kabinet/cedvel.html" class="active">
+        <span class="nav-icon">&#128197;</span> C&#601;dv&#601;l
+      </a>
+      <a href="/kabinet/odenisler.html">
+        <span class="nav-icon">&#128179;</span> &#214;d&#601;ni&#351;l&#601;r
+      </a>
+      <a href="/kabinet/materiallar.html">
+        <span class="nav-icon">&#128218;</span> Materiallar
+      </a>
+      <a href="/kabinet/reyler.html">
+        <span class="nav-icon">&#11088;</span> R&#601;yl&#601;r
+      </a>
+      <a href="/kabinet/neticelerim.html">
+        <span class="nav-icon">&#128444;&#65039;</span> N&#601;tic&#601;l&#601;rim
+      </a>
+      <a href="/kabinet/gamification.html">
+        <span class="nav-icon">&#127918;</span> Gamification
+      </a>
+    </nav>
     <div class="sidebar-bottom">
-      <button onclick="logout()">Çıxış</button>
+      <button class="btn-logout" onclick="logout()">&#128682; &#199;&#305;x&#305;&#351;</button>
     </div>
   </aside>
 
   <!-- Main Content -->
   <main class="main">
-    <h1 class="page-title">Dərs Cədvəli</h1>
-    <div id="content"><div class="loading">Yüklənir...</div></div>
+    <h1 class="page-title">&#128197; D&#601;rs C&#601;dv&#601;li</h1>
+
+    <div id="groupInfo"></div>
+    <div id="scheduleContent">
+      <div class="schedule-grid">
+        <div class="day-card skeleton" style="height:100px"></div>
+        <div class="day-card skeleton" style="height:100px"></div>
+        <div class="day-card skeleton" style="height:100px"></div>
+      </div>
+    </div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/js/supabase-kabinet.js"></script>
   <script src="/js/auth-kabinet.js"></script>
   <script src="/js/gamification.js"></script>
-  <script>
-    requireAuth();
 
-    const DAY_NAMES = ['Bazar', 'Bazar ertəsi', 'Çərşənbə axşamı', 'Çərşənbə', 'Cümə axşamı', 'Cümə', 'Şənbə'];
-    const DAY_ORDER = ['Bazar ertəsi', 'Çərşənbə axşamı', 'Çərşənbə', 'Cümə axşamı', 'Cümə', 'Şənbə', 'Bazar'];
+  <script>
+    requireRole('student');
+
+    /* ── Mobile sidebar toggle ── */
+    const hamburger = document.getElementById('hamburger');
+    const sidebar   = document.getElementById('sidebar');
+    const overlay   = document.getElementById('sidebarOverlay');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    });
+
+    overlay.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+
+    /* ── Days map for today highlight ── */
+    const DAY_MAP = {
+      1: 'Bazar ertesi',
+      2: 'Chershenbeh axshami',
+      3: 'Chershenbeh',
+      4: 'Cume axshami',
+      5: 'Cumeh',
+      6: 'Shenbeh',
+      0: 'Bazar'
+    };
+
+    const DAY_NAMES_AZ = [
+      'Bazar ertesi', 'Bazar ertesi',
+      'Chershenbeh axshami', 'Chershenbeh axshami',
+      'Chershenbeh', 'Chershenbeh',
+      'Cume axshami', 'Cume axshami',
+      'Cumeh', 'Cumeh',
+      'Shenbeh', 'Shenbeh',
+      'Bazar', 'Bazar'
+    ];
+
+    function normalizeDay(str) {
+      return (str || '').toLowerCase().replace(/[\u0259\u0131\u00fc\u00f6\u015f\u00e7]/g, function(c) {
+        return { '\u0259': 'e', '\u0131': 'i', '\u00fc': 'u', '\u00f6': 'o', '\u015f': 'sh', '\u00e7': 'ch' }[c] || c;
+      }).replace(/\s+/g, ' ').trim();
+    }
+
+    function isTodayDay(dayName) {
+      const todayIdx = new Date().getDay();
+      const todayNorm = normalizeDay(DAY_MAP[todayIdx]);
+      return normalizeDay(dayName) === todayNorm;
+    }
 
     async function loadSchedule() {
       const student = await getStudent();
-      const container = document.getElementById('content');
+      if (!student) return;
 
-      if (!student || !student.groups) {
-        container.innerHTML = '<div class="empty-state">Hələ qrupa təyin edilməmisiniz</div>';
+      const groupInfo = document.getElementById('groupInfo');
+      const content = document.getElementById('scheduleContent');
+
+      const group = student.groups;
+      if (!group) {
+        groupInfo.innerHTML = '';
+        content.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128197;</div><p>H&#601;l&#601; qrupa t&#601;yin edilm&#601;misiniz</p></div>';
         return;
       }
 
-      const schedule = student.groups.schedule;
-      if (!schedule || !schedule.length) {
-        container.innerHTML = '<div class="empty-state">Cədvəl hələ təyin edilməyib</div>';
+      // Info card
+      groupInfo.innerHTML =
+        '<div class="info-card">' +
+          '<div class="info-item"><span class="info-label">Qrup</span><span class="info-value">' + (group.name || '&#8212;') + '</span></div>' +
+          '<div class="info-item"><span class="info-label">M&#252;&#601;llim</span><span class="info-value">' + (group.teacher_name || '&#8212;') + '</span></div>' +
+          '<div class="info-item"><span class="info-label">Otaq</span><span class="info-value">' + (group.room || '&#8212;') + '</span></div>' +
+        '</div>';
+
+      // Schedule
+      const schedule = group.schedule;
+      if (!schedule || !Array.isArray(schedule) || schedule.length === 0) {
+        content.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128197;</div><p>C&#601;dv&#601;l m&#601;lumat&#305; yoxdur</p></div>';
         return;
       }
 
-      const todayName = DAY_NAMES[new Date().getDay()];
-
-      // Group by day
-      const byDay = {};
-      schedule.forEach(item => {
-        if (!byDay[item.day]) byDay[item.day] = [];
-        byDay[item.day].push(item);
+      let html = '<div class="schedule-grid">';
+      schedule.forEach(function(item) {
+        const dayName = item.gun || item.day || '';
+        const time = item.saat || item.time || '';
+        const today = isTodayDay(dayName);
+        html += '<div class="day-card' + (today ? ' today' : '') + '">' +
+          '<div class="day-name">' + dayName + '</div>' +
+          '<div class="day-time">' + time + '</div>' +
+        '</div>';
       });
-
-      let html = '';
-      DAY_ORDER.forEach(day => {
-        if (!byDay[day]) return;
-        const isToday = day === todayName;
-        html += `<div class="day-section">
-          <div class="day-title">${day}${isToday ? '<span class="today-label">Bu gün</span>' : ''}</div>`;
-        byDay[day].sort((a, b) => (a.time || '').localeCompare(b.time || '')).forEach(item => {
-          html += `<div class="schedule-card${isToday ? ' today' : ''}">
-            <div class="sc-time">${item.time || '--:--'}</div>
-            <div class="sc-info">
-              <div class="sc-teacher">${item.teacher || 'Müəllim təyin edilməyib'}</div>
-              <div class="sc-room">${item.room ? 'Otaq: ' + item.room : ''}</div>
-            </div>
-          </div>`;
-        });
-        html += '</div>';
-      });
-
-      container.innerHTML = html || '<div class="empty-state">Cədvəl hələ təyin edilməyib</div>';
+      html += '</div>';
+      content.innerHTML = html;
     }
 
     loadSchedule();

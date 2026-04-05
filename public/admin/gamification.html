@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gamification - Artmonia Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b1a;--bg2:#0f0e24;--card:#14122a;--card2:#1a1835;--border:#252240;--accent:#f97316;--accent2:#ea580c;--text:#fff;--text2:#b0acd0;--text3:#6b6790;--green:#4ade80;--blue:#60a5fa;--red:#f87171;--sidebar-w:250px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--card);border-right:1px solid var(--border);padding:24px 16px;display:flex;flex-direction:column;z-index:100;transition:transform .3s}
+.sidebar .logo{font-family:'Playfair Display',serif;color:var(--accent);font-size:1.5rem;font-weight:700;margin-bottom:32px;padding:0 8px}
+.sidebar nav{flex:1;display:flex;flex-direction:column;gap:2px}
+.sidebar nav a{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--text2);text-decoration:none;font-size:.9rem;font-weight:500;transition:all .15s}
+.sidebar nav a:hover,.sidebar nav a.active{background:var(--bg2);color:var(--text)}
+.sidebar nav a.active{border-left:3px solid var(--accent);color:var(--accent)}
+.sidebar .divider{height:1px;background:var(--border);margin:8px 0}
+.sidebar .divider-label{color:var(--text3);font-size:.75rem;padding:4px 12px;text-transform:uppercase;letter-spacing:1px}
+.sidebar .logout-btn{margin-top:auto;display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--red);background:none;border:none;font-size:.9rem;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;width:100%;transition:background .15s}
+.sidebar .logout-btn:hover{background:rgba(248,113,113,.1)}
+.main{margin-left:var(--sidebar-w);padding:32px}
+.page-title{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:24px}
+.section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:24px}
+.section h2{font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:16px;color:var(--accent)}
+.inline-form{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.inline-form .form-group{flex:1;min-width:200px}
+.inline-form .form-group label{display:block;color:var(--text2);font-size:.85rem;font-weight:500;margin-bottom:6px}
+.inline-form .form-group select,.inline-form .form-group input{width:100%;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;font-family:'Inter',sans-serif;outline:none}
+.inline-form .form-group select:focus,.inline-form .form-group input:focus{border-color:var(--accent)}
+.btn{padding:10px 20px;border-radius:50px;font-size:.9rem;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--accent2)}
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:12px 16px;color:var(--text3);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;font-size:.9rem;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.78rem;font-weight:600}
+.badge-gold{background:rgba(251,191,36,.15);color:#fbbf24}
+.badge-orange{background:rgba(249,115,22,.15);color:var(--accent)}
+.rank-num{font-weight:700;color:var(--accent);font-size:1.1rem}
+.msg-box{padding:12px 16px;border-radius:10px;font-size:.9rem;margin-bottom:16px;display:none;line-height:1.4}
+.msg-box.error{display:block;background:rgba(248,113,113,.12);border:1px solid var(--red);color:var(--red)}
+.msg-box.success{display:block;background:rgba(74,222,128,.12);border:1px solid var(--green);color:var(--green)}
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--text);font-size:1.2rem}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.overlay.open{display:block}.hamburger{display:block}
+  .main{margin-left:0;padding:24px 16px;padding-top:60px}
+  .inline-form{flex-direction:column}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo">Artmonia Admin</div>
+  <nav id="adminNav">
+    <a href="/admin/dashboard.html" data-roles="super_admin">&#128202; Dashboard</a>
+    <a href="/admin/telebeler.html" data-roles="super_admin,manager">&#128101; Telebeler</a>
+    <a href="/admin/qruplar.html" data-roles="super_admin,manager">&#128203; Qruplar</a>
+    <a href="/admin/odenisler.html" data-roles="super_admin,manager">&#128176; Odenisler</a>
+    <a href="/admin/gamification.html" class="active" data-roles="super_admin,manager">&#127942; Gamification</a>
+    <a href="/admin/hesabat.html" data-roles="super_admin,manager">&#128200; Hesabat</a>
+    <a href="/admin/istifadeciler.html" data-roles="super_admin">&#128100; Istifadeciler</a>
+    <div class="divider"></div>
+    <div class="divider-label">Muellim</div>
+    <a href="/admin/muellim-qrup.html" data-roles="teacher,super_admin">&#127891; Qrupum</a>
+    <a href="/admin/muellim-tapshiriq.html" data-roles="teacher,super_admin">&#128221; Tapshiriqlar</a>
+    <a href="/admin/muellim-material.html" data-roles="teacher,super_admin">&#128196; Materiallar</a>
+  </nav>
+  <button class="logout-btn" onclick="logout()">&#128682; Chixish</button>
+</aside>
+
+<main class="main">
+  <h1 class="page-title">Gamification</h1>
+
+  <div id="msgGlobal" class="msg-box"></div>
+
+  <!-- Monthly Star -->
+  <div class="section">
+    <h2>&#127775; Ayin Telebesi Sec</h2>
+    <div class="inline-form">
+      <div class="form-group"><label>Telebe</label><select id="starStudent"><option value="">Secin...</option></select></div>
+      <button class="btn btn-accent" onclick="selectMonthlyStar()">Sec</button>
+    </div>
+  </div>
+
+  <!-- Badge (super_admin only) -->
+  <div class="section" id="badgeSection">
+    <h2>&#127941; Badge Ver</h2>
+    <div class="inline-form">
+      <div class="form-group"><label>Telebe</label><select id="badgeStudent"><option value="">Secin...</option></select></div>
+      <div class="form-group"><label>Badge Novu</label>
+        <select id="badgeType">
+          <option value="monthly_star">Ayin Telebesi</option>
+          <option value="first_artwork">Ilk Eser</option>
+          <option value="perfect_attendance">Tam Davamiyyet</option>
+          <option value="creative_genius">Yaradici Dahi</option>
+          <option value="team_player">Komanda Oyuncusu</option>
+          <option value="fast_learner">Tez Oyrenen</option>
+        </select>
+      </div>
+      <button class="btn btn-accent" onclick="giveBadge()">Ver</button>
+    </div>
+  </div>
+
+  <!-- XP Ranking -->
+  <h2 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:16px">XP Siralama</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Ad</th><th>Qrup</th><th>XP</th><th>Seviye</th></tr></thead>
+      <tbody id="rankBody"><tr><td colspan="5" style="color:var(--text3);text-align:center">Yuklenilir...</td></tr></tbody>
+    </table>
+  </div>
+</main>
+
+<script src="/js/supabase-kabinet.js"></script>
+<script src="/js/auth-kabinet.js"></script>
+<script>
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open')}
+
+let allStudents=[], currentRole=null;
+
+function levelEmoji(xp){
+  if(xp>=200) return '&#128142;';
+  if(xp>=100) return '&#129351;';
+  if(xp>=50)  return '&#129352;';
+  return '&#129353;';
+}
+
+function levelName(xp){
+  if(xp>=200) return 'Almaz';
+  if(xp>=100) return 'Qizil';
+  if(xp>=50)  return 'Gumush';
+  return 'Brinc';
+}
+
+function showMsg(text,type){
+  const el=document.getElementById('msgGlobal');
+  el.textContent=text;
+  el.className='msg-box '+type;
+  setTimeout(()=>{el.className='msg-box'},3000);
+}
+
+async function init(){
+  const ok=await requireRole('super_admin','manager');
+  if(!ok) return;
+  currentRole=await getRole();
+  filterNav(currentRole);
+
+  // Hide badge section for non-super_admin
+  if(currentRole!=='super_admin') document.getElementById('badgeSection').style.display='none';
+
+  await loadStudents();
+  renderRanking();
+}
+
+function filterNav(role){
+  document.querySelectorAll('#adminNav a').forEach(a=>{
+    const roles=a.dataset.roles?a.dataset.roles.split(','):[];
+    if(roles.length&&!roles.includes(role)) a.style.display='none';
+  });
+}
+
+async function loadStudents(){
+  const{data}=await sb.from('students').select('*, groups(name)').eq('status','active').order('xp',{ascending:false});
+  allStudents=data||[];
+  const starSel=document.getElementById('starStudent');
+  const badgeSel=document.getElementById('badgeStudent');
+  allStudents.forEach(s=>{
+    const opt=`<option value="${s.id}">${s.full_name}</option>`;
+    starSel.innerHTML+=opt;
+    badgeSel.innerHTML+=opt;
+  });
+}
+
+function renderRanking(){
+  const tbody=document.getElementById('rankBody');
+  if(!allStudents.length){tbody.innerHTML='<tr><td colspan="5" style="color:var(--text3);text-align:center">Telebe tapilmadi</td></tr>';return}
+  tbody.innerHTML=allStudents.map((s,i)=>{
+    const xp=s.xp||0;
+    return `<tr>
+      <td><span class="rank-num">${i+1}</span></td>
+      <td>${s.full_name||'-'}</td>
+      <td>${s.groups?.name||'-'}</td>
+      <td>${xp}</td>
+      <td>${levelEmoji(xp)} ${levelName(xp)}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function selectMonthlyStar(){
+  const sid=document.getElementById('starStudent').value;
+  if(!sid) return showMsg('Telebe secin','error');
+  try{
+    // Insert badge
+    await sb.from('badges').insert({student_id:sid,badge_type:'monthly_star',awarded_at:new Date().toISOString()});
+    // Add 10 XP
+    const student=allStudents.find(s=>s.id===sid);
+    const newXp=(student?.xp||0)+10;
+    await sb.from('students').update({xp:newXp}).eq('id',sid);
+    // Log point
+    const user=await getUser();
+    await sb.from('point_log').insert({student_id:sid,points:10,action:'monthly_star',created_by:user?.id});
+    showMsg('Ayin telebesi secildi ve 10 XP verildi!','success');
+    // Reload
+    const{data}=await sb.from('students').select('*, groups(name)').eq('status','active').order('xp',{ascending:false});
+    allStudents=data||[];
+    renderRanking();
+  }catch(err){
+    showMsg(err.message||'Xeta bash verdi','error');
+  }
+}
+
+async function giveBadge(){
+  const sid=document.getElementById('badgeStudent').value;
+  const type=document.getElementById('badgeType').value;
+  if(!sid) return showMsg('Telebe secin','error');
+  try{
+    await sb.from('badges').insert({student_id:sid,badge_type:type,awarded_at:new Date().toISOString()});
+    showMsg(`"${type}" badge verildi!`,'success');
+  }catch(err){
+    showMsg(err.message||'Xeta bash verdi','error');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

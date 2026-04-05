@@ -3,186 +3,631 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gamification — Artmonia Kabinet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Gamification — Artmonia Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #0b0b1a; color: #fff; min-height: 100vh; display: flex; }
-    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .sidebar { width: 260px; background: #14122a; border-right: 1px solid #252240; min-height: 100vh; padding: 24px 16px; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
-    .sidebar-logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #f97316; margin-bottom: 32px; text-align: center; text-decoration: none; display: block; }
-    .sidebar-nav { list-style: none; flex: 1; }
-    .sidebar-nav li { margin-bottom: 4px; }
-    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: #b0acd0; text-decoration: none; font-size: 14px; transition: all .2s; }
-    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(249,115,22,.12); color: #f97316; }
-    .sidebar-nav a .icon { font-size: 18px; width: 24px; text-align: center; }
-    .sidebar-bottom { border-top: 1px solid #252240; padding-top: 16px; margin-top: 16px; }
-    .sidebar-bottom button { background: none; border: 1px solid #252240; color: #b0acd0; padding: 10px 14px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 14px; transition: all .2s; }
-    .sidebar-bottom button:hover { border-color: #f97316; color: #f97316; }
+    :root {
+      --bg: #0b0b1a;
+      --bg2: #0f0e24;
+      --card: #14122a;
+      --card2: #1a1835;
+      --border: #252240;
+      --accent: #f97316;
+      --accent-hover: #fb923c;
+      --text: #ffffff;
+      --text2: #b0acd0;
+      --text3: #6b6790;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --sidebar-w: 260px;
+    }
 
-    .main { margin-left: 260px; flex: 1; padding: 32px; width: calc(100% - 260px); }
-    .page-title { font-size: 28px; margin-bottom: 24px; }
-    .loading { text-align: center; padding: 40px; color: #6b6790; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
 
-    /* XP Section */
-    .xp-section { background: #14122a; border: 1px solid #252240; border-radius: 16px; padding: 28px; margin-bottom: 28px; }
-    .xp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .xp-level { font-size: 28px; }
-    .xp-points { font-size: 20px; font-weight: 700; color: #f97316; }
-    .xp-bar { background: #252240; border-radius: 10px; height: 14px; overflow: hidden; }
-    .xp-fill { background: linear-gradient(90deg, #f97316, #fb923c); height: 100%; border-radius: 10px; transition: width .5s; }
-    .xp-next { font-size: 13px; color: #6b6790; margin-top: 10px; }
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
 
-    /* Section Titles */
-    .section-title { font-size: 20px; margin-bottom: 16px; margin-top: 8px; }
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform .3s ease;
+    }
 
-    /* Badges Grid */
-    .badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin-bottom: 28px; }
-    .badge-card { background: #14122a; border: 1px solid #252240; border-radius: 12px; padding: 20px; text-align: center; transition: border-color .2s; }
-    .badge-card:hover { border-color: #f97316; }
-    .badge-emoji { font-size: 36px; margin-bottom: 8px; }
-    .badge-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-    .badge-desc { font-size: 12px; color: #6b6790; margin-bottom: 6px; }
-    .badge-date { font-size: 11px; color: #b0acd0; }
-    .no-badges { text-align: center; padding: 30px; color: #6b6790; font-size: 14px; }
+    .sidebar-logo {
+      padding: 28px 24px 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+    }
 
-    /* Point History Table */
-    .points-table { width: 100%; border-collapse: collapse; background: #14122a; border-radius: 12px; overflow: hidden; border: 1px solid #252240; margin-bottom: 28px; }
-    .points-table thead th { text-align: left; padding: 12px 16px; font-size: 12px; color: #6b6790; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid #252240; }
-    .points-table tbody td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid #252240; color: #b0acd0; }
-    .points-table tbody tr:last-child td { border-bottom: none; }
-    .pts-positive { color: #22c55e; font-weight: 600; }
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
 
-    /* Leaderboard */
-    .leaderboard { background: #14122a; border: 1px solid #252240; border-radius: 12px; overflow: hidden; }
-    .lb-row { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid #252240; }
-    .lb-row:last-child { border-bottom: none; }
-    .lb-rank { font-size: 20px; font-weight: 700; color: #f97316; min-width: 32px; text-align: center; }
-    .lb-rank.gold { color: #eab308; }
-    .lb-rank.silver { color: #94a3b8; }
-    .lb-rank.bronze { color: #b45309; }
-    .lb-name { flex: 1; font-size: 14px; }
-    .lb-name.me { color: #f97316; font-weight: 600; }
-    .lb-points { font-size: 14px; font-weight: 600; color: #f97316; }
-    .lb-empty { text-align: center; padding: 30px; color: #6b6790; font-size: 14px; }
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: .935rem;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all .2s ease;
+    }
+
+    .sidebar-nav a:hover {
+      color: var(--text);
+      background: rgba(249, 115, 22, .06);
+    }
+
+    .sidebar-nav a.active {
+      color: var(--text);
+      border-left-color: var(--accent);
+      background: rgba(249, 115, 22, .1);
+    }
+
+    .sidebar-nav a .nav-icon {
+      font-size: 1.15rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar-bottom {
+      padding: 16px 24px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-logout {
+      width: 100%;
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text2);
+      font-size: .875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+
+    .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      margin-left: var(--sidebar-w);
+      padding: 32px 36px 48px;
+      min-height: 100vh;
+    }
+
+    /* ── Hamburger ── */
+    .hamburger {
+      display: none;
+      position: fixed;
+      top: 16px; left: 16px;
+      z-index: 200;
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 20px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 90;
+    }
+
+    .sidebar-overlay.show { display: block; }
+
+    .page-title {
+      font-size: 1.65rem;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+
+    /* ── XP Section ── */
+    .xp-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 28px;
+    }
+
+    .xp-section .xp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .xp-section .xp-level {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .xp-section .xp-points {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .xp-section .xp-bar {
+      width: 100%;
+      height: 12px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .xp-section .xp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #fb923c);
+      border-radius: 999px;
+      transition: width .6s ease;
+    }
+
+    .xp-section .xp-next {
+      margin-top: 8px;
+      font-size: .85rem;
+      color: var(--text3);
+    }
+
+    /* ── Section Title ── */
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    /* ── Badges Grid ── */
+    .badges-section {
+      margin-bottom: 32px;
+    }
+
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .badge-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .badge-card:hover {
+      border-color: rgba(249,115,22,.35);
+      transform: translateY(-2px);
+    }
+
+    .badge-emoji {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+    }
+
+    .badge-name {
+      font-weight: 600;
+      font-size: .95rem;
+      margin-bottom: 4px;
+    }
+
+    .badge-desc {
+      font-size: .8rem;
+      color: var(--text3);
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .badge-date {
+      font-size: .75rem;
+      color: var(--text3);
+    }
+
+    .no-badges {
+      color: var(--text3);
+      font-size: .95rem;
+      padding: 20px;
+      text-align: center;
+    }
+
+    /* ── Table ── */
+    .table-section {
+      margin-bottom: 32px;
+    }
+
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 14px 18px;
+      font-size: .8rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+      background: var(--card2);
+    }
+
+    tbody td {
+      padding: 12px 18px;
+      font-size: .9rem;
+      color: var(--text2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(249,115,22,.04); }
+
+    .points-positive { color: var(--green); font-weight: 600; }
+
+    /* ── Leaderboard ── */
+    .leaderboard-section {
+      margin-bottom: 32px;
+    }
+
+    .lb-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .lb-row {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: border-color .2s;
+    }
+
+    .lb-row:hover {
+      border-color: rgba(249,115,22,.35);
+    }
+
+    .lb-row.me {
+      border-color: var(--accent);
+      background: rgba(249,115,22,.06);
+    }
+
+    .lb-rank {
+      font-size: 1.2rem;
+      font-weight: 700;
+      width: 36px;
+      text-align: center;
+      color: var(--text3);
+    }
+
+    .lb-row:nth-child(1) .lb-rank { color: #fbbf24; }
+    .lb-row:nth-child(2) .lb-rank { color: #c0c0c0; }
+    .lb-row:nth-child(3) .lb-rank { color: #cd7f32; }
+
+    .lb-name {
+      flex: 1;
+      font-weight: 500;
+      font-size: .95rem;
+    }
+
+    .lb-xp {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: .9rem;
+    }
+
+    .lb-level {
+      font-size: .8rem;
+      color: var(--text3);
+      min-width: 100px;
+      text-align: right;
+    }
+
+    /* ── Empty ── */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text3);
+      font-size: .95rem;
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--border) 25%, rgba(255,255,255,.06) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
 
     @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main { margin-left: 0; width: 100%; padding: 20px 16px; }
-      .badges-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+      .hamburger { display: flex; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; padding: 80px 18px 36px; }
+      .badges-grid { grid-template-columns: repeat(2, 1fr); }
+      .table-wrap { overflow-x: auto; }
+      table { min-width: 500px; }
     }
   </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <a href="/kabinet/dashboard.html" class="sidebar-logo">Artmonia</a>
-    <ul class="sidebar-nav">
-      <li><a href="/kabinet/dashboard.html"><span class="icon">🏠</span> Ana Səhifə</a></li>
-      <li><a href="/kabinet/cedvel.html"><span class="icon">📅</span> Dərs Cədvəli</a></li>
-      <li><a href="/kabinet/odenisler.html"><span class="icon">💳</span> Ödənişlər</a></li>
-      <li><a href="/kabinet/materiallar.html"><span class="icon">📂</span> Materiallar</a></li>
-      <li><a href="/kabinet/reyler.html"><span class="icon">💬</span> Müəllim Rəyləri</a></li>
-      <li><a href="/kabinet/neticelerim.html"><span class="icon">🖼️</span> Əsərlərim</a></li>
-      <li><a href="/kabinet/gamification.html" class="active"><span class="icon">🏆</span> Gamification</a></li>
-    </ul>
+
+  <button class="hamburger" id="hamburger" aria-label="Menyu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">Artmonia</div>
+    <nav class="sidebar-nav">
+      <a href="/kabinet/dashboard.html">
+        <span class="nav-icon">&#127968;</span> &#399;sas
+      </a>
+      <a href="/kabinet/cedvel.html">
+        <span class="nav-icon">&#128197;</span> C&#601;dv&#601;l
+      </a>
+      <a href="/kabinet/odenisler.html">
+        <span class="nav-icon">&#128179;</span> &#214;d&#601;ni&#351;l&#601;r
+      </a>
+      <a href="/kabinet/materiallar.html">
+        <span class="nav-icon">&#128218;</span> Materiallar
+      </a>
+      <a href="/kabinet/reyler.html">
+        <span class="nav-icon">&#11088;</span> R&#601;yl&#601;r
+      </a>
+      <a href="/kabinet/neticelerim.html">
+        <span class="nav-icon">&#128444;&#65039;</span> N&#601;tic&#601;l&#601;rim
+      </a>
+      <a href="/kabinet/gamification.html" class="active">
+        <span class="nav-icon">&#127918;</span> Gamification
+      </a>
+    </nav>
     <div class="sidebar-bottom">
-      <button onclick="logout()">Çıxış</button>
+      <button class="btn-logout" onclick="logout()">&#128682; &#199;&#305;x&#305;&#351;</button>
     </div>
   </aside>
 
   <main class="main">
-    <h1 class="page-title">Gamification</h1>
-    <div id="content"><div class="loading">Yüklənir...</div></div>
+    <h1 class="page-title">&#127918; Gamification</h1>
+
+    <!-- XP Bar -->
+    <div class="xp-card" id="xpSection">
+      <div class="skeleton" style="height:60px"></div>
+    </div>
+
+    <!-- Badges -->
+    <div class="badges-section">
+      <h2 class="section-title">Qazan&#305;lm&#305;&#351; Badge-l&#601;r</h2>
+      <div id="badgesGrid" class="badges-grid">
+        <div class="badge-card skeleton" style="height:130px"></div>
+        <div class="badge-card skeleton" style="height:130px"></div>
+        <div class="badge-card skeleton" style="height:130px"></div>
+      </div>
+    </div>
+
+    <!-- Point History -->
+    <div class="table-section">
+      <h2 class="section-title">XP Tarixi</h2>
+      <div id="pointHistory">
+        <div class="table-wrap">
+          <table><tbody><tr><td><div class="skeleton" style="height:20px"></div></td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaderboard -->
+    <div class="leaderboard-section">
+      <h2 class="section-title">Qrup Liderbordu</h2>
+      <div id="leaderboard">
+        <div class="lb-list">
+          <div class="lb-row skeleton" style="height:52px"></div>
+          <div class="lb-row skeleton" style="height:52px"></div>
+          <div class="lb-row skeleton" style="height:52px"></div>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/js/supabase-kabinet.js"></script>
   <script src="/js/auth-kabinet.js"></script>
   <script src="/js/gamification.js"></script>
-  <script>
-    requireAuth();
 
-    const ACTION_LABELS = {
-      derse_geldi: 'Dərsə gəldi',
-      tapshiriq_tamamladi: 'Tapşırıq tamamladı',
-      ela_rey: 'Əla rəy aldı',
-      eser_yuklendi: 'Əsər yüklədi',
-      ayin_telebesi: 'Ayın tələbəsi'
+  <script>
+    requireRole('student');
+
+    var hamburger = document.getElementById('hamburger');
+    var sidebar   = document.getElementById('sidebar');
+    var sOverlay  = document.getElementById('sidebarOverlay');
+
+    hamburger.addEventListener('click', function() {
+      hamburger.classList.toggle('open');
+      sidebar.classList.toggle('open');
+      sOverlay.classList.toggle('show');
+    });
+
+    sOverlay.addEventListener('click', function() {
+      hamburger.classList.remove('open');
+      sidebar.classList.remove('open');
+      sOverlay.classList.remove('show');
+    });
+
+    /* ── Action name translations ── */
+    var ACTION_AZ = {
+      derse_geldi: 'D\u0259rs\u0259 g\u0259ldi',
+      tapshiriq_tamamladi: 'Tap\u015f\u0131r\u0131q tamamlad\u0131',
+      ela_rey: '\u018fla r\u0259y ald\u0131',
+      eser_yuklendi: '\u018fs\u0259r y\u00fckl\u0259di',
+      ayin_telebesi: 'Ay\u0131n t\u0259l\u0259b\u0259si',
+      homework_submitted: 'Tap\u015f\u0131r\u0131q g\u00f6nd\u0259rdi',
+      artwork_uploaded: '\u018fs\u0259r y\u00fckl\u0259di',
+      attendance: 'Davamiyy\u0259t',
+      bonus: 'Bonus xal'
     };
 
-    async function loadGamification() {
-      const student = await getStudent();
-      const container = document.getElementById('content');
+    function formatDate(iso) {
+      if (!iso) return '\u2014';
+      return new Date(iso).toLocaleDateString('az-AZ', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
 
-      if (!student) {
-        container.innerHTML = '<div class="loading">Tələbə tapılmadı</div>';
+    async function loadGamification() {
+      var student = await getStudent();
+      if (!student) return;
+
+      var points = student.total_points || 0;
+
+      // XP Bar (from gamification.js)
+      var xpEl = document.getElementById('xpSection');
+      if (typeof renderXPBar === 'function') {
+        xpEl.innerHTML = renderXPBar(points);
+      } else {
+        var lvl = getLevel(points);
+        var pct = getLevelProgress(points);
+        xpEl.innerHTML =
+          '<div class="xp-section"><div class="xp-header">' +
+            '<span class="xp-level">' + lvl.emoji + ' ' + lvl.name + '</span>' +
+            '<span class="xp-points">' + points + ' XP</span>' +
+          '</div>' +
+          '<div class="xp-bar"><div class="xp-fill" style="width:' + pct + '%"></div></div></div>';
+      }
+
+      // Badges
+      var { data: badges } = await sb
+        .from('badges')
+        .select('*')
+        .eq('student_id', student.id)
+        .order('earned_at', { ascending: false });
+
+      var badgesEl = document.getElementById('badgesGrid');
+      if (typeof renderBadges === 'function') {
+        badgesEl.innerHTML = renderBadges(badges || []);
+      } else {
+        badgesEl.innerHTML = '<div class="no-badges">H\u0259l\u0259 badge yoxdur</div>';
+      }
+
+      // Point History (last 20)
+      var { data: logs } = await sb
+        .from('point_log')
+        .select('*')
+        .eq('student_id', student.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      var historyEl = document.getElementById('pointHistory');
+      if (!logs || logs.length === 0) {
+        historyEl.innerHTML = '<div class="empty-state">H\u0259l\u0259 xal tarixi yoxdur</div>';
+      } else {
+        var rows = '';
+        logs.forEach(function(log) {
+          var actionName = ACTION_AZ[log.action] || log.action || '\u2014';
+          rows += '<tr>' +
+            '<td>' + actionName + '</td>' +
+            '<td class="points-positive">+' + (log.points || 0) + '</td>' +
+            '<td>' + formatDate(log.created_at) + '</td>' +
+          '</tr>';
+        });
+        historyEl.innerHTML =
+          '<div class="table-wrap"><table>' +
+            '<thead><tr><th>F\u0259aliyy\u0259t</th><th>Xal</th><th>Tarix</th></tr></thead>' +
+            '<tbody>' + rows + '</tbody>' +
+          '</table></div>';
+      }
+
+      // Leaderboard - top 5 in same group
+      var lbEl = document.getElementById('leaderboard');
+      if (!student.group_id) {
+        lbEl.innerHTML = '<div class="empty-state">Qrupa t\u0259yin edilm\u0259misiniz</div>';
         return;
       }
 
-      const points = student.total_points || 0;
+      var { data: groupStudents } = await sb
+        .from('students')
+        .select('id, full_name, total_points')
+        .eq('group_id', student.group_id)
+        .order('total_points', { ascending: false })
+        .limit(5);
 
-      // Fetch badges, point log, leaderboard in parallel
-      const [badgesRes, logRes, leaderRes] = await Promise.all([
-        sb.from('badges').select('*').eq('student_id', student.id).order('earned_at', { ascending: false }),
-        sb.from('point_log').select('*').eq('student_id', student.id).order('created_at', { ascending: false }).limit(20),
-        student.group_id
-          ? sb.from('students').select('id, full_name, total_points').eq('group_id', student.group_id).order('total_points', { ascending: false }).limit(5)
-          : Promise.resolve({ data: [] })
-      ]);
-
-      const badges = badgesRes.data || [];
-      const logs = logRes.data || [];
-      const leaders = leaderRes.data || [];
-
-      let html = '';
-
-      // XP Section
-      html += renderXPBar(points);
-
-      // Badges
-      html += '<h2 class="section-title">Nişanlar</h2>';
-      html += `<div class="badges-grid">${renderBadges(badges)}</div>`;
-
-      // Point History
-      html += '<h2 class="section-title">Xal Tarixçəsi</h2>';
-      if (logs.length) {
-        html += `<table class="points-table">
-          <thead><tr><th>Hərəkət</th><th>Xal</th><th>Tarix</th></tr></thead>
-          <tbody>`;
-        logs.forEach(l => {
-          const date = l.created_at ? new Date(l.created_at).toLocaleDateString('az-AZ') : '-';
-          const label = ACTION_LABELS[l.action] || l.action;
-          html += `<tr>
-            <td>${label}</td>
-            <td class="pts-positive">+${l.points}</td>
-            <td>${date}</td>
-          </tr>`;
-        });
-        html += '</tbody></table>';
-      } else {
-        html += '<div class="no-badges">Hələ xal tarixçəsi yoxdur</div>';
+      if (!groupStudents || groupStudents.length === 0) {
+        lbEl.innerHTML = '<div class="empty-state">Qrup \u00fczvl\u0259ri tap\u0131lmad\u0131</div>';
+        return;
       }
 
-      // Leaderboard
-      html += '<h2 class="section-title">Liderlik Cədvəli</h2>';
-      if (leaders.length) {
-        html += '<div class="leaderboard">';
-        leaders.forEach((l, i) => {
-          const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-          const isMe = l.id === student.id;
-          html += `<div class="lb-row">
-            <div class="lb-rank ${rankClass}">${i + 1}</div>
-            <div class="lb-name${isMe ? ' me' : ''}">${l.full_name || 'Anonim'}${isMe ? ' (Sən)' : ''}</div>
-            <div class="lb-points">${l.total_points || 0} XP</div>
-          </div>`;
-        });
-        html += '</div>';
-      } else {
-        html += '<div class="lb-empty">Qrupda digər tələbə yoxdur</div>';
-      }
-
-      container.innerHTML = html;
+      var lbHtml = '<div class="lb-list">';
+      groupStudents.forEach(function(s, i) {
+        var isMe = s.id === student.id;
+        var lvl = getLevel(s.total_points || 0);
+        lbHtml += '<div class="lb-row' + (isMe ? ' me' : '') + '">' +
+          '<div class="lb-rank">' + (i + 1) + '</div>' +
+          '<div class="lb-name">' + (s.full_name || 'T\u0259l\u0259b\u0259') + (isMe ? ' (S\u0259n)' : '') + '</div>' +
+          '<div class="lb-xp">' + (s.total_points || 0) + ' XP</div>' +
+          '<div class="lb-level">' + lvl.emoji + ' ' + lvl.name + '</div>' +
+        '</div>';
+      });
+      lbHtml += '</div>';
+      lbEl.innerHTML = lbHtml;
     }
 
     loadGamification();

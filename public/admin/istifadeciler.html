@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Istifadeciler - Artmonia Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b1a;--bg2:#0f0e24;--card:#14122a;--card2:#1a1835;--border:#252240;--accent:#f97316;--accent2:#ea580c;--text:#fff;--text2:#b0acd0;--text3:#6b6790;--green:#4ade80;--blue:#60a5fa;--red:#f87171;--sidebar-w:250px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--card);border-right:1px solid var(--border);padding:24px 16px;display:flex;flex-direction:column;z-index:100;transition:transform .3s}
+.sidebar .logo{font-family:'Playfair Display',serif;color:var(--accent);font-size:1.5rem;font-weight:700;margin-bottom:32px;padding:0 8px}
+.sidebar nav{flex:1;display:flex;flex-direction:column;gap:2px}
+.sidebar nav a{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--text2);text-decoration:none;font-size:.9rem;font-weight:500;transition:all .15s}
+.sidebar nav a:hover,.sidebar nav a.active{background:var(--bg2);color:var(--text)}
+.sidebar nav a.active{border-left:3px solid var(--accent);color:var(--accent)}
+.sidebar .divider{height:1px;background:var(--border);margin:8px 0}
+.sidebar .divider-label{color:var(--text3);font-size:.75rem;padding:4px 12px;text-transform:uppercase;letter-spacing:1px}
+.sidebar .logout-btn{margin-top:auto;display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--red);background:none;border:none;font-size:.9rem;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;width:100%;transition:background .15s}
+.sidebar .logout-btn:hover{background:rgba(248,113,113,.1)}
+.main{margin-left:var(--sidebar-w);padding:32px}
+.page-title{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:24px}
+.toolbar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.btn{padding:10px 20px;border-radius:50px;font-size:.9rem;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--accent2)}
+.btn-sm{padding:6px 14px;font-size:.8rem;border-radius:50px}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-outline:hover{border-color:var(--accent);color:var(--text)}
+.btn-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid transparent}.btn-red:hover{border-color:var(--red)}
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:12px 16px;color:var(--text3);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;font-size:.9rem;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.78rem;font-weight:600}
+.badge-green{background:rgba(74,222,128,.15);color:var(--green)}
+.badge-blue{background:rgba(96,165,250,.15);color:var(--blue)}
+.badge-orange{background:rgba(249,115,22,.15);color:var(--accent)}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red)}
+.role-select{padding:6px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.85rem;font-family:'Inter',sans-serif;outline:none;cursor:pointer}
+.role-select:focus{border-color:var(--accent)}
+.role-select:disabled{opacity:.5;cursor:not-allowed}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal h2{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:20px}
+.modal .form-group{margin-bottom:14px}
+.modal .form-group label{display:block;color:var(--text2);font-size:.85rem;font-weight:500;margin-bottom:6px}
+.modal .form-group input,.modal .form-group select{width:100%;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;font-family:'Inter',sans-serif;outline:none}
+.modal .form-group input:focus,.modal .form-group select:focus{border-color:var(--accent)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.msg-box{padding:12px 16px;border-radius:10px;font-size:.9rem;margin-bottom:16px;display:none;line-height:1.4}
+.msg-box.error{display:block;background:rgba(248,113,113,.12);border:1px solid var(--red);color:var(--red)}
+.msg-box.success{display:block;background:rgba(74,222,128,.12);border:1px solid var(--green);color:var(--green)}
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--text);font-size:1.2rem}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.overlay.open{display:block}.hamburger{display:block}
+  .main{margin-left:0;padding:24px 16px;padding-top:60px}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo">Artmonia Admin</div>
+  <nav id="adminNav">
+    <a href="/admin/dashboard.html" data-roles="super_admin">&#128202; Dashboard</a>
+    <a href="/admin/telebeler.html" data-roles="super_admin,manager">&#128101; Telebeler</a>
+    <a href="/admin/qruplar.html" data-roles="super_admin,manager">&#128203; Qruplar</a>
+    <a href="/admin/odenisler.html" data-roles="super_admin,manager">&#128176; Odenisler</a>
+    <a href="/admin/gamification.html" data-roles="super_admin,manager">&#127942; Gamification</a>
+    <a href="/admin/hesabat.html" data-roles="super_admin,manager">&#128200; Hesabat</a>
+    <a href="/admin/istifadeciler.html" class="active" data-roles="super_admin">&#128100; Istifadeciler</a>
+    <div class="divider"></div>
+    <div class="divider-label">Muellim</div>
+    <a href="/admin/muellim-qrup.html" data-roles="teacher,super_admin">&#127891; Qrupum</a>
+    <a href="/admin/muellim-tapshiriq.html" data-roles="teacher,super_admin">&#128221; Tapshiriqlar</a>
+    <a href="/admin/muellim-material.html" data-roles="teacher,super_admin">&#128196; Materiallar</a>
+  </nav>
+  <button class="logout-btn" onclick="logout()">&#128682; Chixish</button>
+</aside>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Yeni Istifadeci</h2>
+    <div id="modalMsg" class="msg-box"></div>
+    <form id="userForm" onsubmit="saveUser(event)">
+      <div class="form-group"><label>Ad Soyad</label><input type="text" id="fFullName" required></div>
+      <div class="form-group"><label>Email</label><input type="email" id="fEmail" required></div>
+      <div class="form-group"><label>Rol</label>
+        <select id="fRole" required>
+          <option value="manager">Manager</option>
+          <option value="teacher">Muellim</option>
+          <option value="super_admin">Super Admin</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Muveqqeti Sifre</label><input type="password" id="fPassword" minlength="6" required></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal()">Legv et</button>
+        <button type="submit" class="btn btn-accent">Yarat</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<main class="main">
+  <h1 class="page-title">Istifadeciler</h1>
+  <div id="pageMsg" class="msg-box"></div>
+  <div class="toolbar">
+    <button class="btn btn-accent" onclick="openModal()">+ Yeni Istifadeci</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Ad</th><th>Email</th><th>Rol</th><th>Yaranma Tarixi</th><th>Emeliyyat</th></tr></thead>
+      <tbody id="tbody"><tr><td colspan="5" style="color:var(--text3);text-align:center">Yuklenilir...</td></tr></tbody>
+    </table>
+  </div>
+</main>
+
+<script src="/js/supabase-kabinet.js"></script>
+<script src="/js/auth-kabinet.js"></script>
+<script>
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open')}
+
+let allUserRoles=[], currentUser=null;
+const roleBadges={super_admin:'badge-red',manager:'badge-orange',teacher:'badge-blue',student:'badge-green'};
+const roleLabels={super_admin:'Super Admin',manager:'Manager',teacher:'Muellim',student:'Telebe'};
+
+function showPageMsg(text,type){
+  const el=document.getElementById('pageMsg');
+  el.textContent=text;el.className='msg-box '+type;
+  setTimeout(()=>{el.className='msg-box'},4000);
+}
+
+async function init(){
+  const ok=await requireRole('super_admin');
+  if(!ok) return;
+  currentUser=await getUser();
+  filterNav('super_admin');
+  await loadUsers();
+}
+
+function filterNav(role){
+  document.querySelectorAll('#adminNav a').forEach(a=>{
+    const roles=a.dataset.roles?a.dataset.roles.split(','):[];
+    if(roles.length&&!roles.includes(role)) a.style.display='none';
+  });
+}
+
+async function loadUsers(){
+  const{data}=await sb.from('user_roles').select('*').order('created_at',{ascending:false});
+  allUserRoles=data||[];
+  renderUsers();
+}
+
+function renderUsers(){
+  const tbody=document.getElementById('tbody');
+  if(!allUserRoles.length){tbody.innerHTML='<tr><td colspan="5" style="color:var(--text3);text-align:center">Istifadeci tapilmadi</td></tr>';return}
+  tbody.innerHTML=allUserRoles.map(u=>{
+    const isSelf=currentUser&&u.user_id===currentUser.id;
+    const badge=roleBadges[u.role]||'badge-blue';
+    const label=roleLabels[u.role]||u.role;
+    const date=u.created_at?new Date(u.created_at).toLocaleDateString('az'):'?';
+    const name=u.full_name||u.user_id.substring(0,12)+'...';
+    const email=u.email||'-';
+    return `<tr>
+      <td>${name}</td>
+      <td>${email}</td>
+      <td>
+        <select class="role-select" onchange="changeRole('${u.user_id}',this.value)" ${isSelf?'disabled':''}>
+          <option value="super_admin" ${u.role==='super_admin'?'selected':''}>Super Admin</option>
+          <option value="manager" ${u.role==='manager'?'selected':''}>Manager</option>
+          <option value="teacher" ${u.role==='teacher'?'selected':''}>Muellim</option>
+          <option value="student" ${u.role==='student'?'selected':''}>Telebe</option>
+        </select>
+      </td>
+      <td>${date}</td>
+      <td>${isSelf?'<span style="color:var(--text3)">Siz</span>':`<button class="btn btn-sm btn-red" onclick="deactivateUser('${u.user_id}')">Deaktiv</button>`}</td>
+    </tr>`;
+  }).join('');
+}
+
+function openModal(){
+  document.getElementById('userForm').reset();
+  document.getElementById('modalMsg').className='msg-box';
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+
+async function saveUser(e){
+  e.preventDefault();
+  const msgEl=document.getElementById('modalMsg');
+  msgEl.className='msg-box';
+  const full_name=document.getElementById('fFullName').value.trim();
+  const email=document.getElementById('fEmail').value.trim();
+  const role=document.getElementById('fRole').value;
+  const password=document.getElementById('fPassword').value;
+
+  if(password.length<6){msgEl.textContent='Sifre minimum 6 simvol olmalidir';msgEl.className='msg-box error';return}
+
+  try{
+    // Create auth user
+    const{data:authData,error:authErr}=await sb.auth.signUp({email,password,options:{data:{full_name}}});
+    if(authErr) throw authErr;
+    const userId=authData.user?.id;
+    if(!userId) throw new Error('Istifadeci yaranmadi');
+
+    // Insert role
+    const{error:roleErr}=await sb.from('user_roles').insert({user_id:userId,role,full_name,email});
+    if(roleErr) throw roleErr;
+
+    closeModal();
+    showPageMsg('Istifadeci ugurla yaradildi','success');
+    await loadUsers();
+  }catch(err){
+    msgEl.textContent=err.message||'Xeta bash verdi';
+    msgEl.className='msg-box error';
+  }
+}
+
+async function changeRole(userId,newRole){
+  if(!confirm(`Rolu "${roleLabels[newRole]}" olaraq deyismek isteyirsiniz?`)) {
+    await loadUsers(); // Reset select
+    return;
+  }
+  try{
+    const{error}=await sb.from('user_roles').update({role:newRole}).eq('user_id',userId);
+    if(error) throw error;
+    showPageMsg('Rol ugurla deyisdirildi','success');
+    await loadUsers();
+  }catch(err){
+    showPageMsg(err.message||'Xeta bash verdi','error');
+    await loadUsers();
+  }
+}
+
+async function deactivateUser(userId){
+  if(!confirm('Bu istifadecini deaktiv etmek isteyirsiniz?')) return;
+  try{
+    const{error}=await sb.from('user_roles').delete().eq('user_id',userId);
+    if(error) throw error;
+    showPageMsg('Istifadeci deaktiv edildi','success');
+    await loadUsers();
+  }catch(err){
+    showPageMsg(err.message||'Xeta bash verdi','error');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

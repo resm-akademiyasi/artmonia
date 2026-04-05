@@ -3,210 +3,603 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Materiallar və Tapşırıqlar — Artmonia Kabinet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Materiallar — Artmonia Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #0b0b1a; color: #fff; min-height: 100vh; display: flex; }
-    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .sidebar { width: 260px; background: #14122a; border-right: 1px solid #252240; min-height: 100vh; padding: 24px 16px; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
-    .sidebar-logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #f97316; margin-bottom: 32px; text-align: center; text-decoration: none; display: block; }
-    .sidebar-nav { list-style: none; flex: 1; }
-    .sidebar-nav li { margin-bottom: 4px; }
-    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: #b0acd0; text-decoration: none; font-size: 14px; transition: all .2s; }
-    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(249,115,22,.12); color: #f97316; }
-    .sidebar-nav a .icon { font-size: 18px; width: 24px; text-align: center; }
-    .sidebar-bottom { border-top: 1px solid #252240; padding-top: 16px; margin-top: 16px; }
-    .sidebar-bottom button { background: none; border: 1px solid #252240; color: #b0acd0; padding: 10px 14px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 14px; transition: all .2s; }
-    .sidebar-bottom button:hover { border-color: #f97316; color: #f97316; }
+    :root {
+      --bg: #0b0b1a;
+      --bg2: #0f0e24;
+      --card: #14122a;
+      --card2: #1a1835;
+      --border: #252240;
+      --accent: #f97316;
+      --accent-hover: #fb923c;
+      --text: #ffffff;
+      --text2: #b0acd0;
+      --text3: #6b6790;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --red: #f87171;
+      --yellow: #facc15;
+      --sidebar-w: 260px;
+    }
 
-    .main { margin-left: 260px; flex: 1; padding: 32px; width: calc(100% - 260px); }
-    .page-title { font-size: 28px; margin-bottom: 24px; }
-    .empty-state { text-align: center; padding: 60px 20px; color: #6b6790; font-size: 16px; }
-    .loading { text-align: center; padding: 40px; color: #6b6790; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
 
-    /* Tabs */
-    .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: #14122a; border-radius: 10px; padding: 4px; border: 1px solid #252240; width: fit-content; }
-    .tab-btn { padding: 10px 24px; border: none; background: transparent; color: #b0acd0; font-size: 14px; font-weight: 500; border-radius: 8px; cursor: pointer; transition: all .2s; }
-    .tab-btn.active { background: #f97316; color: #fff; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
 
-    /* Homework cards */
-    .hw-card { background: #14122a; border: 1px solid #252240; border-radius: 12px; padding: 20px; margin-bottom: 12px; }
-    .hw-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-    .hw-title { font-size: 16px; font-weight: 600; }
-    .hw-desc { font-size: 14px; color: #b0acd0; margin-bottom: 12px; }
-    .hw-due { font-size: 12px; color: #6b6790; margin-bottom: 12px; }
-    .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
-    .badge-pending { background: rgba(234,179,8,.15); color: #eab308; }
-    .badge-submitted { background: rgba(59,130,246,.15); color: #3b82f6; }
-    .badge-reviewed { background: rgba(34,197,94,.15); color: #22c55e; }
-    .hw-actions { margin-top: 12px; }
-    .hw-upload { display: flex; gap: 8px; align-items: center; }
-    .hw-upload input[type="file"] { font-size: 13px; color: #b0acd0; }
-    .hw-upload input[type="file"]::file-selector-button { background: #f97316; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; }
-    .btn-submit { background: #f97316; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; transition: opacity .2s; }
-    .btn-submit:hover { opacity: .85; }
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform .3s ease;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: .935rem;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all .2s ease;
+    }
+
+    .sidebar-nav a:hover {
+      color: var(--text);
+      background: rgba(249, 115, 22, .06);
+    }
+
+    .sidebar-nav a.active {
+      color: var(--text);
+      border-left-color: var(--accent);
+      background: rgba(249, 115, 22, .1);
+    }
+
+    .sidebar-nav a .nav-icon {
+      font-size: 1.15rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar-bottom {
+      padding: 16px 24px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-logout {
+      width: 100%;
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text2);
+      font-size: .875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+
+    .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      margin-left: var(--sidebar-w);
+      padding: 32px 36px 48px;
+      min-height: 100vh;
+    }
+
+    /* ── Hamburger ── */
+    .hamburger {
+      display: none;
+      position: fixed;
+      top: 16px; left: 16px;
+      z-index: 200;
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 20px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 90;
+    }
+
+    .sidebar-overlay.show { display: block; }
+
+    /* ── Page ── */
+    .page-title {
+      font-size: 1.65rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      color: var(--text3);
+      font-size: .935rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all .2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .tab-btn:hover { color: var(--text2); }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Cards ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .hw-card, .mat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .hw-card:hover, .mat-card:hover {
+      border-color: rgba(249,115,22,.35);
+      transform: translateY(-2px);
+    }
+
+    .hw-card .hw-title, .mat-card .mat-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .hw-card .hw-desc {
+      color: var(--text2);
+      font-size: .875rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .hw-card .hw-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: .8rem;
+      color: var(--text3);
+      margin-bottom: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+
+    .badge-yellow { background: rgba(250,204,21,.15); color: var(--yellow); }
+    .badge-blue { background: rgba(96,165,250,.15); color: var(--blue); }
+    .badge-green { background: rgba(74,222,128,.15); color: var(--green); }
+
+    /* ── Review box ── */
+    .review-box {
+      margin-top: 12px;
+      background: rgba(74,222,128,.08);
+      border: 1px solid rgba(74,222,128,.2);
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .review-box .review-label {
+      font-size: .75rem;
+      color: var(--green);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .review-box .review-note {
+      font-size: .875rem;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    .review-box .review-points {
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-top: 6px;
+    }
+
+    /* ── Upload form ── */
+    .upload-form {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .upload-form input[type="file"] {
+      font-size: .85rem;
+      color: var(--text2);
+    }
+
+    .btn-submit {
+      padding: 8px 20px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .btn-submit:hover { background: var(--accent-hover); }
     .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
-    .teacher-note { background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2); border-radius: 8px; padding: 12px; margin-top: 12px; }
-    .teacher-note-label { font-size: 12px; color: #22c55e; margin-bottom: 4px; font-weight: 600; }
-    .teacher-note-text { font-size: 14px; color: #b0acd0; }
-    .points-awarded { color: #f97316; font-weight: 600; font-size: 13px; margin-top: 6px; }
+
+    /* ── Material card ── */
+    .mat-card .mat-icon {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    .mat-card .mat-type {
+      font-size: .75rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .mat-card a.mat-link {
+      display: inline-block;
+      margin-top: 10px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: .875rem;
+      font-weight: 500;
+    }
+
+    .mat-card a.mat-link:hover { text-decoration: underline; }
+
+    /* ── Empty ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text3);
+      font-size: 1.05rem;
+    }
+
+    .empty-state .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--border) 25%, rgba(255,255,255,.06) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
 
     @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main { margin-left: 0; width: 100%; padding: 20px 16px; }
+      .hamburger { display: flex; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; padding: 80px 18px 36px; }
+      .card-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <a href="/kabinet/dashboard.html" class="sidebar-logo">Artmonia</a>
-    <ul class="sidebar-nav">
-      <li><a href="/kabinet/dashboard.html"><span class="icon">🏠</span> Ana Səhifə</a></li>
-      <li><a href="/kabinet/cedvel.html"><span class="icon">📅</span> Dərs Cədvəli</a></li>
-      <li><a href="/kabinet/odenisler.html"><span class="icon">💳</span> Ödənişlər</a></li>
-      <li><a href="/kabinet/materiallar.html" class="active"><span class="icon">📂</span> Materiallar</a></li>
-      <li><a href="/kabinet/reyler.html"><span class="icon">💬</span> Müəllim Rəyləri</a></li>
-      <li><a href="/kabinet/neticelerim.html"><span class="icon">🖼️</span> Əsərlərim</a></li>
-      <li><a href="/kabinet/gamification.html"><span class="icon">🏆</span> Gamification</a></li>
-    </ul>
+
+  <button class="hamburger" id="hamburger" aria-label="Menyu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">Artmonia</div>
+    <nav class="sidebar-nav">
+      <a href="/kabinet/dashboard.html">
+        <span class="nav-icon">&#127968;</span> &#399;sas
+      </a>
+      <a href="/kabinet/cedvel.html">
+        <span class="nav-icon">&#128197;</span> C&#601;dv&#601;l
+      </a>
+      <a href="/kabinet/odenisler.html">
+        <span class="nav-icon">&#128179;</span> &#214;d&#601;ni&#351;l&#601;r
+      </a>
+      <a href="/kabinet/materiallar.html" class="active">
+        <span class="nav-icon">&#128218;</span> Materiallar
+      </a>
+      <a href="/kabinet/reyler.html">
+        <span class="nav-icon">&#11088;</span> R&#601;yl&#601;r
+      </a>
+      <a href="/kabinet/neticelerim.html">
+        <span class="nav-icon">&#128444;&#65039;</span> N&#601;tic&#601;l&#601;rim
+      </a>
+      <a href="/kabinet/gamification.html">
+        <span class="nav-icon">&#127918;</span> Gamification
+      </a>
+    </nav>
     <div class="sidebar-bottom">
-      <button onclick="logout()">Çıxış</button>
+      <button class="btn-logout" onclick="logout()">&#128682; &#199;&#305;x&#305;&#351;</button>
     </div>
   </aside>
 
   <main class="main">
-    <h1 class="page-title">Materiallar və Tapşırıqlar</h1>
+    <h1 class="page-title">&#128218; Materiallar v&#601; Tap&#351;&#305;r&#305;qlar</h1>
 
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('homework')">Tapşırıqlar</button>
-      <button class="tab-btn" onclick="switchTab('materials')">Materiallar</button>
+      <button class="tab-btn active" data-tab="homework">&#128221; Tap&#351;&#305;r&#305;qlar</button>
+      <button class="tab-btn" data-tab="materials">&#128196; Materiallar</button>
     </div>
 
-    <div id="tab-homework" class="tab-content active">
-      <div id="homework-content"><div class="loading">Yüklənir...</div></div>
+    <div class="tab-panel active" id="tab-homework">
+      <div class="card-grid" id="homeworkGrid">
+        <div class="hw-card skeleton" style="height:140px"></div>
+        <div class="hw-card skeleton" style="height:140px"></div>
+      </div>
     </div>
-    <div id="tab-materials" class="tab-content">
-      <div class="empty-state">Tezliklə əlavə olunacaq</div>
+
+    <div class="tab-panel" id="tab-materials">
+      <div class="card-grid" id="materialsGrid">
+        <div class="mat-card skeleton" style="height:120px"></div>
+        <div class="mat-card skeleton" style="height:120px"></div>
+      </div>
     </div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/js/supabase-kabinet.js"></script>
   <script src="/js/auth-kabinet.js"></script>
   <script src="/js/gamification.js"></script>
-  <script>
-    requireAuth();
 
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      document.getElementById('tab-' + tab).classList.add('active');
-      event.target.classList.add('active');
+  <script>
+    requireRole('student');
+
+    const hamburger = document.getElementById('hamburger');
+    const sidebar   = document.getElementById('sidebar');
+    const overlay   = document.getElementById('sidebarOverlay');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    });
+
+    overlay.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+
+    /* ── Tabs ── */
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+        document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    function formatDate(iso) {
+      if (!iso) return '\u2014';
+      return new Date(iso).toLocaleDateString('az-AZ', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function statusBadge(status) {
+      if (status === 'submitted') return '<span class="badge badge-blue">G\u00f6nd\u0259rilib</span>';
+      if (status === 'reviewed') return '<span class="badge badge-green">Yoxlan\u0131l\u0131b</span>';
+      return '<span class="badge badge-yellow">G\u00f6zl\u0259yir</span>';
+    }
+
+    function fileTypeIcon(type) {
+      var t = (type || '').toLowerCase();
+      if (t === 'pdf') return '\uD83D\uDCC4';
+      if (t === 'video') return '\uD83C\uDFAC';
+      if (t === 'image') return '\uD83D\uDDBC\uFE0F';
+      return '\uD83D\uDD17';
+    }
+
+    let currentStudent = null;
+
+    async function submitHomework(hwId, fileInput, btn) {
+      if (!fileInput.files || !fileInput.files[0]) {
+        alert('Fayl se\u00e7in');
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = 'Y\u00fckl\u0259nir...';
+
+      var file = fileInput.files[0];
+      var ext = file.name.split('.').pop();
+      var path = 'homework/' + currentStudent.id + '/' + hwId + '_' + Date.now() + '.' + ext;
+
+      var { data: uploadData, error: uploadErr } = await sb.storage.from('homework').upload(path, file);
+      if (uploadErr) {
+        alert('Y\u00fckl\u0259m\u0259 x\u0259tas\u0131: ' + uploadErr.message);
+        btn.disabled = false;
+        btn.textContent = 'G\u00f6nd\u0259r';
+        return;
+      }
+
+      var { data: urlData } = sb.storage.from('homework').getPublicUrl(path);
+      var fileUrl = urlData ? urlData.publicUrl : '';
+
+      await sb.from('homework').update({ status: 'submitted', file_url: fileUrl }).eq('id', hwId);
+
+      btn.textContent = 'G\u00f6nd\u0259rildi!';
+      setTimeout(function() { loadHomework(); }, 800);
     }
 
     async function loadHomework() {
-      const student = await getStudent();
-      const container = document.getElementById('homework-content');
+      if (!currentStudent) return;
 
-      if (!student) {
-        container.innerHTML = '<div class="empty-state">Tələbə tapılmadı</div>';
-        return;
-      }
-
-      const { data: homeworks, error } = await sb
+      var { data: homework } = await sb
         .from('homework')
         .select('*')
-        .eq('student_id', student.id)
+        .eq('student_id', currentStudent.id)
         .order('due_date', { ascending: false });
 
-      if (error || !homeworks || homeworks.length === 0) {
-        container.innerHTML = '<div class="empty-state">Hələ tapşırıq yoxdur</div>';
+      var grid = document.getElementById('homeworkGrid');
+      if (!homework || homework.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><div class="empty-icon">\uD83D\uDCDD</div><p>H\u0259l\u0259 tap\u015f\u0131r\u0131q yoxdur</p></div>';
         return;
       }
 
-      let html = '';
-      homeworks.forEach(hw => {
-        const statusClass = hw.status === 'reviewed' ? 'badge-reviewed' : hw.status === 'submitted' ? 'badge-submitted' : 'badge-pending';
-        const statusText = hw.status === 'reviewed' ? 'Yoxlanılıb' : hw.status === 'submitted' ? 'Göndərilib' : 'Gözləyir';
-        const dueDate = hw.due_date ? new Date(hw.due_date).toLocaleDateString('az-AZ') : '';
+      grid.innerHTML = homework.map(function(hw, i) {
+        var html = '<div class="hw-card">' +
+          '<div class="hw-title">' + (hw.title || 'Tap\u015f\u0131r\u0131q') + '</div>' +
+          '<div class="hw-desc">' + (hw.description || '') + '</div>' +
+          '<div class="hw-meta">' +
+            '<span>Son tarix: ' + formatDate(hw.due_date) + '</span>' +
+            statusBadge(hw.status) +
+          '</div>';
 
-        html += `<div class="hw-card">
-          <div class="hw-header">
-            <div class="hw-title">${hw.title || 'Tapşırıq'}</div>
-            <span class="badge ${statusClass}">${statusText}</span>
-          </div>
-          ${hw.description ? `<div class="hw-desc">${hw.description}</div>` : ''}
-          ${dueDate ? `<div class="hw-due">Son tarix: ${dueDate}</div>` : ''}`;
-
-        if (hw.status === 'pending') {
-          html += `<div class="hw-actions">
-            <div class="hw-upload">
-              <input type="file" id="file-${hw.id}" accept="image/*,.pdf">
-              <button class="btn-submit" onclick="submitHomework('${hw.id}')">Göndər</button>
-            </div>
-          </div>`;
+        if (hw.status === 'pending' || !hw.status) {
+          html += '<div class="upload-form">' +
+            '<input type="file" id="hwFile' + i + '">' +
+            '<button class="btn-submit" onclick="submitHomework(\'' + hw.id + '\', document.getElementById(\'hwFile' + i + '\'), this)">G\u00f6nd\u0259r</button>' +
+          '</div>';
         }
 
         if (hw.status === 'reviewed') {
-          html += `<div class="teacher-note">
-            <div class="teacher-note-label">Müəllim rəyi</div>
-            <div class="teacher-note-text">${hw.teacher_note || 'Rəy yoxdur'}</div>
-            ${hw.points_awarded ? `<div class="points-awarded">+${hw.points_awarded} XP</div>` : ''}
-          </div>`;
+          html += '<div class="review-box">' +
+            '<div class="review-label">M\u00fc\u0259llim r\u0259yi</div>' +
+            '<div class="review-note">' + (hw.teacher_note || 'R\u0259y yoxdur') + '</div>' +
+            (hw.points_awarded ? '<div class="review-points">+' + hw.points_awarded + ' xal</div>' : '') +
+          '</div>';
         }
 
         html += '</div>';
-      });
-
-      container.innerHTML = html;
+        return html;
+      }).join('');
     }
 
-    async function submitHomework(hwId) {
-      const fileInput = document.getElementById('file-' + hwId);
-      if (!fileInput || !fileInput.files.length) {
-        alert('Zəhmət olmasa fayl seçin');
+    async function loadMaterials() {
+      if (!currentStudent || !currentStudent.group_id) {
+        document.getElementById('materialsGrid').innerHTML =
+          '<div class="empty-state"><div class="empty-icon">\uD83D\uDCC4</div><p>Qrupa t\u0259yin edilm\u0259misiniz</p></div>';
         return;
       }
 
-      const file = fileInput.files[0];
-      const student = await getStudent();
-      const filePath = `homework/${student.id}/${hwId}/${file.name}`;
+      var { data: materials } = await sb
+        .from('materials')
+        .select('*')
+        .eq('group_id', currentStudent.group_id)
+        .order('created_at', { ascending: false });
 
-      const btn = fileInput.parentElement.querySelector('.btn-submit');
-      btn.disabled = true;
-      btn.textContent = 'Göndərilir...';
-
-      const { error: uploadError } = await sb.storage
-        .from('homework')
-        .upload(filePath, file);
-
-      if (uploadError) {
-        alert('Yükləmə xətası: ' + uploadError.message);
-        btn.disabled = false;
-        btn.textContent = 'Göndər';
+      var grid = document.getElementById('materialsGrid');
+      if (!materials || materials.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><div class="empty-icon">\uD83D\uDCC4</div><p>H\u0259l\u0259 material yoxdur</p></div>';
         return;
       }
 
-      const { error: updateError } = await sb
-        .from('homework')
-        .update({ status: 'submitted', submitted_at: new Date().toISOString(), file_url: filePath })
-        .eq('id', hwId);
+      grid.innerHTML = materials.map(function(m) {
+        var icon = fileTypeIcon(m.file_type);
+        return '<div class="mat-card">' +
+          '<div class="mat-icon">' + icon + '</div>' +
+          '<div class="mat-type">' + (m.file_type || 'fayl').toUpperCase() + '</div>' +
+          '<div class="mat-title">' + (m.title || 'Material') + '</div>' +
+          (m.file_url ? '<a class="mat-link" href="' + m.file_url + '" target="_blank" rel="noopener">\u2B07 A\u00e7 / Y\u00fckl\u0259</a>' : '') +
+        '</div>';
+      }).join('');
+    }
 
-      if (updateError) {
-        alert('Xəta: ' + updateError.message);
-        btn.disabled = false;
-        btn.textContent = 'Göndər';
-        return;
-      }
-
+    async function init() {
+      currentStudent = await getStudent();
+      if (!currentStudent) return;
       loadHomework();
+      loadMaterials();
     }
 
-    loadHomework();
+    init();
   </script>
 </body>
 </html>

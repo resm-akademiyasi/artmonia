@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qruplar - Artmonia Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b1a;--bg2:#0f0e24;--card:#14122a;--card2:#1a1835;--border:#252240;--accent:#f97316;--accent2:#ea580c;--text:#fff;--text2:#b0acd0;--text3:#6b6790;--green:#4ade80;--blue:#60a5fa;--red:#f87171;--sidebar-w:250px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--card);border-right:1px solid var(--border);padding:24px 16px;display:flex;flex-direction:column;z-index:100;transition:transform .3s}
+.sidebar .logo{font-family:'Playfair Display',serif;color:var(--accent);font-size:1.5rem;font-weight:700;margin-bottom:32px;padding:0 8px}
+.sidebar nav{flex:1;display:flex;flex-direction:column;gap:2px}
+.sidebar nav a{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--text2);text-decoration:none;font-size:.9rem;font-weight:500;transition:all .15s}
+.sidebar nav a:hover,.sidebar nav a.active{background:var(--bg2);color:var(--text)}
+.sidebar nav a.active{border-left:3px solid var(--accent);color:var(--accent)}
+.sidebar .divider{height:1px;background:var(--border);margin:8px 0}
+.sidebar .divider-label{color:var(--text3);font-size:.75rem;padding:4px 12px;text-transform:uppercase;letter-spacing:1px}
+.sidebar .logout-btn{margin-top:auto;display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--red);background:none;border:none;font-size:.9rem;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;width:100%;transition:background .15s}
+.sidebar .logout-btn:hover{background:rgba(248,113,113,.1)}
+.main{margin-left:var(--sidebar-w);padding:32px}
+.page-title{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:24px}
+.toolbar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.btn{padding:10px 20px;border-radius:50px;font-size:.9rem;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--accent2)}
+.btn-sm{padding:6px 14px;font-size:.8rem;border-radius:50px}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-outline:hover{border-color:var(--accent);color:var(--text)}
+.btn-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid transparent}.btn-red:hover{border-color:var(--red)}
+/* Cards grid */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.group-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.group-card .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.group-card .name{font-size:1.1rem;font-weight:700;font-family:'Playfair Display',serif}
+.group-card .badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.78rem;font-weight:600}
+.badge-green{background:rgba(74,222,128,.15);color:var(--green)}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red)}
+.group-card .info{color:var(--text2);font-size:.85rem;margin-bottom:4px}
+.group-card .info span{color:var(--text)}
+.group-card .schedule-list{margin:8px 0;display:flex;flex-wrap:wrap;gap:6px}
+.group-card .schedule-tag{background:var(--bg2);padding:4px 10px;border-radius:8px;font-size:.78rem;color:var(--text2)}
+.group-card .actions{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal h2{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:20px}
+.modal .form-group{margin-bottom:14px}
+.modal .form-group label{display:block;color:var(--text2);font-size:.85rem;font-weight:500;margin-bottom:6px}
+.modal .form-group input,.modal .form-group select{width:100%;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;font-family:'Inter',sans-serif;outline:none}
+.modal .form-group input:focus,.modal .form-group select:focus{border-color:var(--accent)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.schedule-rows{display:flex;flex-direction:column;gap:8px}
+.schedule-row{display:flex;gap:8px;align-items:center}
+.schedule-row select,.schedule-row input{padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.85rem;font-family:'Inter',sans-serif;outline:none}
+.schedule-row .remove-sched{background:none;border:none;color:var(--red);cursor:pointer;font-size:1.1rem;padding:4px}
+.add-sched-btn{background:none;border:1px dashed var(--border);color:var(--text3);padding:8px;border-radius:10px;cursor:pointer;font-size:.85rem;font-family:'Inter',sans-serif;width:100%;text-align:center;transition:all .15s}
+.add-sched-btn:hover{border-color:var(--accent);color:var(--text)}
+.msg-box{padding:12px 16px;border-radius:10px;font-size:.9rem;margin-bottom:16px;display:none;line-height:1.4}
+.msg-box.error{display:block;background:rgba(248,113,113,.12);border:1px solid var(--red);color:var(--red)}
+.msg-box.success{display:block;background:rgba(74,222,128,.12);border:1px solid var(--green);color:var(--green)}
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--text);font-size:1.2rem}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.overlay.open{display:block}.hamburger{display:block}
+  .main{margin-left:0;padding:24px 16px;padding-top:60px}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo">Artmonia Admin</div>
+  <nav id="adminNav">
+    <a href="/admin/dashboard.html" data-roles="super_admin">&#128202; Dashboard</a>
+    <a href="/admin/telebeler.html" data-roles="super_admin,manager">&#128101; Telebeler</a>
+    <a href="/admin/qruplar.html" class="active" data-roles="super_admin,manager">&#128203; Qruplar</a>
+    <a href="/admin/odenisler.html" data-roles="super_admin,manager">&#128176; Odenisler</a>
+    <a href="/admin/gamification.html" data-roles="super_admin,manager">&#127942; Gamification</a>
+    <a href="/admin/hesabat.html" data-roles="super_admin,manager">&#128200; Hesabat</a>
+    <a href="/admin/istifadeciler.html" data-roles="super_admin">&#128100; Istifadeciler</a>
+    <div class="divider"></div>
+    <div class="divider-label">Muellim</div>
+    <a href="/admin/muellim-qrup.html" data-roles="teacher,super_admin">&#127891; Qrupum</a>
+    <a href="/admin/muellim-tapshiriq.html" data-roles="teacher,super_admin">&#128221; Tapshiriqlar</a>
+    <a href="/admin/muellim-material.html" data-roles="teacher,super_admin">&#128196; Materiallar</a>
+  </nav>
+  <button class="logout-btn" onclick="logout()">&#128682; Chixish</button>
+</aside>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modalTitle">Yeni Qrup</h2>
+    <div id="modalMsg" class="msg-box"></div>
+    <form id="groupForm" onsubmit="saveGroup(event)">
+      <input type="hidden" id="editId">
+      <div class="form-group"><label>Qrup adi</label><input type="text" id="fName" required></div>
+      <div class="form-group"><label>Muellim</label><select id="fTeacher"><option value="">Secin...</option></select></div>
+      <div class="form-group"><label>Otaq</label><input type="text" id="fRoom" placeholder="Orn: A sinif"></div>
+      <div class="form-group"><label>Max telebe</label><input type="number" id="fMax" value="15" min="1"></div>
+      <div class="form-group">
+        <label>Cedvel</label>
+        <div class="schedule-rows" id="scheduleRows"></div>
+        <button type="button" class="add-sched-btn" onclick="addScheduleRow()">+ Gun elave et</button>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal()">Legv et</button>
+        <button type="submit" class="btn btn-accent">Yadda saxla</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<main class="main">
+  <h1 class="page-title">Qruplar</h1>
+  <div class="toolbar">
+    <button class="btn btn-accent" onclick="openNew()">+ Yeni Qrup</button>
+  </div>
+  <div class="cards-grid" id="cardsGrid">
+    <div style="color:var(--text3)">Yuklenilir...</div>
+  </div>
+</main>
+
+<script src="/js/supabase-kabinet.js"></script>
+<script src="/js/auth-kabinet.js"></script>
+<script>
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open')}
+
+let allGroups=[], teachers=[], studentCounts={}, currentRole=null;
+const days=['Bazar ertesi','Chersenbe axsami','Chersenbe','Curshembe axsami','Cume','Senbe','Bazar'];
+
+async function init(){
+  const ok=await requireRole('super_admin','manager');
+  if(!ok) return;
+  currentRole=await getRole();
+  filterNav(currentRole);
+  await loadTeachers();
+  await loadGroups();
+}
+
+function filterNav(role){
+  document.querySelectorAll('#adminNav a').forEach(a=>{
+    const roles=a.dataset.roles?a.dataset.roles.split(','):[];
+    if(roles.length&&!roles.includes(role)) a.style.display='none';
+  });
+}
+
+async function loadTeachers(){
+  const{data}=await sb.from('user_roles').select('user_id').eq('role','teacher');
+  if(!data||!data.length) return;
+  const ids=data.map(d=>d.user_id);
+  // Get user metadata from auth - we'll use profiles or just store teacher names
+  // For now, fetch from students or a profiles-like approach
+  const sel=document.getElementById('fTeacher');
+  for(const ur of data){
+    // Try to get display name
+    sel.innerHTML+=`<option value="${ur.user_id}">${ur.user_id.substring(0,8)}...</option>`;
+  }
+  teachers=data;
+}
+
+async function loadGroups(){
+  const{data}=await sb.from('groups').select('*').order('name');
+  allGroups=data||[];
+
+  // Get student counts per group
+  for(const g of allGroups){
+    const{count}=await sb.from('students').select('*',{count:'exact',head:true}).eq('group_id',g.id).eq('status','active');
+    studentCounts[g.id]=count||0;
+  }
+  renderGroups();
+}
+
+function renderGroups(){
+  const grid=document.getElementById('cardsGrid');
+  if(!allGroups.length){grid.innerHTML='<div style="color:var(--text3)">Qrup tapilmadi</div>';return}
+  grid.innerHTML=allGroups.map(g=>{
+    const count=studentCounts[g.id]||0;
+    const max=g.max_students||15;
+    const schedule=g.schedule||[];
+    const statusBadge=g.is_active!==false?'<span class="badge badge-green">Aktiv</span>':'<span class="badge badge-red">Deaktiv</span>';
+    const schedHtml=Array.isArray(schedule)?schedule.map(s=>`<span class="schedule-tag">${s.day||''} ${s.time||''}</span>`).join(''):'';
+    return `<div class="group-card">
+      <div class="top"><span class="name">${g.name}</span>${statusBadge}</div>
+      <div class="info">Muellim: <span>${g.teacher_id?g.teacher_id.substring(0,8)+'...':'Teyin edilmeyib'}</span></div>
+      <div class="info">Telebeler: <span>${count} / ${max}</span></div>
+      <div class="info">Otaq: <span>${g.room||'-'}</span></div>
+      <div class="schedule-list">${schedHtml}</div>
+      <div class="actions">
+        <button class="btn btn-sm btn-outline" onclick="openEdit('${g.id}')">Duzelis</button>
+        <button class="btn btn-sm btn-red" onclick="deleteGroup('${g.id}')">Sil</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addScheduleRow(day='',time=''){
+  const rows=document.getElementById('scheduleRows');
+  const div=document.createElement('div');
+  div.className='schedule-row';
+  div.innerHTML=`<select>${days.map(d=>`<option value="${d}" ${d===day?'selected':''}>${d}</option>`).join('')}</select>
+    <input type="time" value="${time}">
+    <button type="button" class="remove-sched" onclick="this.parentElement.remove()">&times;</button>`;
+  rows.appendChild(div);
+}
+
+function getScheduleData(){
+  const rows=document.querySelectorAll('#scheduleRows .schedule-row');
+  return Array.from(rows).map(r=>({day:r.querySelector('select').value,time:r.querySelector('input[type=time]').value})).filter(s=>s.time);
+}
+
+function openNew(){
+  document.getElementById('editId').value='';
+  document.getElementById('modalTitle').textContent='Yeni Qrup';
+  document.getElementById('groupForm').reset();
+  document.getElementById('scheduleRows').innerHTML='';
+  document.getElementById('modalMsg').className='msg-box';
+  addScheduleRow();
+  document.getElementById('modal').classList.add('open');
+}
+
+function openEdit(id){
+  const g=allGroups.find(x=>x.id===id);
+  if(!g) return;
+  document.getElementById('editId').value=id;
+  document.getElementById('modalTitle').textContent='Qrup Duzelis';
+  document.getElementById('fName').value=g.name||'';
+  document.getElementById('fTeacher').value=g.teacher_id||'';
+  document.getElementById('fRoom').value=g.room||'';
+  document.getElementById('fMax').value=g.max_students||15;
+  document.getElementById('scheduleRows').innerHTML='';
+  const sched=g.schedule||[];
+  if(Array.isArray(sched)&&sched.length) sched.forEach(s=>addScheduleRow(s.day,s.time));
+  else addScheduleRow();
+  document.getElementById('modalMsg').className='msg-box';
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+
+async function saveGroup(e){
+  e.preventDefault();
+  const msgEl=document.getElementById('modalMsg');
+  msgEl.className='msg-box';
+  const editId=document.getElementById('editId').value;
+  const obj={
+    name:document.getElementById('fName').value.trim(),
+    teacher_id:document.getElementById('fTeacher').value||null,
+    room:document.getElementById('fRoom').value.trim()||null,
+    max_students:parseInt(document.getElementById('fMax').value)||15,
+    schedule:getScheduleData()
+  };
+  try{
+    if(editId){
+      const{error}=await sb.from('groups').update(obj).eq('id',editId);
+      if(error) throw error;
+    }else{
+      obj.is_active=true;
+      const{error}=await sb.from('groups').insert(obj);
+      if(error) throw error;
+    }
+    closeModal();
+    await loadGroups();
+  }catch(err){
+    msgEl.textContent=err.message||'Xeta bash verdi';
+    msgEl.className='msg-box error';
+  }
+}
+
+async function deleteGroup(id){
+  if(!confirm('Bu qrupu silmek isteyirsiniz?')) return;
+  await sb.from('groups').update({is_active:false}).eq('id',id);
+  await loadGroups();
+}
+
+init();
+</script>
+</body>
+</html>

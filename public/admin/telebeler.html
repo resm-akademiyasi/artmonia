@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telebeler - Artmonia Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b1a;--bg2:#0f0e24;--card:#14122a;--card2:#1a1835;--border:#252240;--accent:#f97316;--accent2:#ea580c;--text:#fff;--text2:#b0acd0;--text3:#6b6790;--green:#4ade80;--blue:#60a5fa;--red:#f87171;--sidebar-w:250px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--card);border-right:1px solid var(--border);padding:24px 16px;display:flex;flex-direction:column;z-index:100;transition:transform .3s}
+.sidebar .logo{font-family:'Playfair Display',serif;color:var(--accent);font-size:1.5rem;font-weight:700;margin-bottom:32px;padding:0 8px}
+.sidebar nav{flex:1;display:flex;flex-direction:column;gap:2px}
+.sidebar nav a{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--text2);text-decoration:none;font-size:.9rem;font-weight:500;transition:all .15s}
+.sidebar nav a:hover,.sidebar nav a.active{background:var(--bg2);color:var(--text)}
+.sidebar nav a.active{border-left:3px solid var(--accent);color:var(--accent)}
+.sidebar .divider{height:1px;background:var(--border);margin:8px 0}
+.sidebar .divider-label{color:var(--text3);font-size:.75rem;padding:4px 12px;text-transform:uppercase;letter-spacing:1px}
+.sidebar .logout-btn{margin-top:auto;display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--red);background:none;border:none;font-size:.9rem;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;width:100%;transition:background .15s}
+.sidebar .logout-btn:hover{background:rgba(248,113,113,.1)}
+.main{margin-left:var(--sidebar-w);padding:32px}
+.page-title{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:24px}
+.toolbar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.toolbar input[type="text"]{flex:1;min-width:200px;padding:10px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;font-family:'Inter',sans-serif;outline:none}
+.toolbar input:focus{border-color:var(--accent)}
+.toolbar select{padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;font-family:'Inter',sans-serif;outline:none;cursor:pointer}
+.btn{padding:10px 20px;border-radius:50px;font-size:.9rem;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--accent2)}
+.btn-sm{padding:6px 14px;font-size:.8rem;border-radius:50px}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-outline:hover{border-color:var(--accent);color:var(--text)}
+.btn-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid transparent}.btn-red:hover{border-color:var(--red)}
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:12px 16px;color:var(--text3);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;font-size:.9rem;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.78rem;font-weight:600}
+.badge-green{background:rgba(74,222,128,.15);color:var(--green)}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red)}
+.badge-blue{background:rgba(96,165,250,.15);color:var(--blue)}
+.badge-orange{background:rgba(249,115,22,.15);color:var(--accent)}
+.level-emoji{font-size:1.1rem}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal h2{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:20px}
+.modal .form-group{margin-bottom:14px}
+.modal .form-group label{display:block;color:var(--text2);font-size:.85rem;font-weight:500;margin-bottom:6px}
+.modal .form-group input,.modal .form-group select{width:100%;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;font-family:'Inter',sans-serif;outline:none}
+.modal .form-group input:focus,.modal .form-group select:focus{border-color:var(--accent)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.msg-box{padding:12px 16px;border-radius:10px;font-size:.9rem;margin-bottom:16px;display:none;line-height:1.4}
+.msg-box.error{display:block;background:rgba(248,113,113,.12);border:1px solid var(--red);color:var(--red)}
+.msg-box.success{display:block;background:rgba(74,222,128,.12);border:1px solid var(--green);color:var(--green)}
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--text);font-size:1.2rem}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.overlay.open{display:block}.hamburger{display:block}
+  .main{margin-left:0;padding:24px 16px;padding-top:60px}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo">Artmonia Admin</div>
+  <nav id="adminNav">
+    <a href="/admin/dashboard.html" data-roles="super_admin">&#128202; Dashboard</a>
+    <a href="/admin/telebeler.html" class="active" data-roles="super_admin,manager">&#128101; Telebeler</a>
+    <a href="/admin/qruplar.html" data-roles="super_admin,manager">&#128203; Qruplar</a>
+    <a href="/admin/odenisler.html" data-roles="super_admin,manager">&#128176; Odenisler</a>
+    <a href="/admin/gamification.html" data-roles="super_admin,manager">&#127942; Gamification</a>
+    <a href="/admin/hesabat.html" data-roles="super_admin,manager">&#128200; Hesabat</a>
+    <a href="/admin/istifadeciler.html" data-roles="super_admin">&#128100; Istifadeciler</a>
+    <div class="divider"></div>
+    <div class="divider-label">Muellim</div>
+    <a href="/admin/muellim-qrup.html" data-roles="teacher,super_admin">&#127891; Qrupum</a>
+    <a href="/admin/muellim-tapshiriq.html" data-roles="teacher,super_admin">&#128221; Tapshiriqlar</a>
+    <a href="/admin/muellim-material.html" data-roles="teacher,super_admin">&#128196; Materiallar</a>
+  </nav>
+  <button class="logout-btn" onclick="logout()">&#128682; Chixish</button>
+</aside>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modalTitle">Yeni Telebe</h2>
+    <div id="modalMsg" class="msg-box"></div>
+    <form id="studentForm" onsubmit="saveStudent(event)">
+      <input type="hidden" id="editId">
+      <div class="form-group"><label>Ad Soyad</label><input type="text" id="fFullName" required></div>
+      <div class="form-group"><label>Telefon</label><input type="tel" id="fPhone" placeholder="+994 50 000 00 00"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="fEmail" required></div>
+      <div class="form-group"><label>Qrup</label><select id="fGroup"><option value="">Secin...</option></select></div>
+      <div class="form-group" id="passGroup"><label>Sifre</label><input type="password" id="fPassword" minlength="6"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal()">Legv et</button>
+        <button type="submit" class="btn btn-accent" id="saveBtn">Yadda saxla</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<main class="main">
+  <h1 class="page-title">Telebeler</h1>
+
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="Ad ile axtar..." oninput="filterStudents()">
+    <select id="filterGroup" onchange="filterStudents()"><option value="">Butun qruplar</option></select>
+    <select id="filterStatus" onchange="filterStudents()">
+      <option value="">Butun status</option>
+      <option value="active">Aktiv</option>
+      <option value="paused">Dayandirilib</option>
+    </select>
+    <button class="btn btn-accent" onclick="openNew()">+ Yeni Telebe</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Ad</th><th>Qrup</th><th>Telefon</th><th>XP</th><th>Seviye</th><th>Status</th><th>Emeliyyat</th></tr></thead>
+      <tbody id="tbody"><tr><td colspan="7" style="color:var(--text3);text-align:center">Yuklenilir...</td></tr></tbody>
+    </table>
+  </div>
+</main>
+
+<script src="/js/supabase-kabinet.js"></script>
+<script src="/js/auth-kabinet.js"></script>
+<script>
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open')}
+
+let allStudents=[], allGroups=[], currentRole=null;
+
+function levelEmoji(xp){
+  if(xp>=200) return '&#128142;';
+  if(xp>=100) return '&#129351;';
+  if(xp>=50)  return '&#129352;';
+  return '&#129353;';
+}
+
+function levelName(xp){
+  if(xp>=200) return 'Almaz';
+  if(xp>=100) return 'Qizil';
+  if(xp>=50)  return 'Gumush';
+  return 'Brinc';
+}
+
+async function init(){
+  const ok = await requireRole('super_admin','manager');
+  if(!ok) return;
+  currentRole = await getRole();
+  filterNav(currentRole);
+  await loadGroups();
+  await loadStudents();
+}
+
+function filterNav(role){
+  document.querySelectorAll('#adminNav a').forEach(a=>{
+    const roles=a.dataset.roles?a.dataset.roles.split(','):[];
+    if(roles.length&&!roles.includes(role)) a.style.display='none';
+  });
+}
+
+async function loadGroups(){
+  const{data}=await sb.from('groups').select('id,name').eq('is_active',true).order('name');
+  allGroups=data||[];
+  const sel=document.getElementById('filterGroup');
+  const fSel=document.getElementById('fGroup');
+  allGroups.forEach(g=>{
+    sel.innerHTML+=`<option value="${g.id}">${g.name}</option>`;
+    fSel.innerHTML+=`<option value="${g.id}">${g.name}</option>`;
+  });
+}
+
+async function loadStudents(){
+  const{data}=await sb.from('students').select('*, groups(name)').order('full_name');
+  allStudents=data||[];
+  renderStudents(allStudents);
+}
+
+function filterStudents(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const gid=document.getElementById('filterGroup').value;
+  const st=document.getElementById('filterStatus').value;
+  let list=allStudents;
+  if(q) list=list.filter(s=>(s.full_name||'').toLowerCase().includes(q));
+  if(gid) list=list.filter(s=>s.group_id===gid);
+  if(st) list=list.filter(s=>s.status===st);
+  renderStudents(list);
+}
+
+function renderStudents(list){
+  const tbody=document.getElementById('tbody');
+  if(!list.length){tbody.innerHTML='<tr><td colspan="7" style="color:var(--text3);text-align:center">Telebe tapilmadi</td></tr>';return}
+  tbody.innerHTML=list.map(s=>{
+    const xp=s.xp||0;
+    const statusClass=s.status==='active'?'badge-green':'badge-red';
+    const statusText=s.status==='active'?'Aktiv':'Dayandirilib';
+    return `<tr>
+      <td>${s.full_name||'-'}</td>
+      <td>${s.groups?.name||'-'}</td>
+      <td>${s.phone||'-'}</td>
+      <td>${xp}</td>
+      <td><span class="level-emoji">${levelEmoji(xp)}</span> ${levelName(xp)}</td>
+      <td><span class="badge ${statusClass}">${statusText}</span></td>
+      <td>
+        <button class="btn btn-sm btn-outline" onclick="openEdit('${s.id}')">Duzelis</button>
+        ${s.status==='active'?`<button class="btn btn-sm btn-red" onclick="deactivate('${s.id}')">Dayan</button>`:`<button class="btn btn-sm btn-outline" onclick="activate('${s.id}')">Aktiv et</button>`}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openNew(){
+  document.getElementById('editId').value='';
+  document.getElementById('modalTitle').textContent='Yeni Telebe';
+  document.getElementById('studentForm').reset();
+  document.getElementById('passGroup').style.display='block';
+  document.getElementById('fPassword').required=true;
+  document.getElementById('modalMsg').className='msg-box';
+  document.getElementById('modal').classList.add('open');
+}
+
+function openEdit(id){
+  const s=allStudents.find(x=>x.id===id);
+  if(!s) return;
+  document.getElementById('editId').value=id;
+  document.getElementById('modalTitle').textContent='Telebe Duzelis';
+  document.getElementById('fFullName').value=s.full_name||'';
+  document.getElementById('fPhone').value=s.phone||'';
+  document.getElementById('fEmail').value=s.email||'';
+  document.getElementById('fGroup').value=s.group_id||'';
+  document.getElementById('passGroup').style.display='none';
+  document.getElementById('fPassword').required=false;
+  document.getElementById('modalMsg').className='msg-box';
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+
+async function saveStudent(e){
+  e.preventDefault();
+  const msgEl=document.getElementById('modalMsg');
+  msgEl.className='msg-box';
+  const editId=document.getElementById('editId').value;
+  const full_name=document.getElementById('fFullName').value.trim();
+  const phone=document.getElementById('fPhone').value.trim();
+  const email=document.getElementById('fEmail').value.trim();
+  const group_id=document.getElementById('fGroup').value||null;
+
+  try{
+    if(editId){
+      const{error}=await sb.from('students').update({full_name,phone,email,group_id}).eq('id',editId);
+      if(error) throw error;
+    } else {
+      const password=document.getElementById('fPassword').value;
+      if(!password||password.length<6){msgEl.textContent='Sifre minimum 6 simvol olmalidir';msgEl.className='msg-box error';return}
+      const{data:authData,error:authErr}=await sb.auth.signUp({email,password,options:{data:{full_name}}});
+      if(authErr) throw authErr;
+      const userId=authData.user?.id;
+      const{error:insErr}=await sb.from('students').insert({user_id:userId,full_name,phone,email,group_id,status:'active',xp:0});
+      if(insErr) throw insErr;
+    }
+    closeModal();
+    await loadStudents();
+  }catch(err){
+    msgEl.textContent=err.message||'Xeta bash verdi';
+    msgEl.className='msg-box error';
+  }
+}
+
+async function deactivate(id){
+  if(!confirm('Bu telebeni dayandirmaq isteyirsiniz?')) return;
+  await sb.from('students').update({status:'paused'}).eq('id',id);
+  await loadStudents();
+}
+
+async function activate(id){
+  await sb.from('students').update({status:'active'}).eq('id',id);
+  await loadStudents();
+}
+
+init();
+</script>
+</body>
+</html>

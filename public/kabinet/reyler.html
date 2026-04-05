@@ -3,132 +3,447 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Müəllim Rəyləri — Artmonia Kabinet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Reyler — Artmonia Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #0b0b1a; color: #fff; min-height: 100vh; display: flex; }
-    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .sidebar { width: 260px; background: #14122a; border-right: 1px solid #252240; min-height: 100vh; padding: 24px 16px; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
-    .sidebar-logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #f97316; margin-bottom: 32px; text-align: center; text-decoration: none; display: block; }
-    .sidebar-nav { list-style: none; flex: 1; }
-    .sidebar-nav li { margin-bottom: 4px; }
-    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: #b0acd0; text-decoration: none; font-size: 14px; transition: all .2s; }
-    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(249,115,22,.12); color: #f97316; }
-    .sidebar-nav a .icon { font-size: 18px; width: 24px; text-align: center; }
-    .sidebar-bottom { border-top: 1px solid #252240; padding-top: 16px; margin-top: 16px; }
-    .sidebar-bottom button { background: none; border: 1px solid #252240; color: #b0acd0; padding: 10px 14px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 14px; transition: all .2s; }
-    .sidebar-bottom button:hover { border-color: #f97316; color: #f97316; }
+    :root {
+      --bg: #0b0b1a;
+      --bg2: #0f0e24;
+      --card: #14122a;
+      --card2: #1a1835;
+      --border: #252240;
+      --accent: #f97316;
+      --accent-hover: #fb923c;
+      --text: #ffffff;
+      --text2: #b0acd0;
+      --text3: #6b6790;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --sidebar-w: 260px;
+    }
 
-    .main { margin-left: 260px; flex: 1; padding: 32px; width: calc(100% - 260px); }
-    .page-title { font-size: 28px; margin-bottom: 24px; }
-    .empty-state { text-align: center; padding: 60px 20px; color: #6b6790; font-size: 16px; }
-    .loading { text-align: center; padding: 40px; color: #6b6790; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
 
-    /* Average Rating */
-    .avg-card { background: #14122a; border: 1px solid #252240; border-radius: 12px; padding: 24px; margin-bottom: 24px; display: flex; align-items: center; gap: 20px; }
-    .avg-number { font-size: 48px; font-weight: 700; color: #f97316; line-height: 1; }
-    .avg-stars { font-size: 24px; margin-bottom: 4px; }
-    .avg-label { font-size: 13px; color: #6b6790; }
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
 
-    /* Feedback Cards */
-    .fb-card { background: #14122a; border: 1px solid #252240; border-radius: 12px; padding: 20px; margin-bottom: 12px; transition: border-color .2s; }
-    .fb-card:hover { border-color: #f97316; }
-    .fb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .fb-date { font-size: 13px; color: #6b6790; }
-    .fb-stars { color: #f97316; font-size: 16px; }
-    .fb-category { display: inline-block; background: rgba(249,115,22,.12); color: #f97316; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; }
-    .fb-comment { font-size: 14px; color: #b0acd0; line-height: 1.6; }
-    .fb-points { color: #f97316; font-weight: 600; font-size: 13px; margin-top: 8px; }
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform .3s ease;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: .935rem;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all .2s ease;
+    }
+
+    .sidebar-nav a:hover {
+      color: var(--text);
+      background: rgba(249, 115, 22, .06);
+    }
+
+    .sidebar-nav a.active {
+      color: var(--text);
+      border-left-color: var(--accent);
+      background: rgba(249, 115, 22, .1);
+    }
+
+    .sidebar-nav a .nav-icon {
+      font-size: 1.15rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar-bottom {
+      padding: 16px 24px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-logout {
+      width: 100%;
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text2);
+      font-size: .875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+
+    .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      margin-left: var(--sidebar-w);
+      padding: 32px 36px 48px;
+      min-height: 100vh;
+    }
+
+    /* ── Hamburger ── */
+    .hamburger {
+      display: none;
+      position: fixed;
+      top: 16px; left: 16px;
+      z-index: 200;
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 20px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 90;
+    }
+
+    .sidebar-overlay.show { display: block; }
+
+    .page-title {
+      font-size: 1.65rem;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+
+    /* ── Top Summary ── */
+    .summary-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .avg-rating {
+      text-align: center;
+    }
+
+    .avg-rating .big-num {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .avg-rating .stars {
+      color: var(--yellow);
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      margin-top: 6px;
+    }
+
+    .avg-rating .count {
+      font-size: .85rem;
+      color: var(--text3);
+      margin-top: 6px;
+    }
+
+    /* ── Feedback cards ── */
+    .feedback-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .fb-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .fb-card:hover {
+      border-color: rgba(249,115,22,.35);
+      transform: translateY(-2px);
+    }
+
+    .fb-card .fb-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .fb-card .fb-date {
+      font-size: .85rem;
+      color: var(--text3);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+
+    .badge-davamiyyat { background: rgba(96,165,250,.15); color: var(--blue); }
+    .badge-texnika { background: rgba(249,115,22,.15); color: var(--accent); }
+    .badge-yaradicilik { background: rgba(168,85,247,.15); color: #a855f7; }
+    .badge-umumi { background: rgba(74,222,128,.15); color: var(--green); }
+
+    .fb-card .fb-stars {
+      color: var(--yellow);
+      font-size: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .fb-card .fb-comment {
+      color: var(--text2);
+      font-size: .9rem;
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+
+    .fb-card .fb-points {
+      margin-top: 8px;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    /* ── Empty ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text3);
+      font-size: 1.05rem;
+    }
+
+    .empty-state .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--border) 25%, rgba(255,255,255,.06) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
 
     @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main { margin-left: 0; width: 100%; padding: 20px 16px; }
+      .hamburger { display: flex; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; padding: 80px 18px 36px; }
+      .summary-card { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <a href="/kabinet/dashboard.html" class="sidebar-logo">Artmonia</a>
-    <ul class="sidebar-nav">
-      <li><a href="/kabinet/dashboard.html"><span class="icon">🏠</span> Ana Səhifə</a></li>
-      <li><a href="/kabinet/cedvel.html"><span class="icon">📅</span> Dərs Cədvəli</a></li>
-      <li><a href="/kabinet/odenisler.html"><span class="icon">💳</span> Ödənişlər</a></li>
-      <li><a href="/kabinet/materiallar.html"><span class="icon">📂</span> Materiallar</a></li>
-      <li><a href="/kabinet/reyler.html" class="active"><span class="icon">💬</span> Müəllim Rəyləri</a></li>
-      <li><a href="/kabinet/neticelerim.html"><span class="icon">🖼️</span> Əsərlərim</a></li>
-      <li><a href="/kabinet/gamification.html"><span class="icon">🏆</span> Gamification</a></li>
-    </ul>
+
+  <button class="hamburger" id="hamburger" aria-label="Menyu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">Artmonia</div>
+    <nav class="sidebar-nav">
+      <a href="/kabinet/dashboard.html">
+        <span class="nav-icon">&#127968;</span> &#399;sas
+      </a>
+      <a href="/kabinet/cedvel.html">
+        <span class="nav-icon">&#128197;</span> C&#601;dv&#601;l
+      </a>
+      <a href="/kabinet/odenisler.html">
+        <span class="nav-icon">&#128179;</span> &#214;d&#601;ni&#351;l&#601;r
+      </a>
+      <a href="/kabinet/materiallar.html">
+        <span class="nav-icon">&#128218;</span> Materiallar
+      </a>
+      <a href="/kabinet/reyler.html" class="active">
+        <span class="nav-icon">&#11088;</span> R&#601;yl&#601;r
+      </a>
+      <a href="/kabinet/neticelerim.html">
+        <span class="nav-icon">&#128444;&#65039;</span> N&#601;tic&#601;l&#601;rim
+      </a>
+      <a href="/kabinet/gamification.html">
+        <span class="nav-icon">&#127918;</span> Gamification
+      </a>
+    </nav>
     <div class="sidebar-bottom">
-      <button onclick="logout()">Çıxış</button>
+      <button class="btn-logout" onclick="logout()">&#128682; &#199;&#305;x&#305;&#351;</button>
     </div>
   </aside>
 
   <main class="main">
-    <h1 class="page-title">Müəllim Rəyləri</h1>
-    <div id="content"><div class="loading">Yüklənir...</div></div>
+    <h1 class="page-title">&#11088; M&#252;&#601;llim R&#601;yl&#601;ri</h1>
+
+    <div id="summaryCard"></div>
+    <div id="feedbackContent">
+      <div class="feedback-list">
+        <div class="fb-card skeleton" style="height:100px"></div>
+        <div class="fb-card skeleton" style="height:100px"></div>
+      </div>
+    </div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/js/supabase-kabinet.js"></script>
   <script src="/js/auth-kabinet.js"></script>
   <script src="/js/gamification.js"></script>
-  <script>
-    requireAuth();
 
-    function renderStars(rating) {
-      const full = Math.floor(rating);
-      const empty = 5 - full;
-      return '<span style="color:#f97316">' + '★'.repeat(full) + '</span>' + '<span style="color:#252240">' + '★'.repeat(empty) + '</span>';
+  <script>
+    requireRole('student');
+
+    const hamburger = document.getElementById('hamburger');
+    const sidebar   = document.getElementById('sidebar');
+    const overlay   = document.getElementById('sidebarOverlay');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    });
+
+    overlay.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+
+    function starsHTML(rating) {
+      var full = Math.round(rating || 0);
+      return '\u2605'.repeat(full) + '\u2606'.repeat(5 - full);
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '\u2014';
+      return new Date(iso).toLocaleDateString('az-AZ', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function categoryBadge(cat) {
+      var c = (cat || '').toLowerCase();
+      if (c === 'davamiyyat') return '<span class="badge badge-davamiyyat">Davamiyy\u0259t</span>';
+      if (c === 'texnika') return '<span class="badge badge-texnika">Texnika</span>';
+      if (c === 'yaradicilik') return '<span class="badge badge-yaradicilik">Yarad\u0131c\u0131l\u0131q</span>';
+      return '<span class="badge badge-umumi">\u00dcmumi</span>';
     }
 
     async function loadFeedback() {
-      const student = await getStudent();
-      const container = document.getElementById('content');
+      var student = await getStudent();
+      if (!student) return;
 
-      if (!student) {
-        container.innerHTML = '<div class="empty-state">Tələbə tapılmadı</div>';
-        return;
-      }
-
-      const { data: feedback, error } = await sb
-        .from('teacher_feedback')
+      var { data: feedbacks } = await sb
+        .from('feedback')
         .select('*')
         .eq('student_id', student.id)
         .order('lesson_date', { ascending: false });
 
-      if (error || !feedback || feedback.length === 0) {
-        container.innerHTML = '<div class="empty-state">Hələ rəy yazılmayıb</div>';
+      var summaryEl = document.getElementById('summaryCard');
+      var contentEl = document.getElementById('feedbackContent');
+
+      if (!feedbacks || feedbacks.length === 0) {
+        summaryEl.innerHTML = '';
+        contentEl.innerHTML = '<div class="empty-state"><div class="empty-icon">\u2B50</div><p>H\u0259l\u0259 m\u00fc\u0259llim r\u0259yi yaz\u0131lmay\u0131b</p></div>';
         return;
       }
 
-      // Calculate average
-      const avgRating = feedback.reduce((s, f) => s + (f.rating || 0), 0) / feedback.length;
+      // Summary
+      var total = feedbacks.length;
+      var avg = feedbacks.reduce(function(s, f) { return s + (f.rating || 0); }, 0) / total;
+      summaryEl.innerHTML =
+        '<div class="summary-card">' +
+          '<div class="avg-rating">' +
+            '<div class="big-num">' + avg.toFixed(1) + '</div>' +
+            '<div class="stars">' + starsHTML(avg) + '</div>' +
+            '<div class="count">' + total + ' r\u0259y</div>' +
+          '</div>' +
+        '</div>';
 
-      let html = `
-        <div class="avg-card">
-          <div class="avg-number">${avgRating.toFixed(1)}</div>
-          <div>
-            <div class="avg-stars">${renderStars(Math.round(avgRating))}</div>
-            <div class="avg-label">${feedback.length} rəy əsasında orta qiymət</div>
-          </div>
-        </div>`;
-
-      feedback.forEach(f => {
-        const date = f.lesson_date ? new Date(f.lesson_date).toLocaleDateString('az-AZ') : '-';
-        html += `<div class="fb-card">
-          <div class="fb-header">
-            <div class="fb-date">${date}</div>
-            <div class="fb-stars">${renderStars(f.rating || 0)}</div>
-          </div>
-          ${f.category ? `<span class="fb-category">${f.category}</span>` : ''}
-          <div class="fb-comment">${f.comment || ''}</div>
-          ${f.points_awarded ? `<div class="fb-points">+${f.points_awarded} XP</div>` : ''}
-        </div>`;
+      // List
+      var html = '<div class="feedback-list">';
+      feedbacks.forEach(function(fb) {
+        html += '<div class="fb-card">' +
+          '<div class="fb-top">' +
+            '<span class="fb-date">' + formatDate(fb.lesson_date || fb.created_at) + '</span>' +
+            categoryBadge(fb.category) +
+            '<span class="fb-stars">' + starsHTML(fb.rating) + '</span>' +
+          '</div>' +
+          '<div class="fb-comment">' + (fb.comment || '') + '</div>' +
+          (fb.points_awarded ? '<div class="fb-points">+' + fb.points_awarded + ' xal</div>' : '') +
+        '</div>';
       });
-
-      container.innerHTML = html;
+      html += '</div>';
+      contentEl.innerHTML = html;
     }
 
     loadFeedback();

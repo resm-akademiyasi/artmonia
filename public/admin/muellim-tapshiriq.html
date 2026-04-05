@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tapshiriqlar - Artmonia Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b1a;--bg2:#0f0e24;--card:#14122a;--card2:#1a1835;--border:#252240;--accent:#f97316;--accent2:#ea580c;--text:#fff;--text2:#b0acd0;--text3:#6b6790;--green:#4ade80;--blue:#60a5fa;--red:#f87171;--sidebar-w:250px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--card);border-right:1px solid var(--border);padding:24px 16px;display:flex;flex-direction:column;z-index:100;transition:transform .3s}
+.sidebar .logo{font-family:'Playfair Display',serif;color:var(--accent);font-size:1.5rem;font-weight:700;margin-bottom:32px;padding:0 8px}
+.sidebar nav{flex:1;display:flex;flex-direction:column;gap:2px}
+.sidebar nav a{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--text2);text-decoration:none;font-size:.9rem;font-weight:500;transition:all .15s}
+.sidebar nav a:hover,.sidebar nav a.active{background:var(--bg2);color:var(--text)}
+.sidebar nav a.active{border-left:3px solid var(--accent);color:var(--accent)}
+.sidebar .divider{height:1px;background:var(--border);margin:8px 0}
+.sidebar .divider-label{color:var(--text3);font-size:.75rem;padding:4px 12px;text-transform:uppercase;letter-spacing:1px}
+.sidebar .logout-btn{margin-top:auto;display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--red);background:none;border:none;font-size:.9rem;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;width:100%;transition:background .15s}
+.sidebar .logout-btn:hover{background:rgba(248,113,113,.1)}
+.main{margin-left:var(--sidebar-w);padding:32px}
+.page-title{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:24px}
+.section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:24px}
+.section h2{font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:16px;color:var(--accent)}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;color:var(--text2);font-size:.85rem;font-weight:500;margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;font-family:'Inter',sans-serif;outline:none;resize:vertical}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-row{display:flex;gap:12px;flex-wrap:wrap}
+.form-row .form-group{flex:1;min-width:200px}
+.btn{padding:10px 20px;border-radius:50px;font-size:.9rem;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--accent2)}
+.btn-sm{padding:6px 14px;font-size:.8rem;border-radius:50px}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-outline:hover{border-color:var(--accent);color:var(--text)}
+.btn-green{background:rgba(74,222,128,.15);color:var(--green);border:1px solid transparent}.btn-green:hover{border-color:var(--green)}
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow-x:auto;margin-bottom:24px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:12px 16px;color:var(--text3);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;font-size:.9rem;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.78rem;font-weight:600}
+.badge-green{background:rgba(74,222,128,.15);color:var(--green)}
+.badge-blue{background:rgba(96,165,250,.15);color:var(--blue)}
+.badge-orange{background:rgba(249,115,22,.15);color:var(--accent)}
+.badge-gray{background:rgba(107,103,144,.15);color:var(--text3)}
+.inline-form{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.inline-form .form-group{flex:1;min-width:180px}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal h2{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:20px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.msg-box{padding:12px 16px;border-radius:10px;font-size:.9rem;margin-bottom:16px;display:none;line-height:1.4}
+.msg-box.error{display:block;background:rgba(248,113,113,.12);border:1px solid var(--red);color:var(--red)}
+.msg-box.success{display:block;background:rgba(74,222,128,.12);border:1px solid var(--green);color:var(--green)}
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--text);font-size:1.2rem}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.overlay.open{display:block}.hamburger{display:block}
+  .main{margin-left:0;padding:24px 16px;padding-top:60px}
+  .inline-form{flex-direction:column}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo">Artmonia Admin</div>
+  <nav id="adminNav">
+    <a href="/admin/dashboard.html" data-roles="super_admin">&#128202; Dashboard</a>
+    <a href="/admin/telebeler.html" data-roles="super_admin,manager">&#128101; Telebeler</a>
+    <a href="/admin/qruplar.html" data-roles="super_admin,manager">&#128203; Qruplar</a>
+    <a href="/admin/odenisler.html" data-roles="super_admin,manager">&#128176; Odenisler</a>
+    <a href="/admin/gamification.html" data-roles="super_admin,manager">&#127942; Gamification</a>
+    <a href="/admin/hesabat.html" data-roles="super_admin,manager">&#128200; Hesabat</a>
+    <a href="/admin/istifadeciler.html" data-roles="super_admin">&#128100; Istifadeciler</a>
+    <div class="divider"></div>
+    <div class="divider-label">Muellim</div>
+    <a href="/admin/muellim-qrup.html" data-roles="teacher,super_admin">&#127891; Qrupum</a>
+    <a href="/admin/muellim-tapshiriq.html" class="active" data-roles="teacher,super_admin">&#128221; Tapshiriqlar</a>
+    <a href="/admin/muellim-material.html" data-roles="teacher,super_admin">&#128196; Materiallar</a>
+  </nav>
+  <button class="logout-btn" onclick="logout()">&#128682; Chixish</button>
+</aside>
+
+<!-- Review Modal -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal">
+    <h2>Tapshiriq Qiymetlendir</h2>
+    <div id="reviewMsg" class="msg-box"></div>
+    <form id="reviewForm" onsubmit="submitReview(event)">
+      <input type="hidden" id="reviewHwId">
+      <div class="form-group"><label>Muellim Qeydi</label><textarea id="reviewNote" rows="3" placeholder="Reyi yazin..."></textarea></div>
+      <div class="form-group"><label>Bal (0-5)</label><input type="number" id="reviewPoints" min="0" max="5" value="3"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeReviewModal()">Legv et</button>
+        <button type="submit" class="btn btn-accent">Qiymetlendir</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<main class="main">
+  <h1 class="page-title">Tapshiriqlar</h1>
+  <div id="pageMsg" class="msg-box"></div>
+
+  <!-- New Homework -->
+  <div class="section">
+    <h2>Yeni Tapshiriq</h2>
+    <form onsubmit="createHomework(event)">
+      <div class="form-row">
+        <div class="form-group"><label>Basliq</label><input type="text" id="hwTitle" required></div>
+        <div class="form-group"><label>Son tarix</label><input type="date" id="hwDue" required></div>
+      </div>
+      <div class="form-group"><label>Aciqlama</label><textarea id="hwDesc" rows="2" placeholder="Tapshiriq haqqinda..."></textarea></div>
+      <button type="submit" class="btn btn-accent">Tapshiriq Yarat</button>
+    </form>
+  </div>
+
+  <!-- XP Ver -->
+  <div class="section">
+    <h2>XP Ver</h2>
+    <div class="inline-form">
+      <div class="form-group"><label>Telebe</label><select id="xpStudent"><option value="">Secin...</option></select></div>
+      <div class="form-group"><label>Emeliyyat</label>
+        <select id="xpAction">
+          <option value="derse_geldi">Derse geldi (+2 XP)</option>
+          <option value="tapshiriq_tamamladi">Tapshiriq tamamladi (+5 XP)</option>
+        </select>
+      </div>
+      <button class="btn btn-accent" onclick="giveXP()">XP Ver</button>
+    </div>
+  </div>
+
+  <!-- Submitted Homework -->
+  <h2 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:16px;color:var(--accent)">Gonderilmish Tapshiriqlar</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Telebe</th><th>Basliq</th><th>Fayl</th><th>Status</th><th>Emeliyyat</th></tr></thead>
+      <tbody id="hwBody"><tr><td colspan="5" style="color:var(--text3);text-align:center">Yuklenilir...</td></tr></tbody>
+    </table>
+  </div>
+</main>
+
+<script src="/js/supabase-kabinet.js"></script>
+<script src="/js/auth-kabinet.js"></script>
+<script>
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open')}
+
+let currentRole=null, currentUser=null, myStudents=[], myGroupIds=[];
+const xpMap={derse_geldi:2,tapshiriq_tamamladi:5};
+
+function showMsg(text,type){
+  const el=document.getElementById('pageMsg');
+  el.textContent=text;el.className='msg-box '+type;
+  setTimeout(()=>{el.className='msg-box'},3000);
+}
+
+async function init(){
+  const ok=await requireRole('teacher','super_admin');
+  if(!ok) return;
+  currentRole=await getRole();
+  currentUser=await getUser();
+  filterNav(currentRole);
+  await loadMyStudents();
+  await loadHomework();
+}
+
+function filterNav(role){
+  document.querySelectorAll('#adminNav a').forEach(a=>{
+    const roles=a.dataset.roles?a.dataset.roles.split(','):[];
+    if(roles.length&&!roles.includes(role)) a.style.display='none';
+  });
+}
+
+async function loadMyStudents(){
+  let query=sb.from('groups').select('id').eq('is_active',true);
+  if(currentRole==='teacher') query=query.eq('teacher_id',currentUser.id);
+  const{data:groups}=await query;
+  myGroupIds=(groups||[]).map(g=>g.id);
+  if(!myGroupIds.length) return;
+
+  const{data}=await sb.from('students').select('id,full_name,xp').in('group_id',myGroupIds).eq('status','active').order('full_name');
+  myStudents=data||[];
+  const sel=document.getElementById('xpStudent');
+  myStudents.forEach(s=>{sel.innerHTML+=`<option value="${s.id}">${s.full_name}</option>`});
+}
+
+async function createHomework(e){
+  e.preventDefault();
+  const title=document.getElementById('hwTitle').value.trim();
+  const description=document.getElementById('hwDesc').value.trim();
+  const due_date=document.getElementById('hwDue').value;
+  if(!title||!due_date) return showMsg('Basliq ve son tarix daxil edin','error');
+
+  try{
+    // Create homework for each student in group
+    const inserts=myStudents.map(s=>({
+      student_id:s.id,
+      title, description, due_date,
+      status:'pending',
+      teacher_id:currentUser.id
+    }));
+    if(!inserts.length) return showMsg('Qrupda telebe tapilmadi','error');
+
+    const{error}=await sb.from('homework').insert(inserts);
+    if(error) throw error;
+    showMsg(`${inserts.length} telebe ucun tapshiriq yaradildi!`,'success');
+    document.getElementById('hwTitle').value='';
+    document.getElementById('hwDesc').value='';
+    await loadHomework();
+  }catch(err){
+    showMsg(err.message||'Xeta bash verdi','error');
+  }
+}
+
+async function loadHomework(){
+  if(!myStudents.length){
+    document.getElementById('hwBody').innerHTML='<tr><td colspan="5" style="color:var(--text3);text-align:center">Telebe tapilmadi</td></tr>';
+    return;
+  }
+  const studentIds=myStudents.map(s=>s.id);
+  const{data}=await sb.from('homework').select('*, students(full_name)').in('student_id',studentIds).order('created_at',{ascending:false}).limit(50);
+
+  const tbody=document.getElementById('hwBody');
+  if(!data||!data.length){
+    tbody.innerHTML='<tr><td colspan="5" style="color:var(--text3);text-align:center">Tapshiriq tapilmadi</td></tr>';
+    return;
+  }
+  tbody.innerHTML=data.map(h=>{
+    const name=h.students?.full_name||'-';
+    const statusMap={pending:'badge-gray',submitted:'badge-blue',reviewed:'badge-green'};
+    const statusLabel={pending:'Gozleyir',submitted:'Gonderilib',reviewed:'Baxilib'};
+    const badge=statusMap[h.status]||'badge-gray';
+    const label=statusLabel[h.status]||h.status;
+    const fileLink=h.file_url?`<a href="${h.file_url}" target="_blank" style="color:var(--blue)">Bax</a>`:'--';
+    const reviewBtn=h.status==='submitted'?`<button class="btn btn-sm btn-green" onclick="openReview('${h.id}')">Qiymetlendir</button>`:'';
+    return `<tr><td>${name}</td><td>${h.title||'-'}</td><td>${fileLink}</td><td><span class="badge ${badge}">${label}</span></td><td>${reviewBtn}</td></tr>`;
+  }).join('');
+}
+
+function openReview(hwId){
+  document.getElementById('reviewHwId').value=hwId;
+  document.getElementById('reviewForm').reset();
+  document.getElementById('reviewHwId').value=hwId;
+  document.getElementById('reviewMsg').className='msg-box';
+  document.getElementById('reviewModal').classList.add('open');
+}
+function closeReviewModal(){document.getElementById('reviewModal').classList.remove('open')}
+
+async function submitReview(e){
+  e.preventDefault();
+  const hwId=document.getElementById('reviewHwId').value;
+  const teacher_note=document.getElementById('reviewNote').value.trim();
+  const points=parseInt(document.getElementById('reviewPoints').value)||0;
+  const msgEl=document.getElementById('reviewMsg');
+  msgEl.className='msg-box';
+
+  try{
+    const{error}=await sb.from('homework').update({
+      status:'reviewed',
+      teacher_note,
+      points_awarded:points,
+      reviewed_at:new Date().toISOString()
+    }).eq('id',hwId);
+    if(error) throw error;
+
+    // Award XP if points > 0
+    if(points>0){
+      const{data:hw}=await sb.from('homework').select('student_id').eq('id',hwId).single();
+      if(hw){
+        const student=myStudents.find(s=>s.id===hw.student_id);
+        const newXp=(student?.xp||0)+points;
+        await sb.from('students').update({xp:newXp}).eq('id',hw.student_id);
+        await sb.from('point_log').insert({student_id:hw.student_id,points,action:'homework_review',created_by:currentUser.id});
+      }
+    }
+
+    closeReviewModal();
+    showMsg('Tapshiriq qiymetlendirildi!','success');
+    await loadHomework();
+  }catch(err){
+    msgEl.textContent=err.message||'Xeta bash verdi';
+    msgEl.className='msg-box error';
+  }
+}
+
+async function giveXP(){
+  const sid=document.getElementById('xpStudent').value;
+  const action=document.getElementById('xpAction').value;
+  if(!sid) return showMsg('Telebe secin','error');
+
+  const points=xpMap[action]||0;
+  try{
+    const student=myStudents.find(s=>s.id===sid);
+    const newXp=(student?.xp||0)+points;
+    await sb.from('students').update({xp:newXp}).eq('id',sid);
+    await sb.from('point_log').insert({student_id:sid,points,action,created_by:currentUser.id});
+    if(student) student.xp=newXp;
+    showMsg(`${points} XP verildi!`,'success');
+  }catch(err){
+    showMsg(err.message||'Xeta bash verdi','error');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

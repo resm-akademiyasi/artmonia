@@ -3,151 +3,436 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ödənişlər — Artmonia Kabinet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Odenishler — Artmonia Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #0b0b1a; color: #fff; min-height: 100vh; display: flex; }
-    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .sidebar { width: 260px; background: #14122a; border-right: 1px solid #252240; min-height: 100vh; padding: 24px 16px; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
-    .sidebar-logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #f97316; margin-bottom: 32px; text-align: center; text-decoration: none; display: block; }
-    .sidebar-nav { list-style: none; flex: 1; }
-    .sidebar-nav li { margin-bottom: 4px; }
-    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: #b0acd0; text-decoration: none; font-size: 14px; transition: all .2s; }
-    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(249,115,22,.12); color: #f97316; }
-    .sidebar-nav a .icon { font-size: 18px; width: 24px; text-align: center; }
-    .sidebar-bottom { border-top: 1px solid #252240; padding-top: 16px; margin-top: 16px; }
-    .sidebar-bottom button { background: none; border: 1px solid #252240; color: #b0acd0; padding: 10px 14px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 14px; transition: all .2s; }
-    .sidebar-bottom button:hover { border-color: #f97316; color: #f97316; }
+    :root {
+      --bg: #0b0b1a;
+      --bg2: #0f0e24;
+      --card: #14122a;
+      --card2: #1a1835;
+      --border: #252240;
+      --accent: #f97316;
+      --accent-hover: #fb923c;
+      --text: #ffffff;
+      --text2: #b0acd0;
+      --text3: #6b6790;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --red: #f87171;
+      --sidebar-w: 260px;
+    }
 
-    .main { margin-left: 260px; flex: 1; padding: 32px; width: calc(100% - 260px); }
-    .page-title { font-size: 28px; margin-bottom: 24px; }
-    .empty-state { text-align: center; padding: 60px 20px; color: #6b6790; font-size: 16px; }
-    .loading { text-align: center; padding: 40px; color: #6b6790; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
 
-    /* Summary Cards */
-    .summary-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
-    .summary-card { background: #14122a; border: 1px solid #252240; border-radius: 12px; padding: 20px; }
-    .summary-label { font-size: 13px; color: #6b6790; margin-bottom: 6px; }
-    .summary-value { font-size: 24px; font-weight: 700; color: #f97316; }
-    .summary-value.white { color: #fff; }
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
 
-    /* Table */
-    .payments-table { width: 100%; border-collapse: collapse; background: #14122a; border-radius: 12px; overflow: hidden; border: 1px solid #252240; }
-    .payments-table thead th { text-align: left; padding: 14px 16px; font-size: 12px; color: #6b6790; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid #252240; background: #14122a; }
-    .payments-table tbody td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #252240; color: #b0acd0; }
-    .payments-table tbody tr:last-child td { border-bottom: none; }
-    .payments-table tbody tr:hover { background: rgba(249,115,22,.05); }
-    .amount { color: #f97316; font-weight: 600; }
-    .method-badge { display: inline-block; background: rgba(249,115,22,.12); color: #f97316; font-size: 11px; padding: 2px 8px; border-radius: 4px; }
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform .3s ease;
+    }
 
+    .sidebar-logo {
+      padding: 28px 24px 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: .935rem;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all .2s ease;
+    }
+
+    .sidebar-nav a:hover {
+      color: var(--text);
+      background: rgba(249, 115, 22, .06);
+    }
+
+    .sidebar-nav a.active {
+      color: var(--text);
+      border-left-color: var(--accent);
+      background: rgba(249, 115, 22, .1);
+    }
+
+    .sidebar-nav a .nav-icon {
+      font-size: 1.15rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar-bottom {
+      padding: 16px 24px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-logout {
+      width: 100%;
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text2);
+      font-size: .875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+
+    .btn-logout:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      margin-left: var(--sidebar-w);
+      padding: 32px 36px 48px;
+      min-height: 100vh;
+    }
+
+    /* ── Hamburger ── */
+    .hamburger {
+      display: none;
+      position: fixed;
+      top: 16px; left: 16px;
+      z-index: 200;
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 20px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 90;
+    }
+
+    .sidebar-overlay.show { display: block; }
+
+    /* ── Page Title ── */
+    .page-title {
+      font-size: 1.65rem;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+
+    /* ── Summary Cards ── */
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .summary-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      text-align: center;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .summary-card:hover {
+      border-color: rgba(249,115,22,.35);
+      transform: translateY(-2px);
+    }
+
+    .summary-card .s-label {
+      font-size: .8rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 8px;
+    }
+
+    .summary-card .s-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .summary-card .s-value.accent { color: var(--accent); }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 14px 18px;
+      font-size: .8rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+      background: var(--card2);
+    }
+
+    tbody td {
+      padding: 14px 18px;
+      font-size: .9rem;
+      color: var(--text2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    tbody tr:hover { background: rgba(249,115,22,.04); }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-green { background: rgba(74,222,128,.15); color: var(--green); }
+    .badge-blue { background: rgba(96,165,250,.15); color: var(--blue); }
+    .badge-purple { background: rgba(168,85,247,.15); color: #a855f7; }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text3);
+      font-size: 1.05rem;
+    }
+
+    .empty-state .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    /* ── Loading ── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--border) 25%, rgba(255,255,255,.06) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    /* ── Responsive ── */
     @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main { margin-left: 0; width: 100%; padding: 20px 16px; }
-      .payments-table { font-size: 12px; }
-      .payments-table thead th, .payments-table tbody td { padding: 10px 8px; }
+      .hamburger { display: flex; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; padding: 80px 18px 36px; }
+      .summary-row { grid-template-columns: 1fr; }
+      .table-wrap { overflow-x: auto; }
+      table { min-width: 600px; }
     }
   </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <a href="/kabinet/dashboard.html" class="sidebar-logo">Artmonia</a>
-    <ul class="sidebar-nav">
-      <li><a href="/kabinet/dashboard.html"><span class="icon">🏠</span> Ana Səhifə</a></li>
-      <li><a href="/kabinet/cedvel.html"><span class="icon">📅</span> Dərs Cədvəli</a></li>
-      <li><a href="/kabinet/odenisler.html" class="active"><span class="icon">💳</span> Ödənişlər</a></li>
-      <li><a href="/kabinet/materiallar.html"><span class="icon">📂</span> Materiallar</a></li>
-      <li><a href="/kabinet/reyler.html"><span class="icon">💬</span> Müəllim Rəyləri</a></li>
-      <li><a href="/kabinet/neticelerim.html"><span class="icon">🖼️</span> Əsərlərim</a></li>
-      <li><a href="/kabinet/gamification.html"><span class="icon">🏆</span> Gamification</a></li>
-    </ul>
+
+  <button class="hamburger" id="hamburger" aria-label="Menyu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">Artmonia</div>
+    <nav class="sidebar-nav">
+      <a href="/kabinet/dashboard.html">
+        <span class="nav-icon">&#127968;</span> &#399;sas
+      </a>
+      <a href="/kabinet/cedvel.html">
+        <span class="nav-icon">&#128197;</span> C&#601;dv&#601;l
+      </a>
+      <a href="/kabinet/odenisler.html" class="active">
+        <span class="nav-icon">&#128179;</span> &#214;d&#601;ni&#351;l&#601;r
+      </a>
+      <a href="/kabinet/materiallar.html">
+        <span class="nav-icon">&#128218;</span> Materiallar
+      </a>
+      <a href="/kabinet/reyler.html">
+        <span class="nav-icon">&#11088;</span> R&#601;yl&#601;r
+      </a>
+      <a href="/kabinet/neticelerim.html">
+        <span class="nav-icon">&#128444;&#65039;</span> N&#601;tic&#601;l&#601;rim
+      </a>
+      <a href="/kabinet/gamification.html">
+        <span class="nav-icon">&#127918;</span> Gamification
+      </a>
+    </nav>
     <div class="sidebar-bottom">
-      <button onclick="logout()">Çıxış</button>
+      <button class="btn-logout" onclick="logout()">&#128682; &#199;&#305;x&#305;&#351;</button>
     </div>
   </aside>
 
   <main class="main">
-    <h1 class="page-title">Ödənişlər</h1>
-    <div id="content"><div class="loading">Yüklənir...</div></div>
+    <h1 class="page-title">&#128179; &#214;d&#601;ni&#351;l&#601;r</h1>
+
+    <div class="summary-row" id="summaryRow">
+      <div class="summary-card"><div class="s-label">&#220;mumi &#246;d&#601;ni&#351;</div><div class="s-value" id="totalPaid">&#8212;</div></div>
+      <div class="summary-card"><div class="s-label">Son &#246;d&#601;ni&#351; tarixi</div><div class="s-value" id="lastDate">&#8212;</div></div>
+      <div class="summary-card"><div class="s-label">Cari balans</div><div class="s-value accent" id="balance">&#8212;</div></div>
+    </div>
+
+    <div id="paymentsContent">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tarix</th><th>M&#601;bl&#601;&#287;</th><th>&#220;sul</th><th>Ay</th><th>Qeyd</th></tr></thead>
+          <tbody>
+            <tr><td colspan="5"><div class="skeleton" style="height:20px;width:100%"></div></td></tr>
+            <tr><td colspan="5"><div class="skeleton" style="height:20px;width:80%"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/js/supabase-kabinet.js"></script>
   <script src="/js/auth-kabinet.js"></script>
   <script src="/js/gamification.js"></script>
+
   <script>
-    requireAuth();
+    requireRole('student');
+
+    const hamburger = document.getElementById('hamburger');
+    const sidebar   = document.getElementById('sidebar');
+    const overlay   = document.getElementById('sidebarOverlay');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    });
+
+    overlay.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+
+    function formatDate(iso) {
+      if (!iso) return '&#8212;';
+      return new Date(iso).toLocaleDateString('az-AZ', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function methodBadge(method) {
+      const m = (method || '').toLowerCase();
+      if (m === 'naghd' || m === 'nagd' || m === 'cash') return '<span class="badge badge-green">Na&#287;d</span>';
+      if (m === 'kart' || m === 'card') return '<span class="badge badge-blue">Kart</span>';
+      if (m === 'kochurme' || m === 'k&#246;&#231;&#252;rm&#601;' || m === 'transfer') return '<span class="badge badge-purple">K&#246;&#231;&#252;rm&#601;</span>';
+      return '<span class="badge badge-blue">' + (method || '&#8212;') + '</span>';
+    }
 
     async function loadPayments() {
       const student = await getStudent();
-      const container = document.getElementById('content');
+      if (!student) return;
 
-      if (!student) {
-        container.innerHTML = '<div class="empty-state">Tələbə tapılmadı</div>';
-        return;
-      }
-
-      const { data: payments, error } = await sb
+      const { data: payments } = await sb
         .from('payments')
         .select('*')
         .eq('student_id', student.id)
         .order('paid_at', { ascending: false });
 
-      if (error || !payments || payments.length === 0) {
-        container.innerHTML = '<div class="empty-state">Hələ ödəniş qeydiyyatı yoxdur</div>';
+      if (!payments || payments.length === 0) {
+        document.getElementById('paymentsContent').innerHTML =
+          '<div class="empty-state"><div class="empty-icon">&#128179;</div><p>H&#601;l&#601; &#246;d&#601;ni&#351; qeydiyyat&#305; yoxdur</p></div>';
         return;
       }
 
-      // Calculate summary
-      const totalPaid = payments.reduce((s, p) => s + (p.amount || 0), 0);
-      const lastPayment = payments[0];
-      const lastDate = lastPayment.paid_at ? new Date(lastPayment.paid_at).toLocaleDateString('az-AZ') : '-';
-      const currentBalance = lastPayment.balance_after != null ? lastPayment.balance_after : '-';
+      // Summary
+      const total = payments.reduce(function(s, p) { return s + (p.amount || 0); }, 0);
+      document.getElementById('totalPaid').textContent = total.toFixed(2) + ' \u20BC';
+      document.getElementById('lastDate').textContent = formatDate(payments[0].paid_at || payments[0].created_at);
+      const balance = student.balance != null ? student.balance : 0;
+      document.getElementById('balance').textContent = balance.toFixed(2) + ' \u20BC';
 
-      let html = `
-        <div class="summary-row">
-          <div class="summary-card">
-            <div class="summary-label">Ümumi ödəniş</div>
-            <div class="summary-value">${totalPaid.toFixed(2)} AZN</div>
-          </div>
-          <div class="summary-card">
-            <div class="summary-label">Son ödəniş tarixi</div>
-            <div class="summary-value white">${lastDate}</div>
-          </div>
-          <div class="summary-card">
-            <div class="summary-label">Cari balans</div>
-            <div class="summary-value">${currentBalance !== '-' ? currentBalance.toFixed(2) + ' AZN' : '-'}</div>
-          </div>
-        </div>
-
-        <table class="payments-table">
-          <thead>
-            <tr>
-              <th>Tarix</th>
-              <th>Məbləğ</th>
-              <th>Üsul</th>
-              <th>Ay</th>
-              <th>Qeyd</th>
-              <th>Balans</th>
-            </tr>
-          </thead>
-          <tbody>`;
-
-      payments.forEach(p => {
-        const date = p.paid_at ? new Date(p.paid_at).toLocaleDateString('az-AZ') : '-';
-        html += `<tr>
-          <td>${date}</td>
-          <td class="amount">${(p.amount || 0).toFixed(2)} AZN</td>
-          <td><span class="method-badge">${p.method || '-'}</span></td>
-          <td>${p.month || '-'}</td>
-          <td>${p.note || '-'}</td>
-          <td>${p.balance_after != null ? p.balance_after.toFixed(2) + ' AZN' : '-'}</td>
-        </tr>`;
+      // Table
+      let rows = '';
+      payments.forEach(function(p) {
+        rows += '<tr>' +
+          '<td>' + formatDate(p.paid_at || p.created_at) + '</td>' +
+          '<td style="font-weight:600;color:var(--text)">' + (p.amount || 0).toFixed(2) + ' \u20BC</td>' +
+          '<td>' + methodBadge(p.method) + '</td>' +
+          '<td>' + (p.month || '&#8212;') + '</td>' +
+          '<td>' + (p.note || '&#8212;') + '</td>' +
+        '</tr>';
       });
 
-      html += '</tbody></table>';
-      container.innerHTML = html;
+      document.getElementById('paymentsContent').innerHTML =
+        '<div class="table-wrap"><table>' +
+          '<thead><tr><th>Tarix</th><th>M&#601;bl&#601;&#287;</th><th>&#220;sul</th><th>Ay</th><th>Qeyd</th></tr></thead>' +
+          '<tbody>' + rows + '</tbody>' +
+        '</table></div>';
     }
 
     loadPayments();

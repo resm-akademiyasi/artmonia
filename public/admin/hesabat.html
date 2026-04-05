@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hesabat - Artmonia Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b1a;--bg2:#0f0e24;--card:#14122a;--card2:#1a1835;--border:#252240;--accent:#f97316;--accent2:#ea580c;--text:#fff;--text2:#b0acd0;--text3:#6b6790;--green:#4ade80;--blue:#60a5fa;--red:#f87171;--sidebar-w:250px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--card);border-right:1px solid var(--border);padding:24px 16px;display:flex;flex-direction:column;z-index:100;transition:transform .3s}
+.sidebar .logo{font-family:'Playfair Display',serif;color:var(--accent);font-size:1.5rem;font-weight:700;margin-bottom:32px;padding:0 8px}
+.sidebar nav{flex:1;display:flex;flex-direction:column;gap:2px}
+.sidebar nav a{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--text2);text-decoration:none;font-size:.9rem;font-weight:500;transition:all .15s}
+.sidebar nav a:hover,.sidebar nav a.active{background:var(--bg2);color:var(--text)}
+.sidebar nav a.active{border-left:3px solid var(--accent);color:var(--accent)}
+.sidebar .divider{height:1px;background:var(--border);margin:8px 0}
+.sidebar .divider-label{color:var(--text3);font-size:.75rem;padding:4px 12px;text-transform:uppercase;letter-spacing:1px}
+.sidebar .logout-btn{margin-top:auto;display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:var(--red);background:none;border:none;font-size:.9rem;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;width:100%;transition:background .15s}
+.sidebar .logout-btn:hover{background:rgba(248,113,113,.1)}
+.main{margin-left:var(--sidebar-w);padding:32px}
+.page-title{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:24px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:32px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.stat-card .label{color:var(--text2);font-size:.85rem;margin-bottom:4px}
+.stat-card .value{font-size:1.8rem;font-weight:700;color:var(--accent)}
+.stat-card .sub{color:var(--text3);font-size:.8rem;margin-top:2px}
+.section-title{font-size:1.1rem;font-weight:600;margin-bottom:12px;color:var(--text2);font-family:'Playfair Display',serif}
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow-x:auto;margin-bottom:32px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:12px 16px;color:var(--text3);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;font-size:.9rem;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+.progress{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;min-width:100px}
+.progress .fill{height:100%;border-radius:4px;background:var(--accent);transition:width .3s}
+.trend-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:32px}
+.trend-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.trend-row:last-child{border-bottom:none}
+.trend-row .month{color:var(--text2);font-size:.9rem}
+.trend-row .amount{font-weight:700;font-size:1rem}
+.trend-up{color:var(--green)}
+.trend-down{color:var(--red)}
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--text);font-size:1.2rem}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.overlay.open{display:block}.hamburger{display:block}
+  .main{margin-left:0;padding:24px 16px;padding-top:60px}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo">Artmonia Admin</div>
+  <nav id="adminNav">
+    <a href="/admin/dashboard.html" data-roles="super_admin">&#128202; Dashboard</a>
+    <a href="/admin/telebeler.html" data-roles="super_admin,manager">&#128101; Telebeler</a>
+    <a href="/admin/qruplar.html" data-roles="super_admin,manager">&#128203; Qruplar</a>
+    <a href="/admin/odenisler.html" data-roles="super_admin,manager">&#128176; Odenisler</a>
+    <a href="/admin/gamification.html" data-roles="super_admin,manager">&#127942; Gamification</a>
+    <a href="/admin/hesabat.html" class="active" data-roles="super_admin,manager">&#128200; Hesabat</a>
+    <a href="/admin/istifadeciler.html" data-roles="super_admin">&#128100; Istifadeciler</a>
+    <div class="divider"></div>
+    <div class="divider-label">Muellim</div>
+    <a href="/admin/muellim-qrup.html" data-roles="teacher,super_admin">&#127891; Qrupum</a>
+    <a href="/admin/muellim-tapshiriq.html" data-roles="teacher,super_admin">&#128221; Tapshiriqlar</a>
+    <a href="/admin/muellim-material.html" data-roles="teacher,super_admin">&#128196; Materiallar</a>
+  </nav>
+  <button class="logout-btn" onclick="logout()">&#128682; Chixish</button>
+</aside>
+
+<main class="main">
+  <h1 class="page-title">Hesabat</h1>
+
+  <!-- This month stats -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card"><div class="label">Bu Ay Odenisler</div><div class="value" id="statPayTotal">--</div><div class="sub">AZN</div></div>
+    <div class="stat-card"><div class="label">Yeni Telebeler</div><div class="value" id="statNewStudents">--</div><div class="sub">bu ay qoshulub</div></div>
+    <div class="stat-card"><div class="label">Ortalama XP</div><div class="value" id="statAvgXP">--</div><div class="sub">aktiv telebeler</div></div>
+  </div>
+
+  <!-- Group Occupancy -->
+  <h2 class="section-title">Qrup Doluluq</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Qrup</th><th>Hazirki / Max</th><th>Faiz</th><th>Doluluq</th></tr></thead>
+      <tbody id="groupBody"><tr><td colspan="4" style="color:var(--text3);text-align:center">Yuklenilir...</td></tr></tbody>
+    </table>
+  </div>
+
+  <!-- Teacher Feedback Stats -->
+  <h2 class="section-title">Muellim Reyleri</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Muellim</th><th>Ortalama Reytinq</th><th>Reyler Sayi</th></tr></thead>
+      <tbody id="teacherBody"><tr><td colspan="3" style="color:var(--text3);text-align:center">Yuklenilir...</td></tr></tbody>
+    </table>
+  </div>
+
+  <!-- Monthly Payment Trend -->
+  <h2 class="section-title">Ayliq Odenis Trendi</h2>
+  <div class="trend-section" id="trendSection">
+    <div style="color:var(--text3)">Yuklenilir...</div>
+  </div>
+</main>
+
+<script src="/js/supabase-kabinet.js"></script>
+<script src="/js/auth-kabinet.js"></script>
+<script>
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open')}
+
+let currentRole=null;
+
+async function init(){
+  const ok=await requireRole('super_admin','manager');
+  if(!ok) return;
+  currentRole=await getRole();
+  filterNav(currentRole);
+  loadMonthStats();
+  loadGroupOccupancy();
+  loadTeacherFeedback();
+  loadPaymentTrend();
+}
+
+function filterNav(role){
+  document.querySelectorAll('#adminNav a').forEach(a=>{
+    const roles=a.dataset.roles?a.dataset.roles.split(','):[];
+    if(roles.length&&!roles.includes(role)) a.style.display='none';
+  });
+}
+
+async function loadMonthStats(){
+  const now=new Date();
+  const monthStart=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
+
+  // Total payments this month
+  const{data:payments}=await sb.from('payments').select('amount').gte('created_at',monthStart);
+  const total=(payments||[]).reduce((s,p)=>s+(p.amount||0),0);
+  document.getElementById('statPayTotal').textContent=total.toFixed(0);
+
+  // New students this month
+  const{count:newCount}=await sb.from('students').select('*',{count:'exact',head:true}).gte('created_at',monthStart);
+  document.getElementById('statNewStudents').textContent=newCount||0;
+
+  // Average XP
+  const{data:students}=await sb.from('students').select('xp').eq('status','active');
+  if(students&&students.length){
+    const avg=students.reduce((s,st)=>s+(st.xp||0),0)/students.length;
+    document.getElementById('statAvgXP').textContent=avg.toFixed(1);
+  }else{
+    document.getElementById('statAvgXP').textContent='0';
+  }
+}
+
+async function loadGroupOccupancy(){
+  const{data:groups}=await sb.from('groups').select('id,name,max_students').eq('is_active',true).order('name');
+  if(!groups||!groups.length){
+    document.getElementById('groupBody').innerHTML='<tr><td colspan="4" style="color:var(--text3);text-align:center">Qrup tapilmadi</td></tr>';
+    return;
+  }
+  const rows=[];
+  for(const g of groups){
+    const{count}=await sb.from('students').select('*',{count:'exact',head:true}).eq('group_id',g.id).eq('status','active');
+    const max=g.max_students||15;
+    const pct=Math.min(100,Math.round(((count||0)/max)*100));
+    rows.push(`<tr><td>${g.name}</td><td>${count||0} / ${max}</td><td>${pct}%</td><td><div class="progress"><div class="fill" style="width:${pct}%"></div></div></td></tr>`);
+  }
+  document.getElementById('groupBody').innerHTML=rows.join('');
+}
+
+async function loadTeacherFeedback(){
+  try{
+    const{data:feedbacks}=await sb.from('feedbacks').select('teacher_id, rating');
+    if(!feedbacks||!feedbacks.length){
+      document.getElementById('teacherBody').innerHTML='<tr><td colspan="3" style="color:var(--text3);text-align:center">Rey tapilmadi</td></tr>';
+      return;
+    }
+    // Group by teacher
+    const teachers={};
+    feedbacks.forEach(f=>{
+      if(!f.teacher_id) return;
+      if(!teachers[f.teacher_id]) teachers[f.teacher_id]={sum:0,count:0};
+      teachers[f.teacher_id].sum+=(f.rating||0);
+      teachers[f.teacher_id].count++;
+    });
+    const rows=Object.entries(teachers).map(([tid,d])=>{
+      const avg=(d.sum/d.count).toFixed(1);
+      return `<tr><td>${tid.substring(0,8)}...</td><td>${avg} / 5</td><td>${d.count}</td></tr>`;
+    });
+    document.getElementById('teacherBody').innerHTML=rows.join('');
+  }catch(e){
+    document.getElementById('teacherBody').innerHTML='<tr><td colspan="3" style="color:var(--text3);text-align:center">Yuklemede xeta</td></tr>';
+  }
+}
+
+async function loadPaymentTrend(){
+  const now=new Date();
+  const months=[];
+  for(let i=0;i<3;i++){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    const end=new Date(now.getFullYear(),now.getMonth()-i+1,1);
+    months.push({
+      label:d.toLocaleDateString('az',{year:'numeric',month:'long'}),
+      start:d.toISOString(),
+      end:end.toISOString()
+    });
+  }
+  const results=[];
+  for(const m of months){
+    const{data}=await sb.from('payments').select('amount').gte('created_at',m.start).lt('created_at',m.end);
+    const total=(data||[]).reduce((s,p)=>s+(p.amount||0),0);
+    results.push({label:m.label,total});
+  }
+
+  const section=document.getElementById('trendSection');
+  if(!results.length){section.innerHTML='<div style="color:var(--text3)">Melumat tapilmadi</div>';return}
+  section.innerHTML=results.map((r,i)=>{
+    const prev=results[i+1];
+    let trendClass='';
+    let arrow='';
+    if(prev){
+      if(r.total>prev.total){trendClass='trend-up';arrow=' &#9650;'}
+      else if(r.total<prev.total){trendClass='trend-down';arrow=' &#9660;'}
+    }
+    return `<div class="trend-row"><span class="month">${r.label}</span><span class="amount ${trendClass}">${r.total.toFixed(0)} AZN${arrow}</span></div>`;
+  }).join('');
+}
+
+init();
+</script>
+</body>
+</html>

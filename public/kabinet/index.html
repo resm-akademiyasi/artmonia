@@ -1,559 +1,270 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daxil ol | Artmonia Academy</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #0b0b1a;
-      font-family: 'Inter', sans-serif;
-      color: #ffffff;
-      padding: 20px;
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 420px;
-      background: #14122a;
-      border: 1px solid #252240;
-      border-radius: 20px;
-      padding: 40px 32px 36px;
-    }
-
-    /* Logo / brand */
-    .brand {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    .brand-icon {
-      width: 56px;
-      height: 56px;
-      background: linear-gradient(135deg, #f97316, #fb923c);
-      border-radius: 16px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      margin-bottom: 14px;
-    }
-    .brand h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-    .brand p {
-      color: #b0acd0;
-      font-size: 14px;
-      margin-top: 6px;
-    }
-
-    /* Tabs */
-    .tabs {
-      display: flex;
-      background: #0b0b1a;
-      border-radius: 12px;
-      padding: 4px;
-      margin-bottom: 28px;
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 10px 0;
-      border: none;
-      border-radius: 10px;
-      background: transparent;
-      color: #6b6790;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all .25s;
-    }
-    .tab-btn.active {
-      background: #252240;
-      color: #ffffff;
-    }
-
-    /* Form elements */
-    .form-group {
-      margin-bottom: 18px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      color: #b0acd0;
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 12px 16px;
-      background: #0b0b1a;
-      border: 1px solid #252240;
-      border-radius: 12px;
-      color: #ffffff;
-      font-size: 15px;
-      font-family: 'Inter', sans-serif;
-      outline: none;
-      transition: border-color .2s;
-    }
-    .form-group input::placeholder { color: #6b6790; }
-    .form-group input:focus { border-color: #f97316; }
-
-    .phone-row {
-      display: flex;
-      gap: 8px;
-    }
-    .phone-prefix {
-      width: 80px;
-      flex-shrink: 0;
-      text-align: center;
-    }
-    .phone-number { flex: 1; }
-
-    /* Buttons */
-    .btn-primary {
-      width: 100%;
-      padding: 14px 0;
-      border: none;
-      border-radius: 50px;
-      background: linear-gradient(135deg, #f97316, #ea580c);
-      color: #ffffff;
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity .2s, transform .1s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .btn-primary:hover { opacity: .9; }
-    .btn-primary:active { transform: scale(.98); }
-    .btn-primary:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    /* Spinner */
-    .spinner {
-      display: none;
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255,255,255,.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin .6s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Links */
-    .forgot-link {
-      display: block;
-      text-align: right;
-      margin-bottom: 20px;
-      color: #f97316;
-      font-size: 13px;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .forgot-link:hover { text-decoration: underline; }
-
-    /* Error */
-    .error-msg {
-      display: none;
-      background: rgba(239,68,68,.12);
-      border: 1px solid rgba(239,68,68,.3);
-      color: #f87171;
-      font-size: 13px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      margin-bottom: 18px;
-      line-height: 1.4;
-    }
-    .error-msg.visible { display: block; }
-
-    /* Success */
-    .success-msg {
-      display: none;
-      background: rgba(34,197,94,.12);
-      border: 1px solid rgba(34,197,94,.3);
-      color: #4ade80;
-      font-size: 13px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      margin-bottom: 18px;
-      line-height: 1.4;
-    }
-    .success-msg.visible { display: block; }
-
-    /* Tab panes */
-    .tab-pane { display: none; }
-    .tab-pane.active { display: block; }
-
-    /* OTP section */
-    .otp-section { display: none; }
-    .otp-section.visible { display: block; }
-
-    /* Footer */
-    .card-footer {
-      text-align: center;
-      margin-top: 24px;
-      padding-top: 20px;
-      border-top: 1px solid #252240;
-      color: #6b6790;
-      font-size: 13px;
-    }
-
-    /* Reset modal overlay */
-    .reset-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(11,11,26,.85);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .reset-overlay.visible { display: flex; }
-    .reset-card {
-      background: #14122a;
-      border: 1px solid #252240;
-      border-radius: 20px;
-      padding: 32px;
-      width: 100%;
-      max-width: 400px;
-    }
-    .reset-card h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      margin-bottom: 8px;
-    }
-    .reset-card p {
-      color: #b0acd0;
-      font-size: 13px;
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
-    .reset-close {
-      background: none;
-      border: 1px solid #252240;
-      color: #b0acd0;
-      padding: 10px 0;
-      width: 100%;
-      border-radius: 50px;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: border-color .2s;
-    }
-    .reset-close:hover { border-color: #6b6790; }
-
-    @media (max-width: 480px) {
-      .login-card { padding: 32px 20px 28px; }
-      .brand h1 { font-size: 22px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artmonia - Daxil ol</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b1a;--bg2:#0f0e24;--card:#14122a;--card2:#1a1835;--border:#252240;--accent:#f97316;--accent2:#ea580c;--text:#fff;--text2:#b0acd0;--text3:#6b6790;--green:#4ade80;--blue:#60a5fa;--red:#f87171}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-wrapper{width:100%;max-width:420px}
+.logo{text-align:center;margin-bottom:32px}
+.logo h1{font-family:'Playfair Display',serif;color:var(--accent);font-size:2.4rem;letter-spacing:1px}
+.logo p{color:var(--text2);font-size:.95rem;margin-top:6px}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 28px}
+.tabs{display:flex;gap:6px;margin-bottom:24px;background:var(--bg2);border-radius:50px;padding:4px}
+.tab-btn{flex:1;padding:10px 16px;border:none;border-radius:50px;background:transparent;color:var(--text3);font-family:'Inter',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s}
+.tab-btn.active{background:var(--accent);color:#fff}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:.85rem;color:var(--text2);margin-bottom:6px;font-weight:500}
+.form-group input{width:100%;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:.95rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+.form-group input:focus{border-color:var(--accent)}
+.form-group input::placeholder{color:var(--text3)}
+.btn-pill{width:100%;border:none;border-radius:50px;background:var(--accent);color:#fff;font-weight:700;padding:13px 28px;font-size:1rem;font-family:'Inter',sans-serif;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-pill:hover{background:var(--accent2)}
+.btn-pill:disabled{opacity:.6;cursor:not-allowed}
+.btn-pill .spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+.btn-pill.loading .spinner{display:inline-block}
+.btn-pill.loading .btn-text{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.forgot-link{display:block;text-align:center;margin-top:16px;color:var(--text3);font-size:.85rem;cursor:pointer;text-decoration:none;transition:color .2s}
+.forgot-link:hover{color:var(--accent)}
+.msg-box{padding:12px 16px;border-radius:10px;font-size:.88rem;margin-bottom:16px;display:none;line-height:1.4}
+.msg-box.error{display:block;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red)}
+.msg-box.success{display:block;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--green)}
+.otp-group{display:none}
+.otp-group.show{display:block}
+.otp-input{text-align:center;letter-spacing:8px;font-size:1.3rem;font-weight:700}
+.panel{display:none}
+.panel.active{display:block}
+.forgot-panel{display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+.forgot-panel.show{display:block}
+.back-link{display:block;text-align:center;margin-top:14px;color:var(--text3);font-size:.85rem;cursor:pointer;transition:color .2s}
+.back-link:hover{color:var(--accent)}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
+<div class="login-wrapper">
+  <div class="logo">
+    <h1>Artmonia</h1>
+    <p>Tələbə Kabineti</p>
+  </div>
+
   <div class="login-card">
-    <!-- Brand -->
-    <div class="brand">
-      <div class="brand-icon">A</div>
-      <h1>Artmonia Academy</h1>
-      <p>Tələbə kabinetinə daxil olun</p>
-    </div>
+    <div id="msgBox" class="msg-box"></div>
 
     <!-- Tabs -->
     <div class="tabs">
-      <button class="tab-btn active" data-tab="email">Email ilə</button>
-      <button class="tab-btn" data-tab="phone">Telefon ilə</button>
+      <button class="tab-btn active" data-tab="email" onclick="switchTab('email')">📧 Email ilə</button>
+      <button class="tab-btn" data-tab="phone" onclick="switchTab('phone')">📱 Telefon ilə</button>
     </div>
 
-    <!-- Error / Success messages -->
-    <div id="errorMsg" class="error-msg"></div>
-    <div id="successMsg" class="success-msg"></div>
-
-    <!-- Email Tab -->
-    <div id="tab-email" class="tab-pane active">
-      <form id="emailForm" autocomplete="on">
+    <!-- Email Panel -->
+    <div id="panel-email" class="panel active">
+      <form id="emailForm" onsubmit="handleEmailLogin(event)">
         <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" placeholder="sizin@email.com" required autocomplete="email">
+          <label>Email</label>
+          <input type="email" id="emailInput" placeholder="nümunə@mail.com" required>
         </div>
         <div class="form-group">
-          <label for="password">Şifrə</label>
-          <input type="password" id="password" placeholder="Şifrənizi daxil edin" required autocomplete="current-password">
+          <label>Şifrə</label>
+          <input type="password" id="passwordInput" placeholder="Şifrənizi daxil edin" required>
         </div>
-        <a href="#" class="forgot-link" id="forgotBtn">Şifrəni unutdum?</a>
-        <button type="submit" class="btn-primary" id="emailSubmit">
-          <span class="spinner" id="emailSpinner"></span>
-          Daxil ol
+        <button type="submit" class="btn-pill" id="emailBtn">
+          <span class="btn-text">Daxil ol</span>
+          <span class="spinner"></span>
         </button>
       </form>
     </div>
 
-    <!-- Phone Tab -->
-    <div id="tab-phone" class="tab-pane">
-      <form id="phoneForm">
+    <!-- Phone Panel -->
+    <div id="panel-phone" class="panel">
+      <form id="phoneForm" onsubmit="handlePhoneSend(event)">
         <div class="form-group">
-          <label for="phone">Telefon nömrəsi</label>
-          <div class="phone-row">
-            <input type="text" class="phone-prefix" value="+994" readonly>
-            <input type="tel" id="phone" class="phone-number" placeholder="50 123 45 67" required>
-          </div>
+          <label>Telefon nömrəsi</label>
+          <input type="tel" id="phoneInput" placeholder="+994 50 000 00 00" required>
         </div>
-        <button type="submit" class="btn-primary" id="phoneSubmit">
-          <span class="spinner" id="phoneSpinner"></span>
-          OTP göndər
+        <button type="submit" class="btn-pill" id="phoneBtn">
+          <span class="btn-text">OTP Göndər</span>
+          <span class="spinner"></span>
         </button>
       </form>
-
-      <!-- OTP verification -->
-      <div class="otp-section" id="otpSection">
-        <form id="otpForm" style="margin-top:20px;">
-          <div class="form-group">
-            <label for="otpCode">Təsdiq kodu (OTP)</label>
-            <input type="text" id="otpCode" placeholder="6 rəqəmli kod" maxlength="6" required inputmode="numeric" autocomplete="one-time-code">
+      <div id="otpGroup" class="otp-group">
+        <form onsubmit="handleOtpVerify(event)">
+          <div class="form-group" style="margin-top:18px">
+            <label>OTP Kod (6 rəqəm)</label>
+            <input type="text" id="otpInput" class="otp-input" maxlength="6" placeholder="------" required>
           </div>
-          <button type="submit" class="btn-primary" id="otpSubmit">
-            <span class="spinner" id="otpSpinner"></span>
-            Təsdiqlə
+          <button type="submit" class="btn-pill" id="otpBtn">
+            <span class="btn-text">Təsdiqlə</span>
+            <span class="spinner"></span>
           </button>
         </form>
       </div>
     </div>
 
-    <!-- Footer -->
-    <div class="card-footer">
-      &copy; 2026 Artmonia Academy
-    </div>
-  </div>
+    <!-- Forgot password link -->
+    <a class="forgot-link" onclick="toggleForgot()">Şifrəni unutdum?</a>
 
-  <!-- Password reset overlay -->
-  <div class="reset-overlay" id="resetOverlay">
-    <div class="reset-card">
-      <h3>Şifrəni sıfırla</h3>
-      <p>Email ünvanınızı daxil edin. Şifrə sıfırlama linki göndəriləcək.</p>
-      <div id="resetError" class="error-msg"></div>
-      <div id="resetSuccess" class="success-msg"></div>
-      <form id="resetForm">
+    <!-- Forgot panel -->
+    <div id="forgotPanel" class="forgot-panel">
+      <form onsubmit="handleForgotPassword(event)">
         <div class="form-group">
-          <label for="resetEmail">Email</label>
-          <input type="email" id="resetEmail" placeholder="sizin@email.com" required>
+          <label>Email ünvanınız</label>
+          <input type="email" id="forgotEmail" placeholder="nümunə@mail.com" required>
         </div>
-        <button type="submit" class="btn-primary" id="resetSubmit">
-          <span class="spinner" id="resetSpinner"></span>
-          Link göndər
+        <button type="submit" class="btn-pill" id="forgotBtn">
+          <span class="btn-text">Şifrəni sıfırla</span>
+          <span class="spinner"></span>
         </button>
       </form>
-      <button class="reset-close" id="resetClose">Bağla</button>
+      <a class="back-link" onclick="toggleForgot()">Geri qayıt</a>
     </div>
   </div>
+</div>
 
-  <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/js/supabase-kabinet.js"></script>
+<script src="/js/supabase-kabinet.js"></script>
+<script src="/js/auth-kabinet.js"></script>
+<script src="/js/gamification.js"></script>
+<script>
+/* ---- State ---- */
+let currentPhone = '';
 
-  <script>
-    (function () {
-      /* ── Elements ── */
-      const tabBtns      = document.querySelectorAll('.tab-btn');
-      const errorMsg     = document.getElementById('errorMsg');
-      const successMsg   = document.getElementById('successMsg');
+/* ---- Tabs ---- */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  clearMsg();
+}
 
-      // Email
-      const emailForm    = document.getElementById('emailForm');
-      const emailInput   = document.getElementById('email');
-      const passwordInput= document.getElementById('password');
-      const emailSubmit  = document.getElementById('emailSubmit');
-      const emailSpinner = document.getElementById('emailSpinner');
+/* ---- Messages ---- */
+function showMsg(text, type) {
+  const box = document.getElementById('msgBox');
+  box.textContent = text;
+  box.className = 'msg-box ' + type;
+}
+function clearMsg() {
+  const box = document.getElementById('msgBox');
+  box.className = 'msg-box';
+  box.textContent = '';
+}
 
-      // Phone
-      const phoneForm    = document.getElementById('phoneForm');
-      const phoneInput   = document.getElementById('phone');
-      const phoneSubmit  = document.getElementById('phoneSubmit');
-      const phoneSpinner = document.getElementById('phoneSpinner');
+/* ---- Button loading ---- */
+function setLoading(btn, loading) {
+  if (loading) { btn.classList.add('loading'); btn.disabled = true; }
+  else { btn.classList.remove('loading'); btn.disabled = false; }
+}
 
-      // OTP
-      const otpSection   = document.getElementById('otpSection');
-      const otpForm      = document.getElementById('otpForm');
-      const otpCode      = document.getElementById('otpCode');
-      const otpSubmit    = document.getElementById('otpSubmit');
-      const otpSpinner   = document.getElementById('otpSpinner');
+/* ---- Email Login ---- */
+async function handleEmailLogin(e) {
+  e.preventDefault();
+  clearMsg();
+  const btn = document.getElementById('emailBtn');
+  const email = document.getElementById('emailInput').value.trim();
+  const password = document.getElementById('passwordInput').value;
 
-      // Reset
-      const forgotBtn    = document.getElementById('forgotBtn');
-      const resetOverlay = document.getElementById('resetOverlay');
-      const resetClose   = document.getElementById('resetClose');
-      const resetForm    = document.getElementById('resetForm');
-      const resetEmail   = document.getElementById('resetEmail');
-      const resetSubmit  = document.getElementById('resetSubmit');
-      const resetSpinner = document.getElementById('resetSpinner');
-      const resetError   = document.getElementById('resetError');
-      const resetSuccess = document.getElementById('resetSuccess');
+  if (!email || !password) { showMsg('Email və şifrəni daxil edin', 'error'); return; }
 
-      let currentPhone = '';
+  setLoading(btn, true);
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    showMsg('Daxil oldunuz! Yönləndirilir...', 'success');
+    const role = await getRole();
+    redirectByRole(role);
+  } catch (err) {
+    showMsg(err.message || 'Giriş uğursuz oldu', 'error');
+    setLoading(btn, false);
+  }
+}
 
-      /* ── Helpers ── */
-      function showError(msg) {
-        errorMsg.textContent = msg;
-        errorMsg.classList.add('visible');
-        successMsg.classList.remove('visible');
-      }
-      function showSuccess(msg) {
-        successMsg.textContent = msg;
-        successMsg.classList.add('visible');
-        errorMsg.classList.remove('visible');
-      }
-      function clearMessages() {
-        errorMsg.classList.remove('visible');
-        successMsg.classList.remove('visible');
-      }
-      function setLoading(btn, spinner, loading) {
-        btn.disabled = loading;
-        spinner.style.display = loading ? 'inline-block' : 'none';
-      }
-      function formatPhone(raw) {
-        const digits = raw.replace(/\D/g, '');
-        return '+994' + digits;
-      }
+/* ---- Phone OTP Send ---- */
+async function handlePhoneSend(e) {
+  e.preventDefault();
+  clearMsg();
+  const btn = document.getElementById('phoneBtn');
+  const phone = document.getElementById('phoneInput').value.trim().replace(/\s+/g, '');
 
-      /* ── Tabs ── */
-      tabBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          tabBtns.forEach(function (b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-          document.querySelectorAll('.tab-pane').forEach(function (p) { p.classList.remove('active'); });
-          document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-          clearMessages();
-        });
-      });
+  if (!phone) { showMsg('Telefon nömrəsini daxil edin', 'error'); return; }
 
-      /* ── Email login ── */
-      emailForm.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        clearMessages();
-        var email = emailInput.value.trim();
-        var password = passwordInput.value;
-        if (!email || !password) { showError('Email və şifrəni daxil edin.'); return; }
+  setLoading(btn, true);
+  try {
+    const { error } = await sb.auth.signInWithOtp({ phone });
+    if (error) throw error;
+    currentPhone = phone;
+    document.getElementById('otpGroup').classList.add('show');
+    showMsg('OTP kod göndərildi!', 'success');
+  } catch (err) {
+    showMsg(err.message || 'OTP göndərmə uğursuz oldu', 'error');
+  }
+  setLoading(btn, false);
+}
 
-        setLoading(emailSubmit, emailSpinner, true);
-        try {
-          var { data, error } = await sb.auth.signInWithPassword({ email: email, password: password });
-          if (error) throw error;
-          window.location.href = '/kabinet/dashboard.html';
-        } catch (err) {
-          showError(err.message || 'Giriş zamanı xəta baş verdi.');
-        } finally {
-          setLoading(emailSubmit, emailSpinner, false);
-        }
-      });
+/* ---- OTP Verify ---- */
+async function handleOtpVerify(e) {
+  e.preventDefault();
+  clearMsg();
+  const btn = document.getElementById('otpBtn');
+  const token = document.getElementById('otpInput').value.trim();
 
-      /* ── Phone OTP send ── */
-      phoneForm.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        clearMessages();
-        var raw = phoneInput.value.trim();
-        if (!raw) { showError('Telefon nömrəsini daxil edin.'); return; }
+  if (!token || token.length !== 6) { showMsg('6 rəqəmli OTP kodu daxil edin', 'error'); return; }
 
-        currentPhone = formatPhone(raw);
-        setLoading(phoneSubmit, phoneSpinner, true);
-        try {
-          var { data, error } = await sb.auth.signInWithOtp({ phone: currentPhone });
-          if (error) throw error;
-          otpSection.classList.add('visible');
-          showSuccess('OTP kod ' + currentPhone + ' nömrəsinə göndərildi.');
-          otpCode.focus();
-        } catch (err) {
-          showError(err.message || 'OTP göndərmə zamanı xəta baş verdi.');
-        } finally {
-          setLoading(phoneSubmit, phoneSpinner, false);
-        }
-      });
+  setLoading(btn, true);
+  try {
+    const { data, error } = await sb.auth.verifyOtp({ phone: currentPhone, token, type: 'sms' });
+    if (error) throw error;
+    showMsg('Təsdiqləndi! Yönləndirilir...', 'success');
+    const role = await getRole();
+    redirectByRole(role);
+  } catch (err) {
+    showMsg(err.message || 'OTP təsdiqi uğursuz oldu', 'error');
+    setLoading(btn, false);
+  }
+}
 
-      /* ── OTP verify ── */
-      otpForm.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        clearMessages();
-        var token = otpCode.value.trim();
-        if (!token || token.length < 6) { showError('6 rəqəmli OTP kodu daxil edin.'); return; }
+/* ---- Forgot Password ---- */
+function toggleForgot() {
+  document.getElementById('forgotPanel').classList.toggle('show');
+}
 
-        setLoading(otpSubmit, otpSpinner, true);
-        try {
-          var { data, error } = await sb.auth.verifyOtp({ phone: currentPhone, token: token, type: 'sms' });
-          if (error) throw error;
-          window.location.href = '/kabinet/dashboard.html';
-        } catch (err) {
-          showError(err.message || 'OTP təsdiqi zamanı xəta baş verdi.');
-        } finally {
-          setLoading(otpSubmit, otpSpinner, false);
-        }
-      });
+async function handleForgotPassword(e) {
+  e.preventDefault();
+  clearMsg();
+  const btn = document.getElementById('forgotBtn');
+  const email = document.getElementById('forgotEmail').value.trim();
 
-      /* ── Forgot password ── */
-      forgotBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        resetOverlay.classList.add('visible');
-        resetError.classList.remove('visible');
-        resetSuccess.classList.remove('visible');
-        resetEmail.value = emailInput.value || '';
-        resetEmail.focus();
-      });
-      resetClose.addEventListener('click', function () {
-        resetOverlay.classList.remove('visible');
-      });
-      resetOverlay.addEventListener('click', function (e) {
-        if (e.target === resetOverlay) resetOverlay.classList.remove('visible');
-      });
+  if (!email) { showMsg('Email ünvanını daxil edin', 'error'); return; }
 
-      resetForm.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        resetError.classList.remove('visible');
-        resetSuccess.classList.remove('visible');
-        var email = resetEmail.value.trim();
-        if (!email) {
-          resetError.textContent = 'Email daxil edin.';
-          resetError.classList.add('visible');
-          return;
-        }
+  setLoading(btn, true);
+  try {
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/kabinet/'
+    });
+    if (error) throw error;
+    showMsg('Şifrə sıfırlama linki email ünvanınıza göndərildi!', 'success');
+  } catch (err) {
+    showMsg(err.message || 'Xəta baş verdi', 'error');
+  }
+  setLoading(btn, false);
+}
 
-        setLoading(resetSubmit, resetSpinner, true);
-        try {
-          var { data, error } = await sb.auth.resetPasswordForEmail(email);
-          if (error) throw error;
-          resetSuccess.textContent = 'Sıfırlama linki ' + email + ' ünvanına göndərildi.';
-          resetSuccess.classList.add('visible');
-        } catch (err) {
-          resetError.textContent = err.message || 'Xəta baş verdi.';
-          resetError.classList.add('visible');
-        } finally {
-          setLoading(resetSubmit, resetSpinner, false);
-        }
-      });
-
-      /* ── Already logged in? Redirect ── */
-      (async function () {
-        try {
-          var { data: { session } } = await sb.auth.getSession();
-          if (session) window.location.href = '/kabinet/dashboard.html';
-        } catch (_) {}
-      })();
-    })();
-  </script>
+/* ---- Auto-redirect if logged in ---- */
+(async () => {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      const role = await getRole();
+      if (role) redirectByRole(role);
+    }
+  } catch (e) {
+    console.error('Session check error:', e);
+  }
+})();
+</script>
 </body>
 </html>
