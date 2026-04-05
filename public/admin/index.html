@@ -46,16 +46,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   </div>
 
   <div id="msg" class="msg-box"></div>
+  <div id="error-message" style="display:none;color:#ff4444;background:#2a1a1a;padding:10px;border-radius:8px;margin-bottom:12px;font-size:.9rem"></div>
 
   <!-- Login Form -->
-  <form id="loginForm" onsubmit="handleLogin(event)">
+  <form id="loginForm" onsubmit="event.preventDefault();handleLogin()">
     <div class="form-group">
       <label>Email</label>
-      <input type="email" id="emailInput" placeholder="admin@artmonia.com" required>
+      <input type="email" id="email" placeholder="admin@artmonia.com" required>
     </div>
     <div class="form-group">
       <label>Şifrə</label>
-      <input type="password" id="passwordInput" placeholder="Şifrənizi daxil edin" required>
+      <input type="password" id="password" placeholder="Şifrənizi daxil edin" required>
     </div>
     <button type="submit" class="pill-btn" id="loginBtn">
       <span class="btn-text">Daxil ol</span>
@@ -145,32 +146,64 @@ function setLoading(btn, loading) {
   btn.classList.toggle('loading', loading);
 }
 
-async function handleLogin(e) {
-  e.preventDefault();
-  clearMsg();
-  const btn = document.getElementById('loginBtn');
-  const email = document.getElementById('emailInput').value.trim();
-  const password = document.getElementById('passwordInput').value;
-  if (!email || !password) return showMsg('Email ve sifre daxil edin', 'error');
+async function handleLogin() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errorBox = document.getElementById('error-message');
 
+  errorBox.style.display = 'none';
+  clearMsg();
+
+  if (!email || !password) {
+    errorBox.textContent = 'Email və şifrəni daxil edin';
+    errorBox.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('loginBtn');
   setLoading(btn, true);
+
   try {
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) throw error;
 
-    const role = await getRole();
-    if (!role || !['super_admin', 'manager', 'teacher'].includes(role)) {
-      await sb.auth.signOut();
-      return showMsg('Bu hesabin admin panele girish icazesi yoxdur.', 'error');
+    if (error) {
+      errorBox.textContent = 'Xəta: ' + error.message;
+      errorBox.style.display = 'block';
+      return;
     }
 
-    showMsg('Ugurla daxil oldunuz! Yonlendirilirsiniz...', 'success');
-    setTimeout(() => redirectByRole(role), 800);
+    // Rol yoxla
+    const { data: roleData, error: roleError } = await sb
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', data.user.id)
+      .single();
+
+    if (roleError || !roleData) {
+      errorBox.textContent = 'Rolunuz tapılmadı. Admin ilə əlaqə saxlayın.';
+      errorBox.style.display = 'block';
+      await sb.auth.signOut();
+      return;
+    }
+
+    const role = roleData.role;
+
+    if (role === 'super_admin') {
+      window.location.href = '/admin/dashboard.html';
+    } else if (role === 'manager') {
+      window.location.href = '/admin/telebeler.html';
+    } else if (role === 'teacher') {
+      window.location.href = '/admin/muellim-qrup.html';
+    } else if (role === 'student') {
+      window.location.href = '/kabinet/dashboard.html';
+    } else {
+      errorBox.textContent = 'Naməlum rol: ' + role;
+      errorBox.style.display = 'block';
+    }
+
   } catch (err) {
-    const msg = err.message === 'Invalid login credentials'
-      ? 'Email ve ya sifre sehvdir'
-      : (err.message || 'Daxil olmaq mumkun olmadi');
-    showMsg(msg, 'error');
+    errorBox.textContent = 'Gözlənilməz xəta: ' + err.message;
+    errorBox.style.display = 'block';
   } finally {
     setLoading(btn, false);
   }
