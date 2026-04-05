@@ -147,12 +147,13 @@ function setLoading(btn, loading) {
 }
 
 async function handleLogin() {
+  console.log('1. Login başladı');
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   const errorBox = document.getElementById('error-message');
-
   errorBox.style.display = 'none';
-  clearMsg();
+
+  console.log('2. Email:', email);
 
   if (!email || !password) {
     errorBox.textContent = 'Email və şifrəni daxil edin';
@@ -164,7 +165,10 @@ async function handleLogin() {
   setLoading(btn, true);
 
   try {
+    console.log('3. signInWithPassword çağırılır...');
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+    console.log('4. Auth nəticəsi:', { data, error });
 
     if (error) {
       errorBox.textContent = 'Xəta: ' + error.message;
@@ -172,36 +176,44 @@ async function handleLogin() {
       return;
     }
 
-    // Rol yoxla
+    console.log('5. User ID:', data.user.id);
+
     const { data: roleData, error: roleError } = await sb
       .from('user_roles')
       .select('role')
       .eq('user_id', data.user.id)
       .single();
 
+    console.log('6. Role sorğusu nəticəsi:', { roleData, roleError });
+
     if (roleError || !roleData) {
-      errorBox.textContent = 'Rolunuz tapılmadı. Admin ilə əlaqə saxlayın.';
+      errorBox.textContent = 'Rol tapılmadı: ' + (roleError?.message || 'boş');
       errorBox.style.display = 'block';
       await sb.auth.signOut();
       return;
     }
 
+    console.log('7. Rol:', roleData.role);
+    console.log('8. Yönləndirmə başlayır...');
+
     const role = roleData.role;
 
     if (role === 'super_admin') {
-      go('/admin/dashboard.html');
+      console.log('9. super_admin → dashboard');
+      window.location.replace(window.location.origin + '/admin/dashboard.html');
     } else if (role === 'manager') {
-      go('/admin/telebeler.html');
+      window.location.replace(window.location.origin + '/admin/telebeler.html');
     } else if (role === 'teacher') {
-      go('/admin/muellim-qrup.html');
+      window.location.replace(window.location.origin + '/admin/muellim-qrup.html');
     } else if (role === 'student') {
-      go('/kabinet/dashboard.html');
+      window.location.replace(window.location.origin + '/kabinet/dashboard.html');
     } else {
       errorBox.textContent = 'Naməlum rol: ' + role;
       errorBox.style.display = 'block';
     }
 
   } catch (err) {
+    console.log('XƏTA:', err);
     errorBox.textContent = 'Gözlənilməz xəta: ' + err.message;
     errorBox.style.display = 'block';
   } finally {
