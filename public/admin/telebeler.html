@@ -108,6 +108,16 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <main class="main">
+  <!-- Pending tələbələr bölməsi -->
+  <div id="pendingSection" style="display:none;margin-bottom:24px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <span style="font-size:1.3rem">🔔</span>
+      <h2 style="font-family:'Playfair Display',serif;color:var(--accent);font-size:1.2rem">Təsdiq Gözləyənlər</h2>
+      <span id="pendingCount" style="background:var(--red);color:#fff;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:50px"></span>
+    </div>
+    <div id="pendingList" style="display:grid;gap:12px"></div>
+  </div>
+
   <h1 class="page-title">Telebeler</h1>
 
   <div class="toolbar">
@@ -116,7 +126,8 @@ tr:last-child td{border-bottom:none}
     <select id="filterStatus" onchange="filterStudents()">
       <option value="">Butun status</option>
       <option value="active">Aktiv</option>
-      <option value="paused">Dayandirilib</option>
+      <option value="pending">Gözləyir</option>
+      <option value="paused">Dayandırılıb</option>
     </select>
     <button class="btn btn-accent" onclick="openNew()">+ Yeni Telebe</button>
   </div>
@@ -156,6 +167,43 @@ async function init(){
   currentRole = await getRole();
   filterNav(currentRole);
   await loadGroups();
+  await loadPendingStudents();
+  await loadStudents();
+}
+
+async function loadPendingStudents(){
+  const{data}=await sb.from('students').select('id,full_name,email,phone,created_at').eq('status','pending').order('created_at',{ascending:false});
+  const sec=document.getElementById('pendingSection');
+  const list=document.getElementById('pendingList');
+  if(!data||!data.length){sec.style.display='none';return;}
+  sec.style.display='block';
+  document.getElementById('pendingCount').textContent=data.length;
+  list.innerHTML=data.map(s=>`
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div style="flex:1;min-width:200px">
+        <div style="font-weight:700;color:var(--text)">${s.full_name}</div>
+        <div style="font-size:.85rem;color:var(--text2)">${s.email}${s.phone?' · '+s.phone:''}</div>
+        <div style="font-size:.75rem;color:var(--text3);margin-top:4px">${new Date(s.created_at).toLocaleDateString('az-AZ',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="approveStudent('${s.id}')" style="background:var(--green);color:#000;border:none;border-radius:50px;padding:8px 20px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:'Inter',sans-serif">✅ Təsdiq et</button>
+        <button onclick="rejectStudent('${s.id}')" style="background:var(--red);color:#fff;border:none;border-radius:50px;padding:8px 20px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:'Inter',sans-serif">❌ Rədd et</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function approveStudent(id){
+  const{error}=await sb.from('students').update({status:'active'}).eq('id',id);
+  if(error){alert('Xəta: '+error.message);return;}
+  await loadPendingStudents();
+  await loadStudents();
+}
+
+async function rejectStudent(id){
+  if(!confirm('Bu tələbəni rədd etmək istəyirsiniz?'))return;
+  await sb.from('students').update({status:'paused',notes:'Rədd edildi'}).eq('id',id);
+  await loadPendingStudents();
   await loadStudents();
 }
 

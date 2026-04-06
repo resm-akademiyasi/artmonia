@@ -279,6 +279,14 @@ const Navbar = () => {
               </button>
             ))}
 
+            {/* Kabinetim */}
+            <a
+              href="/kabinet/"
+              className="ml-1 px-4 py-2 rounded-full font-body text-[11px] font-semibold tracking-[0.12em] uppercase transition-all duration-300 border-2 border-primary/60 text-primary bg-primary/5 hover:bg-primary/15 hover:border-primary hover:scale-[1.03] hover:shadow-[0_4px_20px_hsl(var(--primary)/0.25)]"
+            >
+              🎨 Kabinetim
+            </a>
+
             {/* Online Kurslar */}
             <a
               href="https://online.artmoniya.com"
@@ -359,6 +367,13 @@ const Navbar = () => {
               </button>
             ))}
           </div>
+
+          <a
+            href="/kabinet/"
+            className="flex w-full items-center justify-center gap-2 py-3.5 font-body text-sm font-semibold rounded-xl border-2 border-primary/60 text-primary bg-primary/5 transition-all"
+          >
+            🎨 Kabinetim
+          </a>
 
           <a
             href="https://online.artmoniya.com"
