@@ -140,12 +140,16 @@ async function handleLogin() {
       return;
     }
 
-    showMsg('Uğurlu! Yönləndirilir...', 'success');
     const r = rd.role;
+    if (r === 'student') {
+      showMsg('Bu panel tələbələr üçün deyil. artmoniya.com/kabinet/ ünvanına keçin.', 'error');
+      await sb.auth.signOut();
+      return;
+    }
+    showMsg('Uğurlu! Yönləndirilir...', 'success');
     if (r === 'super_admin')    go('/admin/dashboard.html');
     else if (r === 'manager')   go('/admin/telebeler.html');
     else if (r === 'teacher')   go('/admin/muellim-qrup.html');
-    else if (r === 'student')   go('/kabinet/dashboard.html');
     else { showMsg('Naməlum rol: ' + r, 'error'); await sb.auth.signOut(); }
 
   } catch (err) {

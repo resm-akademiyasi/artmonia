@@ -50,9 +50,7 @@ async function getStudent() {
 
 /**
  * Səhifə girişini yoxlayır.
- * @param {string[]} allowedRoles - icazə verilən rollar
- * @param {string} redirectTo - icazəsiz olduqda hara yönləndir
- * @returns {Promise<boolean>} - icazə varsa true
+ * İcazə yoxdursa — ROL ƏSASINDA düzgün yerə yönləndirir.
  */
 async function requireAuth(allowedRoles, redirectTo) {
   const session = await getSession();
@@ -62,10 +60,25 @@ async function requireAuth(allowedRoles, redirectTo) {
   }
   const role = await getRole();
   if (!role || !allowedRoles.includes(role)) {
-    go(redirectTo);
+    // Rol əsasında yönləndir
+    if (role === 'student') {
+      go('/kabinet/index.html');
+    } else if (role === 'super_admin' || role === 'manager' || role === 'teacher') {
+      go('/admin/index.html');
+    } else {
+      go(redirectTo);
+    }
     return false;
   }
   return true;
+}
+
+/** Rol əsasında düzgün səhifəyə yönləndir */
+function goByRole(role) {
+  if (role === 'student')          go('/kabinet/dashboard.html');
+  else if (role === 'teacher')     go('/admin/muellim-qrup.html');
+  else if (role === 'manager')     go('/admin/telebeler.html');
+  else if (role === 'super_admin') go('/admin/dashboard.html');
 }
 
 async function logout() {
