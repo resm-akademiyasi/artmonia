@@ -161,6 +161,14 @@ function levelName(xp){
   return 'Brinc';
 }
 
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1a1a2e;color:#fff;border:1px solid #f97316;padding:14px 24px;border-radius:12px;font-family:Inter,sans-serif;font-size:.95rem;z-index:9999;animation:fadeIn .3s ease';
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
 async function init(){
   const ok = await requireAuth(['super_admin','manager'], '/admin/index.html');
   if(!ok) return;
@@ -169,6 +177,8 @@ async function init(){
   await loadGroups();
   await loadPendingStudents();
   await loadStudents();
+  // Hər 60 saniyədə pending siyahını yenilə
+  setInterval(loadPendingStudents, 60000);
 }
 
 async function loadPendingStudents(){
@@ -178,31 +188,36 @@ async function loadPendingStudents(){
   if(!data||!data.length){sec.style.display='none';return;}
   sec.style.display='block';
   document.getElementById('pendingCount').textContent=data.length;
-  list.innerHTML=data.map(s=>`
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  list.innerHTML=data.map(s=>{
+    const esc=t=>(t||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    return `
+    <div style="background:#13132a;border:1px solid #2a2a4a;border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
       <div style="flex:1;min-width:200px">
-        <div style="font-weight:700;color:var(--text)">${s.full_name}</div>
-        <div style="font-size:.85rem;color:var(--text2)">${s.email}${s.phone?' · '+s.phone:''}</div>
-        <div style="font-size:.75rem;color:var(--text3);margin-top:4px">${new Date(s.created_at).toLocaleDateString('az-AZ',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+        <div style="color:#fff;font-weight:600;margin-bottom:4px">${s.full_name}</div>
+        <div style="color:#888;font-size:.88rem">${s.email}${s.phone?' · '+s.phone:''}</div>
+        <div style="color:#555;font-size:.8rem;margin-top:4px">Qeydiyyat: ${new Date(s.created_at).toLocaleDateString('az-AZ')}</div>
       </div>
-      <div style="display:flex;gap:8px">
-        <button onclick="approveStudent('${s.id}')" style="background:var(--green);color:#000;border:none;border-radius:50px;padding:8px 20px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:'Inter',sans-serif">✅ Təsdiq et</button>
-        <button onclick="rejectStudent('${s.id}')" style="background:var(--red);color:#fff;border:none;border-radius:50px;padding:8px 20px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:'Inter',sans-serif">❌ Rədd et</button>
+      <div style="display:flex;gap:10px">
+        <button onclick="approveStudent('${s.id}')" style="background:#22c55e;color:#fff;border:none;padding:8px 20px;border-radius:50px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600">✅ Təsdiq et</button>
+        <button onclick="rejectStudent('${s.id}')" style="background:transparent;color:#ef4444;border:2px solid #ef4444;padding:8px 20px;border-radius:50px;cursor:pointer;font-family:'Inter',sans-serif">❌ Rədd et</button>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 async function approveStudent(id){
   const{error}=await sb.from('students').update({status:'active'}).eq('id',id);
   if(error){alert('Xəta: '+error.message);return;}
+  showToast('✅ Tələbə təsdiq edildi');
   await loadPendingStudents();
   await loadStudents();
 }
 
 async function rejectStudent(id){
   if(!confirm('Bu tələbəni rədd etmək istəyirsiniz?'))return;
-  await sb.from('students').update({status:'paused',notes:'Rədd edildi'}).eq('id',id);
+  const{error}=await sb.from('students').update({status:'paused',notes:'Qeydiyyat rədd edildi'}).eq('id',id);
+  if(error){alert('Xəta: '+error.message);return;}
+  showToast('Tələbə rədd edildi');
   await loadPendingStudents();
   await loadStudents();
 }
